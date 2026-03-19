@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-foxnode: #0c8ee9;
+    --color-critical: #dc2626;
+    --color-high: #ea580c;
+    --color-medium: #d97706;
+    --color-low: #2563eb;
+    --color-info: #6b7280;
+  }
+
+  body {
+    @apply antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-600;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-gray-900 border border-gray-800 rounded-xl p-6;
+  }
+
+  .card-hover {
+    @apply card transition-all duration-200 hover:border-gray-700 hover:shadow-lg hover:shadow-black/20;
+  }
+
+  .btn-primary {
+    @apply bg-foxnode-600 hover:bg-foxnode-500 text-white font-medium px-4 py-2 rounded-lg transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-800 hover:bg-gray-700 text-gray-200 font-medium px-4 py-2 rounded-lg border border-gray-700 transition-colors;
+  }
+
+  .btn-danger {
+    @apply bg-red-600/10 hover:bg-red-600/20 text-red-400 font-medium px-4 py-2 rounded-lg border border-red-800/50 transition-colors;
+  }
+
+  .input {
+    @apply bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-foxnode-500 focus:border-transparent transition-all;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-critical {
+    @apply badge bg-red-500/15 text-red-400 border border-red-500/30;
+  }
+
+  .badge-high {
+    @apply badge bg-orange-500/15 text-orange-400 border border-orange-500/30;
+  }
+
+  .badge-medium {
+    @apply badge bg-yellow-500/15 text-yellow-400 border border-yellow-500/30;
+  }
+
+  .badge-low {
+    @apply badge bg-blue-500/15 text-blue-400 border border-blue-500/30;
+  }
+
+  .badge-info {
+    @apply badge bg-gray-500/15 text-gray-400 border border-gray-500/30;
+  }
+}
