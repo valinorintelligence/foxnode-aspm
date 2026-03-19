@@ -18,7 +18,7 @@
 
 Foxnode ASPM is a modern, developer-friendly platform for managing application security vulnerabilities across your entire software portfolio. It aggregates findings from **16+ security scanners**, deduplicates them intelligently, and provides actionable dashboards to track your security posture.
 
-> 🔥 **Modern alternative to DefectDojo** — built with React 18, TailwindCSS dark theme, FastAPI async backend, and first-class integrations with Jira and Slack.
+> 🔥 Built from the ground up with React 18, TailwindCSS dark theme, FastAPI async backend, and first-class integrations with Jira and Slack.
 
 ---
 
