@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0f1a"/>
+      <stop offset="100%" style="stop-color:#111827"/>
+    </linearGradient>
+    <filter id="ds2">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+    <filter id="gl2">
+      <feGaussianBlur stdDeviation="2.5" result="cb"/>
+      <feMerge><feMergeNode in="cb"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="a1" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#0c8ee9"/></marker>
+    <marker id="a2" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#10b981"/></marker>
+    <marker id="a3" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#f59e0b"/></marker>
+    <marker id="a4" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#8b5cf6"/></marker>
+    <marker id="a5" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0,10 3.5,0 7" fill="#ef4444"/></marker>
+  </defs>
+
+  <rect width="1200" height="620" fill="url(#bg2)"/>
+  <pattern id="gr2" width="30" height="30" patternUnits="userSpaceOnUse">
+    <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#1f2937" stroke-width="0.4"/>
+  </pattern>
+  <rect width="1200" height="620" fill="url(#gr2)" opacity="0.25"/>
+
+  <!-- Title -->
+  <text x="600" y="38" text-anchor="middle" fill="white" font-size="20" font-weight="700">Scan Import &amp; Finding Lifecycle — Data Flow</text>
+  <text x="600" y="58" text-anchor="middle" fill="#6b7280" font-size="12">From security scanner output to actionable findings with notifications</text>
+
+  <!-- ═══════ STEP 1: UPLOAD ═══════ -->
+  <rect x="40" y="90" width="180" height="100" rx="12" fill="#111827" stroke="#0c8ee9" stroke-width="1.5" filter="url(#ds2)"/>
+  <text x="130" y="120" text-anchor="middle" fill="#0c8ee9" font-size="24">📤</text>
+  <text x="130" y="146" text-anchor="middle" fill="white" font-size="13" font-weight="700">1. Upload Scan</text>
+  <text x="130" y="166" text-anchor="middle" fill="#6b7280" font-size="10">Drag &amp; drop report</text>
+  <text x="130" y="180" text-anchor="middle" fill="#6b7280" font-size="10">JSON / CSV / XML / SARIF</text>
+
+  <!-- Arrow 1→2 -->
+  <line x1="220" y1="140" x2="270" y2="140" stroke="#0c8ee9" stroke-width="2" marker-end="url(#a1)"/>
+  <text x="245" y="133" text-anchor="middle" fill="#374151" font-size="8">POST</text>
+
+  <!-- ═══════ STEP 2: PARSER ═══════ -->
+  <rect x="280" y="90" width="200" height="100" rx="12" fill="#111827" stroke="#10b981" stroke-width="1.5" filter="url(#ds2)"/>
+  <text x="380" y="120" text-anchor="middle" fill="#10b981" font-size="24">⚙️</text>
+  <text x="380" y="146" text-anchor="middle" fill="white" font-size="13" font-weight="700">2. Parser Engine</text>
+  <text x="380" y="166" text-anchor="middle" fill="#6b7280" font-size="10">Auto-detect scanner type</text>
+  <text x="380" y="180" text-anchor="middle" fill="#6b7280" font-size="10">16 built-in parsers</text>
+
+  <!-- Arrow 2→3 -->
+  <line x1="480" y1="140" x2="530" y2="140" stroke="#10b981" stroke-width="2" marker-end="url(#a2)"/>
+  <text x="505" y="133" text-anchor="middle" fill="#374151" font-size="8">normalize</text>
+
+  <!-- ═══════ STEP 3: NORMALIZE ═══════ -->
+  <rect x="540" y="90" width="200" height="100" rx="12" fill="#111827" stroke="#f59e0b" stroke-width="1.5" filter="url(#ds2)"/>
+  <text x="640" y="120" text-anchor="middle" fill="#f59e0b" font-size="24">🔄</text>
+  <text x="640" y="146" text-anchor="middle" fill="white" font-size="13" font-weight="700">3. Normalize &amp; Dedup</text>
+  <text x="640" y="166" text-anchor="middle" fill="#6b7280" font-size="10">Map to unified schema</text>
+  <text x="640" y="180" text-anchor="middle" fill="#6b7280" font-size="10">Detect duplicates by hash</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="740" y1="140" x2="790" y2="140" stroke="#f59e0b" stroke-width="2" marker-end="url(#a3)"/>
+  <text x="765" y="133" text-anchor="middle" fill="#374151" font-size="8">persist</text>
+
+  <!-- ═══════ STEP 4: STORE ═══════ -->
+  <rect x="800" y="90" width="180" height="100" rx="12" fill="#111827" stroke="#8b5cf6" stroke-width="1.5" filter="url(#ds2)"/>
+  <text x="890" y="120" text-anchor="middle" fill="#8b5cf6" font-size="24">💾</text>
+  <text x="890" y="146" text-anchor="middle" fill="white" font-size="13" font-weight="700">4. Store Findings</text>
+  <text x="890" y="166" text-anchor="middle" fill="#6b7280" font-size="10">PostgreSQL database</text>
+  <text x="890" y="180" text-anchor="middle" fill="#6b7280" font-size="10">Link to product &amp; scan</text>
+
+  <!-- Arrow 4→5 -->
+  <line x1="980" y1="140" x2="1010" y2="140" stroke="#8b5cf6" stroke-width="2" marker-end="url(#a4)"/>
+
+  <!-- ═══════ STEP 5: NOTIFY ═══════ -->
+  <rect x="1020" y="90" width="150" height="100" rx="12" fill="#111827" stroke="#ef4444" stroke-width="1.5" filter="url(#ds2)"/>
+  <text x="1095" y="120" text-anchor="middle" fill="#ef4444" font-size="24">🔔</text>
+  <text x="1095" y="146" text-anchor="middle" fill="white" font-size="13" font-weight="700">5. Notify</text>
+  <text x="1095" y="166" text-anchor="middle" fill="#6b7280" font-size="10">Slack alerts</text>
+  <text x="1095" y="180" text-anchor="middle" fill="#6b7280" font-size="10">Severity-based</text>
+
+  <!-- ═══════ FINDING LIFECYCLE (MIDDLE) ═══════ -->
+  <text x="600" y="240" text-anchor="middle" fill="white" font-size="16" font-weight="700">Finding Lifecycle</text>
+
+  <!-- Status flow boxes -->
+  <rect x="80" y="260" width="140" height="55" rx="10" fill="#111827" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="150" y="286" text-anchor="middle" fill="#f87171" font-size="12" font-weight="700">Active</text>
+  <text x="150" y="303" text-anchor="middle" fill="#6b7280" font-size="9">New finding detected</text>
+
+  <line x1="220" y1="287" x2="275" y2="287" stroke="#ef4444" stroke-width="1.5" marker-end="url(#a5)"/>
+
+  <rect x="285" y="260" width="140" height="55" rx="10" fill="#111827" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="355" y="286" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="700">Verified</text>
+  <text x="355" y="303" text-anchor="middle" fill="#6b7280" font-size="9">Analyst confirmed</text>
+
+  <line x1="425" y1="287" x2="480" y2="287" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#a3)"/>
+
+  <rect x="490" y="260" width="140" height="55" rx="10" fill="#111827" stroke="#10b981" stroke-width="1.5"/>
+  <text x="560" y="286" text-anchor="middle" fill="#34d399" font-size="12" font-weight="700">Mitigated</text>
+  <text x="560" y="303" text-anchor="middle" fill="#6b7280" font-size="9">Fix applied</text>
+
+  <!-- Alternate paths -->
+  <rect x="740" y="255" width="160" height="30" rx="8" fill="#111827" stroke="#6b7280" stroke-width="1"/>
+  <text x="820" y="275" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600">False Positive</text>
+
+  <rect x="740" y="295" width="160" height="30" rx="8" fill="#111827" stroke="#6b7280" stroke-width="1"/>
+  <text x="820" y="315" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600">Risk Accepted</text>
+
+  <line x1="425" y1="275" x2="460" y2="270" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="460" y1="270" x2="738" y2="270" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+  <line x1="425" y1="300" x2="460" y2="310" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="460" y1="310" x2="738" y2="310" stroke="#6b7280" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#a1)"/>
+
+  <!-- Jira path from Verified -->
+  <line x1="355" y1="315" x2="355" y2="348" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#a4)"/>
+  <rect x="285" y="350" width="140" height="45" rx="8" fill="#8b5cf6" fill-opacity="0.1" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="355" y="372" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="600">Create Jira Issue</text>
+  <text x="355" y="388" text-anchor="middle" fill="#6b7280" font-size="9">Auto-sync status</text>
+
+  <!-- ═══════ RBAC SECTION ═══════ -->
+  <text x="600" y="440" text-anchor="middle" fill="white" font-size="16" font-weight="700">Role-Based Access Control (RBAC)</text>
+
+  <!-- Admin -->
+  <rect x="80" y="462" width="220" height="130" rx="12" fill="#111827" stroke="#dc2626" stroke-width="1.5" filter="url(#ds2)"/>
+  <rect x="80" y="462" width="220" height="35" rx="12" fill="#dc2626" fill-opacity="0.15"/>
+  <text x="190" y="485" text-anchor="middle" fill="#f87171" font-size="13" font-weight="700">Admin</text>
+  <text x="105" y="512" fill="#9ca3af" font-size="10">✓ Full system access</text>
+  <text x="105" y="530" fill="#9ca3af" font-size="10">✓ User management</text>
+  <text x="105" y="548" fill="#9ca3af" font-size="10">✓ Integration config</text>
+  <text x="105" y="566" fill="#9ca3af" font-size="10">✓ All CRUD operations</text>
+
+  <!-- Manager -->
+  <rect x="340" y="462" width="220" height="130" rx="12" fill="#111827" stroke="#f59e0b" stroke-width="1.5" filter="url(#ds2)"/>
+  <rect x="340" y="462" width="220" height="35" rx="12" fill="#f59e0b" fill-opacity="0.15"/>
+  <text x="450" y="485" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">Manager</text>
+  <text x="365" y="512" fill="#9ca3af" font-size="10">✓ Products &amp; engagements</text>
+  <text x="365" y="530" fill="#9ca3af" font-size="10">✓ Finding management</text>
+  <text x="365" y="548" fill="#9ca3af" font-size="10">✓ Import scans</text>
+  <text x="365" y="566" fill="#9ca3af" font-size="10">✗ User management</text>
+
+  <!-- Analyst -->
+  <rect x="600" y="462" width="220" height="130" rx="12" fill="#111827" stroke="#0c8ee9" stroke-width="1.5" filter="url(#ds2)"/>
+  <rect x="600" y="462" width="220" height="35" rx="12" fill="#0c8ee9" fill-opacity="0.15"/>
+  <text x="710" y="485" text-anchor="middle" fill="#38bdf8" font-size="13" font-weight="700">Analyst</text>
+  <text x="625" y="512" fill="#9ca3af" font-size="10">✓ View all data</text>
+  <text x="625" y="530" fill="#9ca3af" font-size="10">✓ Update finding status</text>
+  <text x="625" y="548" fill="#9ca3af" font-size="10">✓ Import scans</text>
+  <text x="625" y="566" fill="#9ca3af" font-size="10">✗ Delete products</text>
+
+  <!-- Viewer -->
+  <rect x="860" y="462" width="220" height="130" rx="12" fill="#111827" stroke="#6b7280" stroke-width="1.5" filter="url(#ds2)"/>
+  <rect x="860" y="462" width="220" height="35" rx="12" fill="#6b7280" fill-opacity="0.15"/>
+  <text x="970" y="485" text-anchor="middle" fill="#9ca3af" font-size="13" font-weight="700">Viewer</text>
+  <text x="885" y="512" fill="#9ca3af" font-size="10">✓ View dashboard</text>
+  <text x="885" y="530" fill="#9ca3af" font-size="10">✓ View findings</text>
+  <text x="885" y="548" fill="#9ca3af" font-size="10">✗ Modify data</text>
+  <text x="885" y="566" fill="#9ca3af" font-size="10">✗ Import scans</text>
+</svg>

@@ -1,0 +1,250 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 850" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0f1a"/>
+      <stop offset="100%" style="stop-color:#111827"/>
+    </linearGradient>
+    <linearGradient id="foxnodeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0c8ee9"/>
+      <stop offset="100%" style="stop-color:#06b6d4"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1f2937"/>
+      <stop offset="100%" style="stop-color:#111827"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="850" fill="url(#bgGrad)"/>
+
+  <!-- Grid pattern -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f2937" stroke-width="0.5"/>
+  </pattern>
+  <rect width="1200" height="850" fill="url(#grid)" opacity="0.3"/>
+
+  <!-- Title -->
+  <text x="600" y="45" text-anchor="middle" fill="white" font-size="22" font-weight="700">Foxnode ASPM — System Architecture</text>
+  <text x="600" y="68" text-anchor="middle" fill="#6b7280" font-size="13">Application Security Posture Management Platform</text>
+
+  <!-- ═══════════ SECURITY TOOLS (TOP) ═══════════ -->
+  <rect x="40" y="90" width="1120" height="110" rx="12" fill="#1f2937" stroke="#374151" stroke-width="1" filter="url(#shadow)"/>
+  <text x="600" y="115" text-anchor="middle" fill="#9ca3af" font-size="11" font-weight="600" letter-spacing="2">SECURITY SCANNERS &amp; TOOLS</text>
+
+  <!-- Tool boxes -->
+  <g>
+    <rect x="65" y="128" width="105" height="52" rx="8" fill="#7c3aed" fill-opacity="0.15" stroke="#7c3aed" stroke-width="1"/>
+    <text x="117" y="150" text-anchor="middle" fill="#a78bfa" font-size="10" font-weight="600">SAST</text>
+    <text x="117" y="168" text-anchor="middle" fill="#6b7280" font-size="9">Semgrep, Bandit</text>
+  </g>
+  <g>
+    <rect x="185" y="128" width="105" height="52" rx="8" fill="#ef4444" fill-opacity="0.15" stroke="#ef4444" stroke-width="1"/>
+    <text x="237" y="150" text-anchor="middle" fill="#f87171" font-size="10" font-weight="600">DAST</text>
+    <text x="237" y="168" text-anchor="middle" fill="#6b7280" font-size="9">ZAP, Nuclei</text>
+  </g>
+  <g>
+    <rect x="305" y="128" width="105" height="52" rx="8" fill="#3b82f6" fill-opacity="0.15" stroke="#3b82f6" stroke-width="1"/>
+    <text x="357" y="150" text-anchor="middle" fill="#60a5fa" font-size="10" font-weight="600">SCA</text>
+    <text x="357" y="168" text-anchor="middle" fill="#6b7280" font-size="9">Snyk, Trivy, DC</text>
+  </g>
+  <g>
+    <rect x="425" y="128" width="105" height="52" rx="8" fill="#06b6d4" fill-opacity="0.15" stroke="#06b6d4" stroke-width="1"/>
+    <text x="477" y="150" text-anchor="middle" fill="#22d3ee" font-size="10" font-weight="600">IaC</text>
+    <text x="477" y="168" text-anchor="middle" fill="#6b7280" font-size="9">Checkov, tfsec</text>
+  </g>
+  <g>
+    <rect x="545" y="128" width="105" height="52" rx="8" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="1"/>
+    <text x="597" y="150" text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="600">Secrets</text>
+    <text x="597" y="168" text-anchor="middle" fill="#6b7280" font-size="9">Gitleaks, TruffleHog</text>
+  </g>
+  <g>
+    <rect x="665" y="128" width="105" height="52" rx="8" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1"/>
+    <text x="717" y="150" text-anchor="middle" fill="#34d399" font-size="10" font-weight="600">Cloud</text>
+    <text x="717" y="168" text-anchor="middle" fill="#6b7280" font-size="9">Prowler</text>
+  </g>
+  <g>
+    <rect x="785" y="128" width="105" height="52" rx="8" fill="#ec4899" fill-opacity="0.15" stroke="#ec4899" stroke-width="1"/>
+    <text x="837" y="150" text-anchor="middle" fill="#f472b6" font-size="10" font-weight="600">SAST</text>
+    <text x="837" y="168" text-anchor="middle" fill="#6b7280" font-size="9">SonarQube</text>
+  </g>
+  <g>
+    <rect x="905" y="128" width="105" height="52" rx="8" fill="#8b5cf6" fill-opacity="0.15" stroke="#8b5cf6" stroke-width="1"/>
+    <text x="957" y="150" text-anchor="middle" fill="#a78bfa" font-size="10" font-weight="600">Universal</text>
+    <text x="957" y="168" text-anchor="middle" fill="#6b7280" font-size="9">SARIF Format</text>
+  </g>
+  <g>
+    <rect x="1025" y="128" width="115" height="52" rx="8" fill="#6b7280" fill-opacity="0.15" stroke="#6b7280" stroke-width="1"/>
+    <text x="1082" y="150" text-anchor="middle" fill="#9ca3af" font-size="10" font-weight="600">Generic</text>
+    <text x="1082" y="168" text-anchor="middle" fill="#6b7280" font-size="9">JSON / CSV</text>
+  </g>
+
+  <!-- Down arrows from tools -->
+  <line x1="600" y1="200" x2="600" y2="230" stroke="#0c8ee9" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <defs>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#0c8ee9"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b5cf6"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <!-- ═══════════ PARSER ENGINE ═══════════ -->
+  <rect x="380" y="232" width="440" height="50" rx="10" fill="url(#foxnodeGrad)" filter="url(#glow)"/>
+  <text x="600" y="254" text-anchor="middle" fill="white" font-size="13" font-weight="700">Parser Engine — 16 Parsers</text>
+  <text x="600" y="272" text-anchor="middle" fill="#e0f2fe" font-size="10">Auto-detect format · Normalize · Deduplicate</text>
+
+  <!-- Down arrow from parser -->
+  <line x1="600" y1="282" x2="600" y2="310" stroke="#0c8ee9" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- ═══════════ BACKEND API (CENTER) ═══════════ -->
+  <rect x="160" y="312" width="880" height="220" rx="14" fill="url(#cardGrad)" stroke="#374151" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="600" y="340" text-anchor="middle" fill="white" font-size="15" font-weight="700">FastAPI Backend</text>
+  <text x="600" y="358" text-anchor="middle" fill="#6b7280" font-size="10">REST API · Async · JWT Auth · RBAC</text>
+
+  <!-- API modules inside backend -->
+  <g>
+    <rect x="185" y="375" width="125" height="60" rx="8" fill="#0c8ee9" fill-opacity="0.1" stroke="#0c8ee9" stroke-width="1"/>
+    <text x="247" y="399" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="600">Auth &amp; RBAC</text>
+    <text x="247" y="418" text-anchor="middle" fill="#6b7280" font-size="9">4 roles · JWT tokens</text>
+  </g>
+  <g>
+    <rect x="325" y="375" width="125" height="60" rx="8" fill="#0c8ee9" fill-opacity="0.1" stroke="#0c8ee9" stroke-width="1"/>
+    <text x="387" y="399" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="600">Products API</text>
+    <text x="387" y="418" text-anchor="middle" fill="#6b7280" font-size="9">CRUD · Risk scores</text>
+  </g>
+  <g>
+    <rect x="465" y="375" width="125" height="60" rx="8" fill="#0c8ee9" fill-opacity="0.1" stroke="#0c8ee9" stroke-width="1"/>
+    <text x="527" y="399" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="600">Findings API</text>
+    <text x="527" y="418" text-anchor="middle" fill="#6b7280" font-size="9">Filter · Status · CVSS</text>
+  </g>
+  <g>
+    <rect x="605" y="375" width="125" height="60" rx="8" fill="#0c8ee9" fill-opacity="0.1" stroke="#0c8ee9" stroke-width="1"/>
+    <text x="667" y="399" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="600">Scans API</text>
+    <text x="667" y="418" text-anchor="middle" fill="#6b7280" font-size="9">Import · History</text>
+  </g>
+  <g>
+    <rect x="745" y="375" width="125" height="60" rx="8" fill="#0c8ee9" fill-opacity="0.1" stroke="#0c8ee9" stroke-width="1"/>
+    <text x="807" y="399" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="600">Dashboard API</text>
+    <text x="807" y="418" text-anchor="middle" fill="#6b7280" font-size="9">Stats · Trends</text>
+  </g>
+  <g>
+    <rect x="185" y="450" width="125" height="60" rx="8" fill="#0c8ee9" fill-opacity="0.1" stroke="#0c8ee9" stroke-width="1"/>
+    <text x="247" y="474" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="600">Engagements</text>
+    <text x="247" y="493" text-anchor="middle" fill="#6b7280" font-size="9">Tests · Campaigns</text>
+  </g>
+  <g>
+    <rect x="325" y="450" width="125" height="60" rx="8" fill="#0c8ee9" fill-opacity="0.1" stroke="#0c8ee9" stroke-width="1"/>
+    <text x="387" y="474" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="600">Integrations</text>
+    <text x="387" y="493" text-anchor="middle" fill="#6b7280" font-size="9">30+ tools</text>
+  </g>
+  <g>
+    <rect x="465" y="450" width="125" height="60" rx="8" fill="#8b5cf6" fill-opacity="0.1" stroke="#8b5cf6" stroke-width="1"/>
+    <text x="527" y="474" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="600">Jira Service</text>
+    <text x="527" y="493" text-anchor="middle" fill="#6b7280" font-size="9">Create · Sync status</text>
+  </g>
+  <g>
+    <rect x="605" y="450" width="125" height="60" rx="8" fill="#f59e0b" fill-opacity="0.1" stroke="#f59e0b" stroke-width="1"/>
+    <text x="667" y="474" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="600">Notifications</text>
+    <text x="667" y="493" text-anchor="middle" fill="#6b7280" font-size="9">Slack webhooks</text>
+  </g>
+  <g>
+    <rect x="745" y="450" width="125" height="60" rx="8" fill="#0c8ee9" fill-opacity="0.1" stroke="#0c8ee9" stroke-width="1"/>
+    <text x="807" y="474" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="600">Users API</text>
+    <text x="807" y="493" text-anchor="middle" fill="#6b7280" font-size="9">Manage · Roles</text>
+  </g>
+
+  <!-- ═══════════ DATA LAYER (BOTTOM LEFT) ═══════════ -->
+  <line x1="400" y1="532" x2="400" y2="570" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <rect x="240" y="572" width="180" height="70" rx="10" fill="#1f2937" stroke="#10b981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="330" y="600" text-anchor="middle" fill="#34d399" font-size="13" font-weight="700">PostgreSQL</text>
+  <text x="330" y="620" text-anchor="middle" fill="#6b7280" font-size="10">Products · Findings · Users</text>
+
+  <rect x="460" y="572" width="180" height="70" rx="10" fill="#1f2937" stroke="#ef4444" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="550" y="600" text-anchor="middle" fill="#f87171" font-size="13" font-weight="700">Redis</text>
+  <text x="550" y="620" text-anchor="middle" fill="#6b7280" font-size="10">Cache · Sessions · Queue</text>
+
+  <line x1="550" y1="532" x2="550" y2="570" stroke="#ef4444" stroke-width="2"/>
+
+  <!-- ═══════════ EXTERNAL INTEGRATIONS (BOTTOM RIGHT) ═══════════ -->
+  <line x1="807" y1="510" x2="807" y2="570" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arrowPurple)"/>
+
+  <rect x="700" y="572" width="140" height="70" rx="10" fill="#1f2937" stroke="#8b5cf6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="770" y="600" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="700">Jira Cloud</text>
+  <text x="770" y="620" text-anchor="middle" fill="#6b7280" font-size="10">Issue tracking</text>
+
+  <rect x="860" y="572" width="140" height="70" rx="10" fill="#1f2937" stroke="#f59e0b" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="930" y="600" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">Slack</text>
+  <text x="930" y="620" text-anchor="middle" fill="#6b7280" font-size="10">Notifications</text>
+
+  <!-- ═══════════ FRONTEND (BOTTOM) ═══════════ -->
+  <line x1="600" y1="532" x2="600" y2="680" stroke="#0c8ee9" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="615" y="665" fill="#374151" font-size="9">REST API</text>
+
+  <rect x="200" y="690" width="800" height="130" rx="14" fill="url(#cardGrad)" stroke="#0c8ee9" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="600" y="718" text-anchor="middle" fill="white" font-size="15" font-weight="700">React Frontend — Dark Theme UI</text>
+  <text x="600" y="736" text-anchor="middle" fill="#6b7280" font-size="10">React 18 · TypeScript · TailwindCSS · Recharts · Zustand</text>
+
+  <!-- Frontend pages -->
+  <g>
+    <rect x="225" y="750" width="100" height="48" rx="6" fill="#0c8ee9" fill-opacity="0.12" stroke="#0c8ee9" stroke-width="0.8"/>
+    <text x="275" y="772" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="600">Dashboard</text>
+    <text x="275" y="787" text-anchor="middle" fill="#6b7280" font-size="8">Charts · Stats</text>
+  </g>
+  <g>
+    <rect x="340" y="750" width="100" height="48" rx="6" fill="#0c8ee9" fill-opacity="0.12" stroke="#0c8ee9" stroke-width="0.8"/>
+    <text x="390" y="772" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="600">Products</text>
+    <text x="390" y="787" text-anchor="middle" fill="#6b7280" font-size="8">CRUD · Cards</text>
+  </g>
+  <g>
+    <rect x="455" y="750" width="100" height="48" rx="6" fill="#0c8ee9" fill-opacity="0.12" stroke="#0c8ee9" stroke-width="0.8"/>
+    <text x="505" y="772" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="600">Findings</text>
+    <text x="505" y="787" text-anchor="middle" fill="#6b7280" font-size="8">Table · Detail</text>
+  </g>
+  <g>
+    <rect x="570" y="750" width="100" height="48" rx="6" fill="#0c8ee9" fill-opacity="0.12" stroke="#0c8ee9" stroke-width="0.8"/>
+    <text x="620" y="772" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="600">Scan Import</text>
+    <text x="620" y="787" text-anchor="middle" fill="#6b7280" font-size="8">Drag &amp; Drop</text>
+  </g>
+  <g>
+    <rect x="685" y="750" width="100" height="48" rx="6" fill="#0c8ee9" fill-opacity="0.12" stroke="#0c8ee9" stroke-width="0.8"/>
+    <text x="735" y="772" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="600">Integrations</text>
+    <text x="735" y="787" text-anchor="middle" fill="#6b7280" font-size="8">30+ Tools</text>
+  </g>
+  <g>
+    <rect x="800" y="750" width="100" height="48" rx="6" fill="#0c8ee9" fill-opacity="0.12" stroke="#0c8ee9" stroke-width="0.8"/>
+    <text x="850" y="772" text-anchor="middle" fill="#38bdf8" font-size="10" font-weight="600">Settings</text>
+    <text x="850" y="787" text-anchor="middle" fill="#6b7280" font-size="8">Users · Config</text>
+  </g>
+
+  <!-- CI/CD Badge -->
+  <rect x="40" y="700" width="140" height="55" rx="8" fill="#1f2937" stroke="#10b981" stroke-width="1"/>
+  <text x="110" y="724" text-anchor="middle" fill="#34d399" font-size="10" font-weight="600">GitHub Actions</text>
+  <text x="110" y="742" text-anchor="middle" fill="#6b7280" font-size="9">CI/CD · Security</text>
+
+  <!-- Docker Badge -->
+  <rect x="40" y="770" width="140" height="55" rx="8" fill="#1f2937" stroke="#06b6d4" stroke-width="1"/>
+  <text x="110" y="794" text-anchor="middle" fill="#22d3ee" font-size="10" font-weight="600">Docker Compose</text>
+  <text x="110" y="812" text-anchor="middle" fill="#6b7280" font-size="9">One-command deploy</text>
+
+  <!-- Connecting dashed lines -->
+  <line x1="180" y1="727" x2="200" y2="740" stroke="#10b981" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="180" y1="797" x2="200" y2="780" stroke="#06b6d4" stroke-width="1" stroke-dasharray="4,3"/>
+</svg>
