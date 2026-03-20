@@ -86,6 +86,48 @@ Foxnode ASPM is a modern, developer-friendly platform for managing application s
   <img src="docs/images/screenshots/integrations.png" alt="Integrations" width="100%" style="border-radius: 8px;"/>
 </p>
 
+### Security Metrics & KPIs
+> Track MTTR, vulnerability aging, burndown charts, scan velocity, and executive-ready security KPI dashboards.
+
+<p align="center">
+  <img src="docs/images/screenshots/metrics.png" alt="Security Metrics" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### Attack Path Analysis
+> Visualize exploitable attack chains across your product portfolio with risk-scored paths and blast radius mapping.
+
+<p align="center">
+  <img src="docs/images/screenshots/attack-paths.png" alt="Attack Path Analysis" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### AI Security Agent
+> Autonomous AI agent that analyzes products, identifies multi-step attack chains, and generates deep security reports.
+
+<p align="center">
+  <img src="docs/images/screenshots/security-agent.png" alt="AI Security Agent" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### SBOM & Supply Chain Security
+> Full software bill of materials with component inventory, license analysis, and supply chain risk scoring.
+
+<p align="center">
+  <img src="docs/images/screenshots/sbom.png" alt="SBOM" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### AI Remediation Copilot
+> Get AI-powered fix recommendations with vulnerable vs. fixed code examples, effort estimates, and prioritized remediation plans.
+
+<p align="center">
+  <img src="docs/images/screenshots/copilot.png" alt="AI Copilot" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### LLM/AI Security Scanner
+> Detect vulnerabilities in AI/ML code including prompt injection, data poisoning, and model supply chain risks mapped to OWASP LLM Top 10.
+
+<p align="center">
+  <img src="docs/images/screenshots/llm-scanner.png" alt="LLM Scanner" width="100%" style="border-radius: 8px;"/>
+</p>
+
 ### Settings & User Management
 > RBAC with Admin, Manager, Analyst, and Viewer roles. Configure Jira, Slack, and platform settings.
 
@@ -139,6 +181,12 @@ Foxnode ASPM is a modern, developer-friendly platform for managing application s
 | 🏆 | **Security Scorecard** | Letter-grade (A–F) posture scores per product with trend tracking and leaderboard |
 | 📋 | **Compliance Mapping** | Map findings to OWASP Top 10, PCI-DSS, SOC 2, CIS Benchmarks, and ISO 27001 with gap analysis |
 | ⏱️ | **SLA Tracker & Risk Heatmap** | Monitor remediation timelines, breach rates, and risk concentration visualization |
+| 📈 | **Security Metrics & KPIs** | MTTR, vulnerability aging, burndown charts, scan velocity, and executive dashboards |
+| 🕸️ | **Attack Path Analysis** | Visualize exploitable attack chains with risk scoring and blast radius mapping |
+| 🤖 | **AI Security Agent** | Autonomous agent for deep product analysis, attack chain discovery, and report generation |
+| 📦 | **SBOM & Supply Chain** | Software bill of materials with component inventory, license tracking, and supply chain risk scoring |
+| 🔧 | **AI Remediation Copilot** | AI-powered fix recommendations with code examples, effort estimates, and prioritized plans |
+| 🔬 | **LLM/AI Security Scanner** | Detect AI/ML vulnerabilities including prompt injection and data poisoning, mapped to OWASP LLM Top 10 |
 
 ---
 
@@ -214,17 +262,17 @@ Foxnode ASPM includes **16 built-in parsers** covering every category of securit
 foxnode-aspm/
 ├── backend/                  # FastAPI + SQLAlchemy async
 │   ├── app/
-│   │   ├── api/              # REST endpoints (auth, products, findings, scans, triage, scorecard, compliance, sla, jira, notifications, users)
+│   │   ├── api/              # REST endpoints (auth, products, findings, scans, triage, scorecard, compliance, sla, metrics, attack-paths, agent, sbom, copilot, llm-scanner, jira, notifications, users)
 │   │   ├── core/             # Config, DB, security, RBAC
 │   │   ├── models/           # SQLAlchemy models (User, Product, Finding, Integration, ScanImport)
 │   │   ├── parsers/          # 16 scanner result parsers + registry
 │   │   ├── schemas/          # Pydantic request/response schemas
-│   │   └── services/         # Jira, Notifications, AI Triage, Scorecard, Compliance, SLA services
+│   │   └── services/         # Jira, Notifications, AI Triage, Scorecard, Compliance, SLA, Metrics, Attack Paths, Security Agent, SBOM, Copilot, LLM Scanner services
 │   └── requirements.txt
 ├── frontend/                 # React 18 + TypeScript + Vite + TailwindCSS
 │   ├── src/
 │   │   ├── components/       # Layout (Sidebar, Header), SeverityBadge
-│   │   ├── pages/            # 12 pages: Dashboard, Products, Findings, Engagements, Integrations, ScanImport, Settings, AI Triage, Scorecard, Compliance, SLA Tracker
+│   │   ├── pages/            # 19 pages: Dashboard, Products, Findings, Engagements, Integrations, ScanImport, Settings, AI Triage, Scorecard, Compliance, SLA Tracker, Metrics, Attack Paths, Security Agent, SBOM, Copilot, LLM Scanner, API Security
 │   │   ├── services/         # Axios API client
 │   │   └── store/            # Zustand auth state management
 │   └── package.json
@@ -279,6 +327,20 @@ Once running, visit the interactive API docs:
 | `GET` | `/api/v1/sla/status` | SLA status summary |
 | `GET` | `/api/v1/sla/heatmap` | Risk heatmap (products x severity) |
 | `GET` | `/api/v1/sla/breaches` | SLA breached findings |
+| `GET` | `/api/v1/metrics/kpi` | Security KPI metrics |
+| `GET` | `/api/v1/metrics/mttr` | Mean time to remediate |
+| `GET` | `/api/v1/metrics/burndown` | Vulnerability burndown chart |
+| `GET` | `/api/v1/metrics/executive-summary` | Executive security summary |
+| `GET` | `/api/v1/attack-paths/overview` | Org-wide attack path analysis |
+| `GET` | `/api/v1/attack-paths/graph/:productId` | Attack path graph for a product |
+| `POST` | `/api/v1/agent/analyze/:productId` | AI agent deep product analysis |
+| `POST` | `/api/v1/agent/chat` | Chat with AI security agent |
+| `GET` | `/api/v1/sbom/overview` | Org-wide SBOM overview |
+| `GET` | `/api/v1/sbom/product/:productId` | SBOM for a product |
+| `POST` | `/api/v1/copilot/remediate/:findingId` | AI remediation for a finding |
+| `POST` | `/api/v1/copilot/bulk-remediate` | Bulk AI remediation |
+| `POST` | `/api/v1/llm-scanner/scan` | Scan code for AI/ML vulnerabilities |
+| `GET` | `/api/v1/llm-scanner/overview` | LLM scanner overview |
 
 ---
 

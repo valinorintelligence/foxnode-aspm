@@ -132,3 +132,70 @@ export const slaAPI = {
   config: () => api.get('/sla/config'),
   updateConfig: (data: any) => api.post('/sla/config', data),
 }
+
+// Security Metrics & KPIs
+export const metricsAPI = {
+  kpi: () => api.get('/metrics/kpi'),
+  mttr: () => api.get('/metrics/mttr'),
+  aging: () => api.get('/metrics/aging'),
+  burndown: () => api.get('/metrics/burndown'),
+  velocity: () => api.get('/metrics/velocity'),
+  scannerEffectiveness: () => api.get('/metrics/scanner-effectiveness'),
+  trends: (days?: number) => api.get('/metrics/trends', { params: days ? { days } : {} }),
+  executiveSummary: () => api.get('/metrics/executive-summary'),
+}
+
+// Attack Path Analysis
+export const attackPathAPI = {
+  product: (productId: number) => api.get(`/attack-paths/product/${productId}`),
+  surface: (productId: number) => api.get(`/attack-paths/surface/${productId}`),
+  graph: (productId: number) => api.get(`/attack-paths/graph/${productId}`),
+  overview: () => api.get('/attack-paths/overview'),
+}
+
+// API Security
+export const apiSecurityAPI = {
+  posture: (productId: number) => api.get(`/api-security/posture/${productId}`),
+  endpoints: (productId: number) => api.get(`/api-security/endpoints/${productId}`),
+  risks: (productId: number) => api.get(`/api-security/risks/${productId}`),
+  overview: () => api.get('/api-security/overview'),
+  importSpec: (productId: number, data: any) => api.post(`/api-security/import-spec/${productId}`, data),
+}
+
+// AI Security Agent
+export const securityAgentAPI = {
+  analyze: (productId: number) => api.post(`/agent/analyze/${productId}`),
+  chat: (message: string, productId?: number) => api.post('/agent/chat', { message, product_id: productId }),
+  report: (productId: number) => api.get(`/agent/report/${productId}`),
+  attackChains: (productId: number) => api.get(`/agent/attack-chains/${productId}`),
+}
+
+// SBOM & Supply Chain
+export const sbomAPI = {
+  product: (productId: number) => api.get(`/sbom/product/${productId}`),
+  components: (productId: number) => api.get(`/sbom/components/${productId}`),
+  vulnerabilities: (productId: number) => api.get(`/sbom/vulnerabilities/${productId}`),
+  licenses: (productId: number) => api.get(`/sbom/licenses/${productId}`),
+  supplyChainRisks: (productId: number) => api.get(`/sbom/supply-chain-risks/${productId}`),
+  overview: () => api.get('/sbom/overview'),
+  upload: (productId: number, formData: FormData) => api.post(`/sbom/upload/${productId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+}
+
+// AI Remediation Copilot
+export const copilotAPI = {
+  remediate: (findingId: number) => api.post(`/copilot/remediate/${findingId}`),
+  bulkRemediate: (productId: number, severityFilter?: string) => api.post('/copilot/bulk-remediate', { product_id: productId, severity_filter: severityFilter }),
+  developerSummary: (findingId: number) => api.get(`/copilot/developer-summary/${findingId}`),
+  stats: () => api.get('/copilot/stats'),
+}
+
+// LLM Vulnerability Scanner
+export const llmScannerAPI = {
+  scan: (code: string, language: string) => api.post('/llm-scanner/scan', { code, language }),
+  product: (productId: number) => api.get(`/llm-scanner/product/${productId}`),
+  owaspLlm: (productId: number) => api.get(`/llm-scanner/owasp-llm/${productId}`),
+  analyzeFindings: (productId: number) => api.post(`/llm-scanner/analyze-findings/${productId}`),
+  overview: () => api.get('/llm-scanner/overview'),
+}

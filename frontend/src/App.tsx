@@ -15,6 +15,12 @@ import TriagePage from './pages/TriagePage'
 import ScorecardPage from './pages/ScorecardPage'
 import CompliancePage from './pages/CompliancePage'
 import SLAPage from './pages/SLAPage'
+import MetricsPage from './pages/MetricsPage'
+import AttackPathPage from './pages/AttackPathPage'
+import SecurityAgentPage from './pages/SecurityAgentPage'
+import SBOMPage from './pages/SBOMPage'
+import CopilotPage from './pages/CopilotPage'
+import LLMScannerPage from './pages/LLMScannerPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore()
@@ -44,6 +50,12 @@ export default function App() {
         <Route path="scorecard" element={<ScorecardPage />} />
         <Route path="compliance" element={<CompliancePage />} />
         <Route path="sla" element={<SLAPage />} />
+        <Route path="metrics" element={<MetricsPage />} />
+        <Route path="attack-paths" element={<AttackPathPage />} />
+        <Route path="security-agent" element={<SecurityAgentPage />} />
+        <Route path="sbom" element={<SBOMPage />} />
+        <Route path="copilot" element={<CopilotPage />} />
+        <Route path="llm-scanner" element={<LLMScannerPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
     </Routes>

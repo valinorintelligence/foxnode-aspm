@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.database import engine, Base
-from app.api import auth, products, findings, engagements, dashboard, integrations, scans, users, jira, notifications, scorecard, triage, sla, compliance
+from app.api import auth, products, findings, engagements, dashboard, integrations, scans, users, jira, notifications, scorecard, triage, sla, compliance, attack_path, api_security, metrics, security_agent, sbom, copilot, llm_scanner
 
 
 @asynccontextmanager
@@ -47,6 +47,13 @@ app.include_router(scorecard.router, prefix="/api/v1")
 app.include_router(triage.router, prefix="/api/v1")
 app.include_router(sla.router, prefix="/api/v1")
 app.include_router(compliance.router, prefix="/api/v1")
+app.include_router(attack_path.router, prefix="/api/v1")
+app.include_router(api_security.router, prefix="/api/v1")
+app.include_router(metrics.router, prefix="/api/v1")
+app.include_router(security_agent.router, prefix="/api/v1")
+app.include_router(sbom.router, prefix="/api/v1")
+app.include_router(copilot.router, prefix="/api/v1")
+app.include_router(llm_scanner.router, prefix="/api/v1")
 
 
 @app.get("/api/health")

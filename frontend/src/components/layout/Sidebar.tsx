@@ -12,6 +12,12 @@ import {
   Award,
   ClipboardCheck,
   Timer,
+  Activity,
+  Network,
+  Bot,
+  Boxes,
+  Wand2,
+  ShieldAlert,
 } from 'lucide-react'
 import clsx from 'clsx'
 
@@ -26,6 +32,12 @@ const navItems = [
   { to: '/scorecard', icon: Award, label: 'Scorecard' },
   { to: '/compliance', icon: ClipboardCheck, label: 'Compliance' },
   { to: '/sla', icon: Timer, label: 'SLA Tracker' },
+  { to: '/metrics', icon: Activity, label: 'Metrics & KPIs' },
+  { to: '/attack-paths', icon: Network, label: 'Attack Paths' },
+  { to: '/security-agent', icon: Bot, label: 'AI Agent' },
+  { to: '/sbom', icon: Boxes, label: 'SBOM' },
+  { to: '/copilot', icon: Wand2, label: 'AI Copilot' },
+  { to: '/llm-scanner', icon: ShieldAlert, label: 'LLM Scanner' },
 ]
 
 export default function Sidebar() {
