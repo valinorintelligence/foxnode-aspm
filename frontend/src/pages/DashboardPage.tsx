@@ -245,7 +245,7 @@ function StatCard({
       </div>
       <div>
         <p className="text-sm text-content-muted">{title}</p>
-        <p className="text-2xl font-bold text-content-primary">{value.toLocaleString()}</p>
+        <p className="text-2xl font-bold text-content-primary">{(value ?? 0).toLocaleString()}</p>
       </div>
     </div>
   )
