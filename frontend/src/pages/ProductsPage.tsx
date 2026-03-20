@@ -52,7 +52,7 @@ export default function ProductsPage() {
         <div className="text-content-muted text-center py-12">Loading...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {products?.map((product: any) => (
+          {(Array.isArray(products) ? products : []).map((product: any) => (
             <div key={product.id} className="card-hover group">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">

@@ -154,7 +154,7 @@ export default function ScorecardPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/50">
-              {overview?.leaderboard?.map((product: any, index: number) => {
+              {(Array.isArray(overview?.leaderboard) ? overview.leaderboard : []).map((product: any, index: number) => {
                 const grade = GRADE_COLORS[product.grade] || GRADE_COLORS.F
                 const trend = TREND_ICONS[product.trend] || TREND_ICONS.stable
                 const TIcon = trend.icon

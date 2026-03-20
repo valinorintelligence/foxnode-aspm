@@ -61,7 +61,7 @@ export default function IntegrationsPage() {
     },
   })
 
-  const activeToolNames = new Set(active?.map((a: any) => a.tool_name) || [])
+  const activeToolNames = new Set((Array.isArray(active) ? active : []).map((a: any) => a.tool_name))
 
   return (
     <div className="space-y-6">
@@ -111,7 +111,7 @@ export default function IntegrationsPage() {
       <div>
         <h2 className="text-lg font-semibold text-content-primary mb-3">Available Tools</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-          {tools?.map((tool: any) => {
+          {(Array.isArray(tools) ? tools : []).map((tool: any) => {
             const Icon = TYPE_ICONS[tool.type] || Plug
             const colors = TYPE_COLORS[tool.type] || 'text-content-tertiary bg-gray-500/10'
             const isActive = activeToolNames.has(tool.name)

@@ -155,7 +155,7 @@ function UserManagement() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
-            {users?.map((u: any) => (
+            {(Array.isArray(users) ? users : []).map((u: any) => (
               <tr key={u.id} className="hover:bg-surface-tertiary/30 transition-colors">
                 <td className="py-3 px-4">
                   <div className="flex items-center gap-3">

@@ -88,7 +88,7 @@ export default function FindingsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
-                {findings?.length === 0 ? (
+                {!Array.isArray(findings) || findings?.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="py-12 text-center">
                       <AlertTriangle className="w-10 h-10 mx-auto mb-3 text-content-muted" />
@@ -96,7 +96,7 @@ export default function FindingsPage() {
                     </td>
                   </tr>
                 ) : (
-                  findings?.map((finding: any) => (
+                  (Array.isArray(findings) ? findings : [])?.map((finding: any) => (
                     <tr key={finding.id} className="hover:bg-surface-tertiary/30 transition-colors">
                       <td className="py-3 px-4">
                         <SeverityBadge severity={finding.severity} />

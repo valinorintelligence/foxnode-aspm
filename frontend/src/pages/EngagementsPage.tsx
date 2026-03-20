@@ -47,7 +47,7 @@ export default function EngagementsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {engagements?.map((eng: any) => {
+          {(Array.isArray(engagements) ? engagements : []).map((eng: any) => {
             const statusConfig = STATUS_CONFIG[eng.status] || STATUS_CONFIG.not_started
             const StatusIcon = statusConfig.icon
             return (

@@ -35,7 +35,7 @@ const SEVERITY_COLORS = {
 
 export default function DashboardPage() {
   const chart = useChartTheme()
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['dashboard'],
     queryFn: () => dashboardAPI.stats().then((r) => r.data),
   })
@@ -48,7 +48,19 @@ export default function DashboardPage() {
     )
   }
 
-  if (!data) return null
+  if (error || !data) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-content-primary">Security Dashboard</h1>
+          <p className="text-content-muted mt-1">Overview of your application security posture</p>
+        </div>
+        <div className="card text-center py-12 text-content-muted">
+          {error ? 'Failed to load dashboard data. Please check your backend connection.' : 'No data available yet. Import some scans to get started.'}
+        </div>
+      </div>
+    )
+  }
 
   const severityData = Object.entries(data.findings_by_severity || {}).map(([name, value]) => ({
     name: name.charAt(0).toUpperCase() + name.slice(1),
