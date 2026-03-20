@@ -4,63 +4,142 @@
 
 <h1 align="center">Foxnode ASPM</h1>
 <p align="center"><strong>Open-source Application Security Posture Management Platform</strong></p>
+
 <p align="center">
-  <a href="#quick-start">Quick Start</a> •
-  <a href="#features">Features</a> •
-  <a href="#dashboard-preview">Dashboard</a> •
-  <a href="#supported-scanners">Scanners</a> •
-  <a href="#architecture">Architecture</a> •
-  <a href="#api-documentation">API Docs</a> •
-  <a href="#contributing">Contributing</a>
+  <a href="https://github.com/valinorintelligence/foxnode-aspm/releases"><img src="https://img.shields.io/github/v/release/valinorintelligence/foxnode-aspm?style=flat-square&color=0c8ee9" alt="Release"></a>
+  <a href="https://github.com/valinorintelligence/foxnode-aspm/blob/main/LICENSE"><img src="https://img.shields.io/github/license/valinorintelligence/foxnode-aspm?style=flat-square&color=10b981" alt="License"></a>
+  <a href="https://github.com/valinorintelligence/foxnode-aspm/stargazers"><img src="https://img.shields.io/github/stars/valinorintelligence/foxnode-aspm?style=flat-square&color=f59e0b" alt="Stars"></a>
+  <a href="https://github.com/valinorintelligence/foxnode-aspm/issues"><img src="https://img.shields.io/github/issues/valinorintelligence/foxnode-aspm?style=flat-square&color=ef4444" alt="Issues"></a>
+  <img src="https://img.shields.io/badge/python-3.12+-3776ab?style=flat-square&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/react-18-61dafb?style=flat-square&logo=react&logoColor=white" alt="React">
+  <img src="https://img.shields.io/badge/docker-ready-2496ed?style=flat-square&logo=docker&logoColor=white" alt="Docker">
+</p>
+
+<p align="center">
+  <a href="#-quick-start">Quick Start</a> &nbsp;·&nbsp;
+  <a href="#-features">Features</a> &nbsp;·&nbsp;
+  <a href="#-screenshots">Screenshots</a> &nbsp;·&nbsp;
+  <a href="#-supported-scanners">Scanners</a> &nbsp;·&nbsp;
+  <a href="#-architecture">Architecture</a> &nbsp;·&nbsp;
+  <a href="#-api-documentation">API Docs</a> &nbsp;·&nbsp;
+  <a href="#-contributing">Contributing</a>
 </p>
 
 ---
+
+## What is Foxnode ASPM?
 
 Foxnode ASPM is a modern, developer-friendly platform for managing application security vulnerabilities across your entire software portfolio. It aggregates findings from **16+ security scanners**, deduplicates them intelligently, and provides actionable dashboards to track your security posture.
 
-> 🔥 Built from the ground up with React 18, TailwindCSS dark theme, FastAPI async backend, and first-class integrations with Jira and Slack.
+> Built from the ground up with **React 18**, **TailwindCSS** dark theme, **FastAPI** async backend, and first-class integrations with **Jira** and **Slack**.
 
 ---
 
-## Dashboard Preview
+## 📸 Screenshots
+
+### Security Dashboard
+> Real-time overview of your application security posture with severity distribution, scanner breakdown, and risk trends.
 
 <p align="center">
-  <img src="docs/images/dashboard-mockup.svg" alt="Foxnode ASPM Dashboard" width="100%"/>
+  <img src="docs/images/screenshots/dashboard.png" alt="Security Dashboard" width="100%" style="border-radius: 8px;"/>
 </p>
 
----
-
-## Features
-
-| Category | What You Get |
-|----------|-------------|
-| 🎨 **Modern Dark UI** | React 18 + TailwindCSS — fast, beautiful, responsive |
-| 🔍 **16 Scanner Parsers** | Semgrep, Trivy, Snyk, ZAP, Nuclei, Gitleaks, Bandit, Checkov, SonarQube, Prowler, tfsec, TruffleHog, Dependency-Check, SARIF, and more |
-| 🧠 **Smart Deduplication** | Hash-based dedup prevents duplicate findings across scans |
-| 📊 **Real-time Dashboard** | Severity distribution, scanner breakdown, risk trends, top vulnerable products |
-| 📦 **Product Management** | Organize findings by products, engagements, and test campaigns |
-| 🔗 **Jira Integration** | Create issues from findings with auto-mapped severity → priority, label tagging, and bidirectional status sync |
-| 🔔 **Slack Notifications** | Alerts for new findings and scan completions, configurable severity thresholds |
-| 🛡️ **RBAC** | Admin, Manager, Analyst, and Viewer roles with granular permissions |
-| 🐳 **Docker-Ready** | One-command deployment with Docker Compose |
-| ⚡ **REST API** | Full API for CI/CD pipeline integration |
-| 🔄 **GitHub Actions CI/CD** | Built-in pipelines for lint, test, build, security scan, and Docker publish |
-| 🧠 **AI Finding Triage** | Intelligent prioritization engine with false positive detection, auto-grouping, and contextual scoring |
-| 🏆 **Security Scorecard** | Letter-grade (A–F) security posture scores per product with trend tracking and leaderboard |
-| 📋 **Compliance Mapping** | Map findings to OWASP Top 10, PCI-DSS, SOC 2, CIS Benchmarks, and ISO 27001 with gap analysis |
-| ⏱️ **SLA Tracker & Risk Heatmap** | Monitor remediation timelines, breach rates, and visualize risk concentration across products × severities |
-
----
-
-## Data Flow & RBAC
+### Scan Import — 16+ Scanner Support
+> Upload results from Trivy, Semgrep, Snyk, ZAP, Nuclei, Gitleaks, Bandit, Checkov, SonarQube, and more. Supports JSON, CSV, XML, JSONL, and SARIF formats.
 
 <p align="center">
-  <img src="docs/images/data-flow.svg" alt="Foxnode ASPM Data Flow" width="100%"/>
+  <img src="docs/images/screenshots/scan-import.png" alt="Scan Import" width="100%" style="border-radius: 8px;"/>
 </p>
+
+### AI Finding Triage
+> Intelligent prioritization engine with false positive detection, auto-grouping, and contextual scoring to surface what matters most.
+
+<p align="center">
+  <img src="docs/images/screenshots/ai-triage.png" alt="AI Finding Triage" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### Security Scorecard
+> Letter-grade (A–F) security posture scoring per product with org-wide overview, 30-day trend charts, and a product leaderboard.
+
+<p align="center">
+  <img src="docs/images/screenshots/scorecard.png" alt="Security Scorecard" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### Compliance Mapping
+> Map findings to OWASP Top 10, PCI-DSS, SOC 2, CIS Benchmarks, and ISO 27001 with detailed gap analysis and control-level pass/fail status.
+
+<p align="center">
+  <img src="docs/images/screenshots/compliance.png" alt="Compliance Mapping" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### SLA Tracker & Risk Heatmap
+> Monitor remediation timelines, track breach rates, and visualize risk concentration across products and severities.
+
+<p align="center">
+  <img src="docs/images/screenshots/sla-tracker.png" alt="SLA Tracker" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### Integrations — Jira & Slack
+> Create Jira issues directly from findings with auto-mapped severity. Get Slack alerts for new findings and scan completions.
+
+<p align="center">
+  <img src="docs/images/screenshots/integrations.png" alt="Integrations" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### Settings & User Management
+> RBAC with Admin, Manager, Analyst, and Viewer roles. Configure Jira, Slack, and platform settings.
+
+<p align="center">
+  <img src="docs/images/screenshots/settings.png" alt="Settings" width="100%" style="border-radius: 8px;"/>
+</p>
+
+<details>
+<summary><strong>More Screenshots</strong></summary>
+
+#### Login
+<p align="center"><img src="docs/images/screenshots/login.png" alt="Login" width="100%"/></p>
+
+#### Products
+<p align="center"><img src="docs/images/screenshots/products.png" alt="Products" width="100%"/></p>
+
+#### Findings
+<p align="center"><img src="docs/images/screenshots/findings.png" alt="Findings" width="100%"/></p>
+
+#### Engagements
+<p align="center"><img src="docs/images/screenshots/engagements.png" alt="Engagements" width="100%"/></p>
+
+</details>
 
 ---
 
-## Quick Start
+## ✨ Features
+
+### Core Platform
+| | Feature | Description |
+|---|---------|-------------|
+| 🎨 | **Modern Dark UI** | React 18 + TailwindCSS — fast, beautiful, responsive dark theme |
+| 🔍 | **16 Scanner Parsers** | Semgrep, Trivy, Snyk, ZAP, Nuclei, Gitleaks, Bandit, Checkov, SonarQube, Prowler, tfsec, TruffleHog, Dependency-Check, SARIF, and more |
+| 🧬 | **Smart Deduplication** | Hash-based dedup prevents duplicate findings across scans |
+| 📊 | **Real-time Dashboard** | Severity distribution, scanner breakdown, risk trends, top vulnerable products |
+| 📦 | **Product Management** | Organize findings by products, engagements, and test campaigns |
+| 🔗 | **Jira Integration** | Create issues from findings with auto-mapped severity, label tagging, and bidirectional status sync |
+| 🔔 | **Slack Notifications** | Alerts for new findings and scan completions with configurable severity thresholds |
+| 🛡️ | **RBAC** | Admin, Manager, Analyst, and Viewer roles with granular permissions |
+| 🐳 | **Docker-Ready** | One-command deployment with Docker Compose |
+| ⚡ | **REST API** | Full API for CI/CD pipeline integration |
+| 🔄 | **GitHub Actions CI/CD** | Built-in pipelines for lint, test, build, security scan, and Docker publish |
+
+### Advanced Security Intelligence
+| | Feature | Description |
+|---|---------|-------------|
+| 🧠 | **AI Finding Triage** | Intelligent prioritization with false positive detection, auto-grouping, and contextual scoring |
+| 🏆 | **Security Scorecard** | Letter-grade (A–F) posture scores per product with trend tracking and leaderboard |
+| 📋 | **Compliance Mapping** | Map findings to OWASP Top 10, PCI-DSS, SOC 2, CIS Benchmarks, and ISO 27001 with gap analysis |
+| ⏱️ | **SLA Tracker & Risk Heatmap** | Monitor remediation timelines, breach rates, and risk concentration visualization |
+
+---
+
+## 🚀 Quick Start
 
 ### Using Docker Compose (Recommended)
 
@@ -72,9 +151,12 @@ docker compose up -d
 ```
 
 The app will be available at:
-- **Frontend**: http://localhost
-- **API Docs**: http://localhost:8000/docs
-- **Health Check**: http://localhost:8000/api/health
+| Service | URL |
+|---------|-----|
+| **Frontend** | http://localhost |
+| **API Docs (Swagger)** | http://localhost:8000/docs |
+| **API Docs (ReDoc)** | http://localhost:8000/redoc |
+| **Health Check** | http://localhost:8000/api/health |
 
 ### Local Development
 
@@ -102,10 +184,12 @@ npm run dev
 
 ---
 
-## Supported Scanners
+## 🔍 Supported Scanners
 
-| Category | Tools | Parser |
-|----------|-------|--------|
+Foxnode ASPM includes **16 built-in parsers** covering every category of security scanning:
+
+| Category | Tools | Parser Key |
+|----------|-------|------------|
 | **SAST** | Semgrep, SonarQube, Bandit | `semgrep`, `sonarqube`, `bandit` |
 | **DAST** | OWASP ZAP, Nuclei | `zap`, `nuclei` |
 | **SCA** | Trivy, Snyk, OWASP Dependency-Check | `trivy`, `snyk`, `dependency_check` |
@@ -117,24 +201,28 @@ npm run dev
 
 ---
 
-## Architecture
+## 📐 Architecture
+
+<p align="center">
+  <img src="docs/images/data-flow.svg" alt="Foxnode ASPM Data Flow" width="100%"/>
+</p>
 
 ```
 foxnode-aspm/
 ├── backend/                  # FastAPI + SQLAlchemy async
 │   ├── app/
-│   │   ├── api/              # REST endpoints (auth, products, findings, scans, jira, notifications, users)
+│   │   ├── api/              # REST endpoints (auth, products, findings, scans, triage, scorecard, compliance, sla, jira, notifications, users)
 │   │   ├── core/             # Config, DB, security, RBAC
 │   │   ├── models/           # SQLAlchemy models (User, Product, Finding, Integration, ScanImport)
 │   │   ├── parsers/          # 16 scanner result parsers + registry
 │   │   ├── schemas/          # Pydantic request/response schemas
-│   │   └── services/         # Jira service, Notification service
+│   │   └── services/         # Jira, Notifications, AI Triage, Scorecard, Compliance, SLA services
 │   └── requirements.txt
 ├── frontend/                 # React 18 + TypeScript + Vite + TailwindCSS
 │   ├── src/
 │   │   ├── components/       # Layout (Sidebar, Header), SeverityBadge
-│   │   ├── pages/            # Dashboard, Products, Findings, Engagements, Integrations, ScanImport, Settings, AI Triage, Scorecard, Compliance, SLA Tracker
-│   │   ├── services/         # Axios API client (auth, products, findings, scans, jira, notifications, users)
+│   │   ├── pages/            # 12 pages: Dashboard, Products, Findings, Engagements, Integrations, ScanImport, Settings, AI Triage, Scorecard, Compliance, SLA Tracker
+│   │   ├── services/         # Axios API client
 │   │   └── store/            # Zustand auth state management
 │   └── package.json
 ├── docker/                   # Dockerfiles + nginx config
@@ -143,11 +231,22 @@ foxnode-aspm/
 └── .env.example              # Configuration template
 ```
 
+### Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 18, TypeScript, Vite, TailwindCSS, Recharts, Zustand, React Query |
+| **Backend** | FastAPI, SQLAlchemy (async), Pydantic v2, Celery |
+| **Database** | PostgreSQL 16 |
+| **Cache** | Redis 7 |
+| **Auth** | JWT (python-jose), bcrypt, RBAC |
+| **Deployment** | Docker Compose, nginx, GitHub Actions |
+
 ---
 
-## API Documentation
+## 📡 API Documentation
 
-Once running, visit:
+Once running, visit the interactive API docs:
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
@@ -175,12 +274,12 @@ Once running, visit:
 | `GET` | `/api/v1/compliance/report/:frameworkId` | Detailed compliance report |
 | `GET` | `/api/v1/compliance/gaps/:frameworkId` | Gap analysis for framework |
 | `GET` | `/api/v1/sla/status` | SLA status summary |
-| `GET` | `/api/v1/sla/heatmap` | Risk heatmap (products × severity) |
+| `GET` | `/api/v1/sla/heatmap` | Risk heatmap (products x severity) |
 | `GET` | `/api/v1/sla/breaches` | SLA breached findings |
 
 ---
 
-## CI/CD Integration
+## 🔌 CI/CD Integration
 
 Import scan results directly from your pipeline:
 
@@ -200,15 +299,28 @@ curl -X POST http://localhost:8000/api/v1/scans/import \
   -F "product_id=1"
 ```
 
+### GitHub Actions Example
+
+```yaml
+- name: Import scan results to Foxnode
+  run: |
+    curl -X POST ${{ secrets.FOXNODE_URL }}/api/v1/scans/import \
+      -H "Authorization: Bearer ${{ secrets.FOXNODE_TOKEN }}" \
+      -F "file=@trivy-results.json" \
+      -F "scanner=Trivy" \
+      -F "product_id=1"
+```
+
 ---
 
-## Environment Variables
+## ⚙️ Environment Variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `DATABASE_URL` | PostgreSQL connection string | `postgresql+asyncpg://foxnode:foxnode@localhost:5432/foxnode_aspm` |
 | `REDIS_URL` | Redis connection string | `redis://localhost:6379/0` |
 | `SECRET_KEY` | JWT signing key | `change-me-in-production` |
+| `CORS_ORIGINS` | Allowed CORS origins | `["http://localhost"]` |
 | `JIRA_URL` | Jira instance URL | — |
 | `JIRA_USERNAME` | Jira account email | — |
 | `JIRA_API_TOKEN` | Jira API token | — |
@@ -216,7 +328,7 @@ curl -X POST http://localhost:8000/api/v1/scans/import \
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 We welcome contributions! Please:
 
@@ -226,11 +338,19 @@ We welcome contributions! Please:
 4. Run tests (`cd backend && pytest`)
 5. Submit a pull request
 
+See our [Contributing Guide](CONTRIBUTING.md) for more details.
+
 ---
 
-## License
+## 📄 License
 
 MIT License — see [LICENSE](LICENSE) for details.
+
+---
+
+## ⭐ Star History
+
+If you find Foxnode ASPM useful, please consider giving it a star! It helps others discover the project.
 
 ---
 
