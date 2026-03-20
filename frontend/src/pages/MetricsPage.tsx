@@ -360,7 +360,7 @@ export default function MetricsPage() {
               )}
             </h3>
             <ResponsiveContainer width="100%" height={240}>
-              <AreaChart data={burndown.data_points || burndown}>
+              <AreaChart data={Array.isArray(burndown.data_points) ? burndown.data_points : Array.isArray(burndown) ? burndown : []}>
                 <CartesianGrid strokeDasharray="3 3" stroke={chart.gridStroke} />
                 <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 11 }} />
                 <YAxis tick={{ fill: '#9ca3af', fontSize: 11 }} />
@@ -461,7 +461,7 @@ export default function MetricsPage() {
                 </tr>
               </thead>
               <tbody>
-                {(scannerEff.scanners || Object.entries(scannerEff).filter(([k]) => k !== 'scanners')).map((scanner: any, i: number) => {
+                {(Array.isArray(scannerEff.scanners) ? scannerEff.scanners : Array.isArray(scannerEff) ? scannerEff : []).map((scanner: any, i: number) => {
                   const name = scanner.name || (Array.isArray(scanner) ? scanner[0] : `Scanner ${i + 1}`)
                   const data = scanner.data || scanner.stats || (Array.isArray(scanner) ? scanner[1] : scanner)
                   const total = data?.total_findings ?? data?.total ?? 0
