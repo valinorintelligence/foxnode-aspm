@@ -284,6 +284,9 @@ class ScorecardService:
             weight = criticality_weights.get(product.business_criticality, 2.0)
             weighted_score_sum += card["score"] * weight
             total_weight += weight
+            open_findings = sum(
+                card["breakdown"]["open_findings_by_severity"].values()
+            ) if "open_findings_by_severity" in card.get("breakdown", {}) else 0
             product_scores.append({
                 "product_id": product.id,
                 "product_name": product.name,
@@ -291,6 +294,8 @@ class ScorecardService:
                 "score": card["score"],
                 "grade": card["grade"],
                 "trend": card["trend"],
+                "open_findings": open_findings,
+                "recommendations": card.get("recommendations", []),
             })
 
         org_score = round(weighted_score_sum / total_weight, 1) if total_weight > 0 else 100.0

@@ -13,11 +13,15 @@ import {
 import clsx from 'clsx'
 
 const FRAMEWORK_ICONS: Record<string, string> = {
-  owasp_top_10: '🛡️',
-  cis_benchmarks: '📋',
-  pci_dss: '💳',
-  soc2: '🔐',
-  iso_27001: '🌐',
+  'owasp_top_10': '🛡️',
+  'owasp-top10-2021': '🛡️',
+  'cis_benchmarks': '📋',
+  'cis-benchmarks': '📋',
+  'pci_dss': '💳',
+  'pci-dss-v4': '💳',
+  'soc2': '🔐',
+  'iso_27001': '🌐',
+  'iso-27001': '🌐',
 }
 
 export default function CompliancePage() {
@@ -66,7 +70,7 @@ export default function CompliancePage() {
 
       {/* Framework Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-        {overview?.frameworks?.map((fw: any) => {
+        {(Array.isArray(overview) ? overview : overview?.frameworks || []).map((fw: any) => {
           const isSelected = selectedFramework === fw.framework_id
           const pct = fw.compliance_percentage || 0
           const color = pct >= 80 ? '#10b981' : pct >= 60 ? '#f59e0b' : '#ef4444'
@@ -144,37 +148,42 @@ export default function CompliancePage() {
             </div>
           </div>
 
-          {/* Controls List */}
-          {report.controls && (
+          {/* Controls List (from report.gaps which contains all controls with their status) */}
+          {report.gaps && report.gaps.length > 0 && (
             <div className="card p-0 overflow-hidden">
               <div className="p-6 border-b border-gray-800">
                 <h3 className="text-lg font-semibold text-white">Controls</h3>
               </div>
               <div className="divide-y divide-gray-800/50">
-                {report.controls.map((control: any) => (
-                  <div key={control.id} className="flex items-center justify-between p-4 hover:bg-gray-800/30 transition-colors">
+                {report.gaps.map((control: any) => (
+                  <div key={control.control_id} className="flex items-center justify-between p-4 hover:bg-gray-800/30 transition-colors">
                     <div className="flex items-center gap-3 flex-1">
-                      {control.status === 'passing' ? (
-                        <CheckCircle className="w-5 h-5 text-green-400 shrink-0" />
-                      ) : control.status === 'failing' ? (
+                      {control.gap_type === 'no_coverage' ? (
+                        <AlertTriangle className="w-5 h-5 text-gray-500 shrink-0" />
+                      ) : control.gap_type === 'failing' ? (
                         <XCircle className="w-5 h-5 text-red-400 shrink-0" />
                       ) : (
-                        <AlertTriangle className="w-5 h-5 text-gray-500 shrink-0" />
+                        <CheckCircle className="w-5 h-5 text-green-400 shrink-0" />
                       )}
                       <div>
                         <p className="text-sm text-gray-200">
-                          <span className="text-foxnode-400 font-mono mr-2">{control.id}</span>
-                          {control.name}
+                          <span className="text-foxnode-400 font-mono mr-2">{control.control_id}</span>
+                          {control.title}
                         </p>
-                        {control.description && (
-                          <p className="text-xs text-gray-500 mt-0.5 max-w-2xl">{control.description}</p>
+                        {control.details && (
+                          <p className="text-xs text-gray-500 mt-0.5 max-w-2xl">{control.details}</p>
                         )}
                       </div>
                     </div>
                     <div className="text-right shrink-0 ml-4">
-                      {control.finding_count > 0 && (
-                        <span className="text-xs text-red-400 font-mono">{control.finding_count} findings</span>
-                      )}
+                      <span className={clsx(
+                        'text-xs px-2 py-0.5 rounded-full',
+                        control.gap_type === 'failing' ? 'text-red-400 bg-red-500/10' :
+                        control.gap_type === 'no_coverage' ? 'text-gray-400 bg-gray-500/10' :
+                        'text-green-400 bg-green-500/10'
+                      )}>
+                        {control.gap_type === 'failing' ? 'Failing' : control.gap_type === 'no_coverage' ? 'No Coverage' : 'Passing'}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -183,20 +192,34 @@ export default function CompliancePage() {
           )}
 
           {/* Gap Analysis */}
-          {gaps?.gaps?.length > 0 && (
+          {gaps && (gaps.no_coverage?.length > 0 || gaps.failing?.length > 0) && (
             <div className="card">
               <div className="flex items-center gap-2 mb-4">
                 <BarChart3 className="w-5 h-5 text-amber-400" />
                 <h3 className="text-lg font-semibold text-white">Gap Analysis</h3>
+                {gaps.summary && (
+                  <span className="text-xs text-gray-500">
+                    {gaps.summary.no_coverage_count || 0} uncovered, {gaps.summary.failing_count || 0} failing
+                  </span>
+                )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {gaps.gaps.map((gap: any, i: number) => (
-                  <div key={i} className="p-4 bg-amber-500/5 border border-amber-800/30 rounded-lg">
+                {[...(gaps.no_coverage || []), ...(gaps.failing || [])].map((gap: any, i: number) => (
+                  <div key={i} className={clsx(
+                    'p-4 rounded-lg border',
+                    gap.gap_type === 'failing' ? 'bg-red-500/5 border-red-800/30' : 'bg-amber-500/5 border-amber-800/30'
+                  )}>
                     <div className="flex items-start gap-3">
-                      <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                      {gap.gap_type === 'failing' ? (
+                        <XCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
+                      ) : (
+                        <AlertTriangle className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                      )}
                       <div>
-                        <p className="text-sm text-amber-200 font-medium">{gap.control_id}: {gap.control_name}</p>
-                        <p className="text-xs text-gray-500 mt-1">{gap.recommendation}</p>
+                        <p className={clsx('text-sm font-medium', gap.gap_type === 'failing' ? 'text-red-200' : 'text-amber-200')}>
+                          {gap.control_id}: {gap.title}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">{gap.details || gap.recommendation}</p>
                       </div>
                     </div>
                   </div>

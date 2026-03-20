@@ -50,7 +50,10 @@ export default function ScorecardPage() {
     return <div className="flex items-center justify-center h-64 text-gray-500">Loading scorecard...</div>
   }
 
-  const orgScore = overview?.org_score || { score: 0, grade: 'F', trend: 'stable' }
+  // Handle both object-style {score, grade, trend} and flat-style {org_score, org_grade, org_trend}
+  const orgScore = typeof overview?.org_score === 'object'
+    ? overview.org_score
+    : { score: overview?.org_score || 0, grade: overview?.org_grade || 'F', trend: overview?.org_trend || 'stable' }
   const orgGrade = GRADE_COLORS[orgScore.grade] || GRADE_COLORS.F
   const orgTrend = TREND_ICONS[orgScore.trend] || TREND_ICONS.stable
   const OrgTrendIcon = orgTrend.icon

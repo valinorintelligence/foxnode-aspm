@@ -92,6 +92,11 @@ class TriageResult:
     reasoning: list[str] = field(default_factory=list)
     suggested_grouping: Optional[str] = None
 
+    # Extra context populated by the API layer
+    title: str = ""
+    severity: str = ""
+    file_path: str = ""
+
     def to_dict(self) -> dict:
         return {
             "finding_id": self.finding_id,
@@ -100,6 +105,9 @@ class TriageResult:
             "false_positive_likelihood": round(self.false_positive_likelihood, 3),
             "reasoning": self.reasoning,
             "suggested_grouping": self.suggested_grouping,
+            "title": self.title,
+            "severity": self.severity,
+            "file_path": self.file_path,
         }
 
 
@@ -206,6 +214,12 @@ class TriageService:
         # Suggested grouping key
         grouping = self._suggest_grouping(finding)
 
+        severity_str = (
+            finding.severity.value
+            if hasattr(finding.severity, "value")
+            else str(finding.severity)
+        )
+
         return TriageResult(
             finding_id=finding.id,
             score=score,
@@ -213,6 +227,9 @@ class TriageService:
             false_positive_likelihood=fp_likelihood,
             reasoning=reasoning,
             suggested_grouping=grouping,
+            title=finding.title or "",
+            severity=severity_str,
+            file_path=finding.file_path or "",
         )
 
     def triage_findings(
@@ -259,6 +276,8 @@ class TriageService:
                     "false_positive_likelihood": round(c.false_positive_likelihood, 3),
                     "score": round(c.score, 2),
                     "reasoning": c.reasoning,
+                    "title": c.title,
+                    "severity": c.severity,
                 }
                 for c in fp_candidates
             ],

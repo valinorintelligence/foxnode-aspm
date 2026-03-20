@@ -84,7 +84,7 @@ export default function TriagePage() {
       {summary && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {Object.entries(PRIORITY_CONFIG).map(([key, config]) => {
-            const count = summary.priority_counts?.[key] || 0
+            const count = summary.counts_by_priority?.[key] || summary.priority_counts?.[key] || 0
             const Icon = config.icon
             return (
               <div key={key} className="card-hover">
@@ -104,51 +104,53 @@ export default function TriagePage() {
       )}
 
       {/* False Positive Candidates */}
-      {summary?.false_positive_candidates?.length > 0 && (
-        <div className="card">
-          <div className="flex items-center gap-2 mb-4">
-            <XCircle className="w-5 h-5 text-yellow-400" />
-            <h3 className="text-lg font-semibold text-white">Likely False Positives</h3>
-            <span className="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/30 px-2 py-0.5 rounded-full">
-              {summary.false_positive_candidates.length} detected
-            </span>
-          </div>
-          <div className="space-y-2">
-            {summary.false_positive_candidates.slice(0, 8).map((fp: any) => (
-              <div key={fp.finding_id} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <SeverityBadge severity={fp.severity} />
-                  <div>
-                    <p className="text-sm text-gray-200">{fp.title}</p>
-                    <p className="text-xs text-gray-500">{fp.reasoning}</p>
+      {(() => {
+        const fpCandidates = summary?.top_false_positive_candidates || summary?.false_positive_candidates || []
+        return fpCandidates.length > 0 ? (
+          <div className="card">
+            <div className="flex items-center gap-2 mb-4">
+              <XCircle className="w-5 h-5 text-yellow-400" />
+              <h3 className="text-lg font-semibold text-white">Likely False Positives</h3>
+              <span className="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/30 px-2 py-0.5 rounded-full">
+                {fpCandidates.length} detected
+              </span>
+            </div>
+            <div className="space-y-2">
+              {fpCandidates.slice(0, 8).map((fp: any) => (
+                <div key={fp.finding_id} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <SeverityBadge severity={fp.severity || 'medium'} />
+                    <div>
+                      <p className="text-sm text-gray-200">{fp.title || `Finding #${fp.finding_id}`}</p>
+                      <p className="text-xs text-gray-500">{Array.isArray(fp.reasoning) ? fp.reasoning[0] : fp.reasoning}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs text-yellow-400 font-mono">
+                      {Math.round(fp.false_positive_likelihood * 100)}% likely FP
+                    </span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-xs text-yellow-400 font-mono">
-                    {Math.round(fp.false_positive_likelihood * 100)}% likely FP
-                  </span>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        ) : null
+      })()}
 
       {/* Grouped Findings */}
-      {summary?.grouped_findings?.length > 0 && (
+      {summary?.grouped_findings && Object.keys(summary.grouped_findings).length > 0 && (
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Filter className="w-5 h-5 text-blue-400" />
             <h3 className="text-lg font-semibold text-white">Auto-Grouped Findings</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {summary.grouped_findings.map((group: any, i: number) => (
-              <div key={i} className="p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+            {Object.entries(summary.grouped_findings).map(([groupKey, findingIds]: [string, any]) => (
+              <div key={groupKey} className="p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-semibold text-white">{group.group_key}</h4>
-                  <span className="text-xs text-foxnode-400 font-mono">{group.count} findings</span>
+                  <h4 className="text-sm font-semibold text-white">{groupKey}</h4>
+                  <span className="text-xs text-foxnode-400 font-mono">{Array.isArray(findingIds) ? findingIds.length : findingIds} findings</span>
                 </div>
-                <p className="text-xs text-gray-500">{group.description}</p>
               </div>
             ))}
           </div>

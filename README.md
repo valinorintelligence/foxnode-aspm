@@ -105,6 +105,9 @@ Foxnode ASPM is a modern, developer-friendly platform for managing application s
 #### Findings
 <p align="center"><img src="docs/images/screenshots/findings.png" alt="Findings" width="100%"/></p>
 
+#### Finding Detail
+<p align="center"><img src="docs/images/screenshots/finding-detail.png" alt="Finding Detail" width="100%"/></p>
+
 #### Engagements
 <p align="center"><img src="docs/images/screenshots/engagements.png" alt="Engagements" width="100%"/></p>
 

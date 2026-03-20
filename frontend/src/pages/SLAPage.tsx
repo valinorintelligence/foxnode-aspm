@@ -135,7 +135,7 @@ export default function SLAPage() {
       )}
 
       {/* Risk Heatmap */}
-      {heatmap?.matrix?.length > 0 && (
+      {heatmap && (Array.isArray(heatmap) ? heatmap.length > 0 : heatmap?.matrix?.length > 0) && (
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Shield className="w-5 h-5 text-foxnode-400" />
@@ -144,56 +144,65 @@ export default function SLAPage() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className="text-left py-2 px-3 text-xs font-medium text-gray-500 uppercase w-48">Product</th>
-                  {['critical', 'high', 'medium', 'low', 'info'].map((sev) => (
-                    <th key={sev} className="text-center py-2 px-3 text-xs font-medium text-gray-500 uppercase">{sev}</th>
-                  ))}
-                  <th className="text-center py-2 px-3 text-xs font-medium text-gray-500 uppercase">Total Risk</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-800/30">
-                {heatmap.matrix.map((row: any) => (
-                  <tr key={row.product_id} className="hover:bg-gray-800/20">
-                    <td className="py-2 px-3 text-sm text-gray-200 font-medium">{row.product_name}</td>
-                    {['critical', 'high', 'medium', 'low', 'info'].map((sev) => {
-                      const cell = row.cells?.[sev] || { count: 0, breached_count: 0, risk_level: 'none' }
-                      return (
-                        <td key={sev} className="py-2 px-3 text-center">
-                          {cell.count > 0 ? (
-                            <div className="inline-flex flex-col items-center">
-                              <span className={clsx(
-                                'inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-bold',
-                                RISK_BG[cell.risk_level] || RISK_BG.none,
-                              )}>
-                                {cell.count}
-                              </span>
-                              {cell.breached_count > 0 && (
-                                <span className="text-[10px] text-red-400 mt-0.5 flex items-center gap-0.5">
-                                  <Flame className="w-2.5 h-2.5" />{cell.breached_count}
-                                </span>
+            {(() => {
+              // Transform flat array [{product_id, product_name, severity, count, breached_count, risk_level}]
+              // into matrix rows [{product_id, product_name, cells: {severity: {count, breached_count, risk_level}}}]
+              const rawData = Array.isArray(heatmap) ? heatmap : heatmap?.matrix || []
+              const productMap: Record<number, any> = {}
+              rawData.forEach((item: any) => {
+                if (!productMap[item.product_id]) {
+                  productMap[item.product_id] = { product_id: item.product_id, product_name: item.product_name, cells: {} }
+                }
+                productMap[item.product_id].cells[item.severity] = {
+                  count: item.count, breached_count: item.breached_count, risk_level: item.risk_level
+                }
+              })
+              const matrixRows = Object.values(productMap)
+
+              return (
+                <table className="w-full">
+                  <thead>
+                    <tr>
+                      <th className="text-left py-2 px-3 text-xs font-medium text-gray-500 uppercase w-48">Product</th>
+                      {['critical', 'high', 'medium', 'low', 'info'].map((sev) => (
+                        <th key={sev} className="text-center py-2 px-3 text-xs font-medium text-gray-500 uppercase">{sev}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-800/30">
+                    {matrixRows.map((row: any) => (
+                      <tr key={row.product_id} className="hover:bg-gray-800/20">
+                        <td className="py-2 px-3 text-sm text-gray-200 font-medium">{row.product_name}</td>
+                        {['critical', 'high', 'medium', 'low', 'info'].map((sev) => {
+                          const cell = row.cells?.[sev] || { count: 0, breached_count: 0, risk_level: 'none' }
+                          return (
+                            <td key={sev} className="py-2 px-3 text-center">
+                              {cell.count > 0 ? (
+                                <div className="inline-flex flex-col items-center">
+                                  <span className={clsx(
+                                    'inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-bold',
+                                    RISK_BG[cell.risk_level] || RISK_BG.none,
+                                  )}>
+                                    {cell.count}
+                                  </span>
+                                  {cell.breached_count > 0 && (
+                                    <span className="text-[10px] text-red-400 mt-0.5 flex items-center gap-0.5">
+                                      <Flame className="w-2.5 h-2.5" />{cell.breached_count}
+                                    </span>
+                                  )}
+                                </div>
+                              ) : (
+                                <span className="text-gray-700">—</span>
                               )}
-                            </div>
-                          ) : (
-                            <span className="text-gray-700">—</span>
-                          )}
-                        </td>
-                      )
-                    })}
-                    <td className="py-2 px-3 text-center">
-                      <span className={clsx(
-                        'inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold',
-                        RISK_BG[row.overall_risk] || RISK_BG.none,
-                      )}>
-                        {row.overall_risk?.toUpperCase()}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                            </td>
+                          )
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )
+            })()}
           </div>
 
           {/* Legend */}
@@ -214,14 +223,16 @@ export default function SLAPage() {
       )}
 
       {/* SLA Breached Findings */}
-      {breaches?.findings?.length > 0 && (
+      {(() => {
+        const breachList = Array.isArray(breaches) ? breaches : breaches?.findings || []
+        return breachList.length > 0 ? (
         <div className="card p-0 overflow-hidden">
           <div className="p-6 border-b border-gray-800">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-red-400" />
               <h3 className="text-lg font-semibold text-white">SLA Breached Findings</h3>
               <span className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 px-2 py-0.5 rounded-full">
-                {breaches.findings.length} breaches
+                {breachList.length} breaches
               </span>
             </div>
           </div>
@@ -238,7 +249,7 @@ export default function SLAPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800/50">
-                {breaches.findings.map((b: any) => {
+                {breachList.map((b: any) => {
                   const overdue = Math.max(0, b.elapsed_hours - b.sla_target_hours)
                   return (
                     <tr key={b.finding_id} className="hover:bg-gray-800/30 transition-colors">
@@ -263,7 +274,8 @@ export default function SLAPage() {
             </table>
           </div>
         </div>
-      )}
+        ) : null
+      })()}
     </div>
   )
 }
