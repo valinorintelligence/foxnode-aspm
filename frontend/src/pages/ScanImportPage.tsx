@@ -221,7 +221,7 @@ export default function ScanImportPage() {
                     <td className="py-3 px-4 text-sm text-content-secondary font-mono">{scan.filename}</td>
                     <td className="py-3 px-4 text-sm text-content-tertiary">{scan.scanner}</td>
                     <td className="py-3 px-4 text-xs text-content-muted">
-                      {new Date(scan.created_at).toLocaleString()}
+                      {scan.created_at ? new Date(scan.created_at).toLocaleString() : '—'}
                     </td>
                     <td className="py-3 px-4 text-xs text-content-muted">{scan.findings_duplicates}</td>
                   </tr>

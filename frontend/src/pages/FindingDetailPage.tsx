@@ -81,7 +81,7 @@ export default function FindingDetailPage() {
               </span>
             )}
             <span className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" /> Found {new Date(finding.date_found).toLocaleDateString()}
+              <Clock className="w-3.5 h-3.5" /> Found {finding.date_found ? new Date(finding.date_found).toLocaleDateString() : '—'}
             </span>
           </div>
         </div>

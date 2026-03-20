@@ -76,7 +76,7 @@ export default function EngagementsPage() {
                     Product ID: {eng.product_id}
                   </span>
                   <span className="text-xs text-content-muted">
-                    {new Date(eng.created_at).toLocaleDateString()}
+                    {eng.created_at ? new Date(eng.created_at).toLocaleDateString() : '—'}
                   </span>
                 </div>
               </div>

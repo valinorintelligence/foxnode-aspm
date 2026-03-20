@@ -194,7 +194,7 @@ function UserManagement() {
                   )}
                 </td>
                 <td className="py-3 px-4 text-xs text-content-muted">
-                  {new Date(u.created_at).toLocaleDateString()}
+                  {u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}
                 </td>
                 <td className="py-3 px-4">
                   {u.id !== currentUser?.id && u.is_active && (
