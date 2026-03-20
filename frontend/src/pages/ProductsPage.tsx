@@ -26,8 +26,8 @@ export default function ProductsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Products</h1>
-          <p className="text-gray-500 mt-1">Manage your applications and services</p>
+          <h1 className="text-2xl font-bold text-content-primary">Products</h1>
+          <p className="text-content-muted mt-1">Manage your applications and services</p>
         </div>
         <button onClick={() => setShowCreate(true)} className="btn-primary flex items-center gap-2">
           <Plus className="w-4 h-4" />
@@ -37,7 +37,7 @@ export default function ProductsPage() {
 
       {/* Search */}
       <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-content-muted" />
         <input
           type="text"
           placeholder="Search products..."
@@ -49,7 +49,7 @@ export default function ProductsPage() {
 
       {/* Products Grid */}
       {isLoading ? (
-        <div className="text-gray-500 text-center py-12">Loading...</div>
+        <div className="text-content-muted text-center py-12">Loading...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {products?.map((product: any) => (
@@ -60,20 +60,20 @@ export default function ProductsPage() {
                     <Package className="w-5 h-5 text-foxnode-400" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-white">{product.name}</h3>
-                    <p className="text-xs text-gray-500 capitalize">{product.product_type.replace('_', ' ')}</p>
+                    <h3 className="font-semibold text-content-primary">{product.name}</h3>
+                    <p className="text-xs text-content-muted capitalize">{product.product_type.replace('_', ' ')}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => deleteMutation.mutate(product.id)}
-                  className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-500 hover:text-red-400 transition-all"
+                  className="opacity-0 group-hover:opacity-100 p-1.5 text-content-muted hover:text-red-400 transition-all"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
 
               {product.description && (
-                <p className="text-sm text-gray-400 mb-3 line-clamp-2">{product.description}</p>
+                <p className="text-sm text-content-tertiary mb-3 line-clamp-2">{product.description}</p>
               )}
 
               {/* Finding counts */}
@@ -92,12 +92,12 @@ export default function ProductsPage() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-800">
-                <span className="text-xs text-gray-500">
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
+                <span className="text-xs text-content-muted">
                   {product.team || 'No team assigned'}
                 </span>
                 {product.repo_url && (
-                  <ExternalLink className="w-3.5 h-3.5 text-gray-600" />
+                  <ExternalLink className="w-3.5 h-3.5 text-content-muted" />
                 )}
               </div>
             </div>
@@ -135,7 +135,7 @@ function CreateProductModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="card w-full max-w-lg">
-        <h2 className="text-xl font-semibold text-white mb-6">Add Product</h2>
+        <h2 className="text-xl font-semibold text-content-primary mb-6">Add Product</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault()
@@ -144,7 +144,7 @@ function CreateProductModal({ onClose }: { onClose: () => void }) {
           className="space-y-4"
         >
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Name</label>
+            <label className="block text-sm font-medium text-content-tertiary mb-1">Name</label>
             <input
               className="input w-full"
               value={form.name}
@@ -153,7 +153,7 @@ function CreateProductModal({ onClose }: { onClose: () => void }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
+            <label className="block text-sm font-medium text-content-tertiary mb-1">Description</label>
             <textarea
               className="input w-full"
               rows={3}
@@ -163,7 +163,7 @@ function CreateProductModal({ onClose }: { onClose: () => void }) {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Type</label>
+              <label className="block text-sm font-medium text-content-tertiary mb-1">Type</label>
               <select
                 className="input w-full"
                 value={form.product_type}
@@ -179,7 +179,7 @@ function CreateProductModal({ onClose }: { onClose: () => void }) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Criticality</label>
+              <label className="block text-sm font-medium text-content-tertiary mb-1">Criticality</label>
               <select
                 className="input w-full"
                 value={form.business_criticality}
@@ -193,7 +193,7 @@ function CreateProductModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Team</label>
+            <label className="block text-sm font-medium text-content-tertiary mb-1">Team</label>
             <input
               className="input w-full"
               value={form.team}
@@ -201,7 +201,7 @@ function CreateProductModal({ onClose }: { onClose: () => void }) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Repository URL</label>
+            <label className="block text-sm font-medium text-content-tertiary mb-1">Repository URL</label>
             <input
               className="input w-full"
               value={form.repo_url}

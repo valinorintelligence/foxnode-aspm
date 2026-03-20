@@ -122,13 +122,13 @@ export default function LLMScannerPage() {
           <ShieldAlert className="w-6 h-6 text-violet-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">AI/LLM Security Scanner</h1>
-          <p className="text-gray-400 text-sm">Detect vulnerabilities in AI/ML code and LLM integrations</p>
+          <h1 className="text-2xl font-bold text-content-primary">AI/LLM Security Scanner</h1>
+          <p className="text-content-tertiary text-sm">Detect vulnerabilities in AI/ML code and LLM integrations</p>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="border-b border-gray-700">
+      <div className="border-b border-border-secondary">
         <div className="flex gap-6">
           {tabs.map((tab) => (
             <button
@@ -136,8 +136,8 @@ export default function LLMScannerPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 pb-3 px-1 text-sm font-medium transition-colors border-b-2 ${
                 activeTab === tab.id
-                  ? 'border-violet-500 text-white'
-                  : 'border-transparent text-gray-400 hover:text-gray-200'
+                  ? 'border-violet-500 text-content-primary'
+                  : 'border-transparent text-content-tertiary hover:text-content-secondary'
               }`}
             >
               <tab.icon className="w-4 h-4" />
@@ -150,16 +150,16 @@ export default function LLMScannerPage() {
       {/* TAB 1: Code Scanner */}
       {activeTab === 'scanner' && (
         <div className="space-y-6">
-          <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+          <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-content-primary flex items-center gap-2">
                 <Code className="w-4 h-4 text-violet-400" />
                 Paste AI/ML Code to Scan
               </h3>
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="bg-gray-900 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-violet-500/50"
+                className="bg-surface-secondary border border-border-secondary rounded-lg px-3 py-1.5 text-sm text-content-primary focus:outline-none focus:border-violet-500/50"
               >
                 {LANGUAGES.map((l) => (
                   <option key={l} value={l}>{l.charAt(0).toUpperCase() + l.slice(1)}</option>
@@ -170,12 +170,12 @@ export default function LLMScannerPage() {
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder="Paste your AI/ML code here..."
-              className="w-full h-[360px] bg-gray-900 border border-gray-700 rounded-lg p-4 text-sm text-gray-300 font-mono resize-none focus:outline-none focus:border-violet-500/50 placeholder-gray-600"
+              className="w-full h-[360px] bg-surface-secondary border border-border-secondary rounded-lg p-4 text-sm text-content-secondary font-mono resize-none focus:outline-none focus:border-violet-500/50 placeholder-content-muted"
             />
             <button
               onClick={() => scanMutation.mutate()}
               disabled={!code.trim() || scanMutation.isPending}
-              className="mt-4 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-lg text-sm font-medium hover:from-violet-500 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all"
+              className="mt-4 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-blue-600 text-content-primary rounded-lg text-sm font-medium hover:from-violet-500 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all"
             >
               {scanMutation.isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -191,11 +191,11 @@ export default function LLMScannerPage() {
             <div className="space-y-4">
               {/* Summary Bar */}
               {scanResults.vulnerabilities && scanResults.vulnerabilities.length > 0 && (
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-4">
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <FileWarning className="w-5 h-5 text-red-400" />
-                      <span className="text-white font-semibold text-sm">
+                      <span className="text-content-primary font-semibold text-sm">
                         {scanResults.vulnerabilities.length} Vulnerabilit{scanResults.vulnerabilities.length === 1 ? 'y' : 'ies'} Found
                       </span>
                     </div>
@@ -215,16 +215,16 @@ export default function LLMScannerPage() {
               {scanResults.vulnerabilities && scanResults.vulnerabilities.length > 0 ? (
                 <div className="grid gap-4">
                   {scanResults.vulnerabilities.map((v: any, i: number) => (
-                    <div key={i} className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+                    <div key={i} className="bg-surface-tertiary border border-border-secondary rounded-xl p-5">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-3">
                           <Bug className="w-5 h-5 text-red-400 shrink-0" />
                           <div>
-                            <h4 className="text-white font-semibold text-sm">
+                            <h4 className="text-content-primary font-semibold text-sm">
                               {v.vulnerability_type || v.category || v.type || 'Unknown Vulnerability'}
                             </h4>
                             {v.description && (
-                              <p className="text-gray-400 text-xs mt-1 leading-relaxed">{v.description}</p>
+                              <p className="text-content-tertiary text-xs mt-1 leading-relaxed">{v.description}</p>
                             )}
                           </div>
                         </div>
@@ -235,7 +235,7 @@ export default function LLMScannerPage() {
                             </span>
                           )}
                           {v.cwe_id && (
-                            <span className="text-xs font-mono px-2 py-0.5 rounded bg-gray-700 text-gray-300 border border-gray-600">
+                            <span className="text-xs font-mono px-2 py-0.5 rounded bg-border-secondary text-content-secondary border border-border-secondary">
                               CWE-{v.cwe_id}
                             </span>
                           )}
@@ -247,9 +247,9 @@ export default function LLMScannerPage() {
 
                       {/* Affected Code Snippet */}
                       {(v.affected_code || v.code_snippet || v.line_number) && (
-                        <div className="mt-3 bg-gray-900 border border-gray-700 rounded-lg p-3 font-mono text-xs">
+                        <div className="mt-3 bg-surface-secondary border border-border-secondary rounded-lg p-3 font-mono text-xs">
                           {v.line_number && (
-                            <span className="text-gray-500 mr-2">Line {v.line_number}:</span>
+                            <span className="text-content-muted mr-2">Line {v.line_number}:</span>
                           )}
                           <span className="text-red-300">{v.affected_code || v.code_snippet}</span>
                         </div>
@@ -261,7 +261,7 @@ export default function LLMScannerPage() {
                           <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                           <div>
                             <span className="text-xs font-semibold text-emerald-400">Recommendation</span>
-                            <p className="text-xs text-gray-300 mt-0.5">{v.recommendation}</p>
+                            <p className="text-xs text-content-secondary mt-0.5">{v.recommendation}</p>
                           </div>
                         </div>
                       )}
@@ -269,20 +269,20 @@ export default function LLMScannerPage() {
                   ))}
                 </div>
               ) : (
-                <div className="bg-gray-800 border border-emerald-500/30 rounded-xl p-10 text-center">
+                <div className="bg-surface-tertiary border border-emerald-500/30 rounded-xl p-10 text-center">
                   <CheckCircle className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
-                  <h3 className="text-lg font-medium text-white">No AI Vulnerabilities Found</h3>
-                  <p className="text-sm text-gray-400 mt-1">The scanned code appears safe from AI-specific security issues.</p>
+                  <h3 className="text-lg font-medium text-content-primary">No AI Vulnerabilities Found</h3>
+                  <p className="text-sm text-content-tertiary mt-1">The scanned code appears safe from AI-specific security issues.</p>
                 </div>
               )}
             </div>
           )}
 
           {!scanResults && !scanMutation.isPending && (
-            <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-10 text-center">
-              <Scan className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-gray-400">Ready to Scan</h3>
-              <p className="text-sm text-gray-500 mt-1">Paste your AI/ML code above and click Scan Code to detect vulnerabilities</p>
+            <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-10 text-center">
+              <Scan className="w-12 h-12 text-content-muted mx-auto mb-3" />
+              <h3 className="text-lg font-medium text-content-tertiary">Ready to Scan</h3>
+              <p className="text-sm text-content-muted mt-1">Paste your AI/ML code above and click Scan Code to detect vulnerabilities</p>
             </div>
           )}
         </div>
@@ -293,7 +293,7 @@ export default function LLMScannerPage() {
         <div className="space-y-6">
           <div className="flex items-center gap-4">
             <select
-              className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-violet-500/50 min-w-[240px]"
+              className="bg-surface-tertiary border border-border-secondary rounded-lg px-4 py-2.5 text-sm text-content-primary focus:outline-none focus:border-violet-500/50 min-w-[240px]"
               value={selectedProduct || ''}
               onChange={(e) => setSelectedProduct(e.target.value ? Number(e.target.value) : null)}
             >
@@ -319,10 +319,10 @@ export default function LLMScannerPage() {
           </div>
 
           {!selectedProduct && (
-            <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-12 text-center">
-              <Info className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-gray-400">Select a Product</h3>
-              <p className="text-sm text-gray-500 mt-1">Choose a product to view its AI risk assessment and OWASP LLM Top 10 mapping</p>
+            <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-12 text-center">
+              <Info className="w-12 h-12 text-content-muted mx-auto mb-3" />
+              <h3 className="text-lg font-medium text-content-tertiary">Select a Product</h3>
+              <p className="text-sm text-content-muted mt-1">Choose a product to view its AI risk assessment and OWASP LLM Top 10 mapping</p>
             </div>
           )}
 
@@ -335,35 +335,35 @@ export default function LLMScannerPage() {
           {/* AI Risk Assessment */}
           {selectedProduct && assessment?.data && !assessmentLoading && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-content-primary flex items-center gap-2">
                 <ShieldAlert className="w-5 h-5 text-violet-400" />
                 AI Risk Assessment
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* AI Exposure Level */}
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-4">
-                  <div className="text-xs text-gray-400 mb-2">AI Exposure Level</div>
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-4">
+                  <div className="text-xs text-content-tertiary mb-2">AI Exposure Level</div>
                   <div className="flex items-center gap-2">
                     {riskLevelBadge(assessment.data.ai_exposure_level || assessment.data.risk_level || 'medium')}
                   </div>
                 </div>
                 {/* Prompt Injection Risk */}
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-4">
-                  <div className="text-xs text-gray-400 mb-2">Prompt Injection Risk</div>
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-4">
+                  <div className="text-xs text-content-tertiary mb-2">Prompt Injection Risk</div>
                   <div className="flex items-center gap-2">
                     {riskLevelBadge(assessment.data.prompt_injection_risk || 'low')}
                   </div>
                 </div>
                 {/* Data Poisoning Risk */}
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-4">
-                  <div className="text-xs text-gray-400 mb-2">Data Poisoning Risk</div>
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-4">
+                  <div className="text-xs text-content-tertiary mb-2">Data Poisoning Risk</div>
                   <div className="flex items-center gap-2">
                     {riskLevelBadge(assessment.data.data_poisoning_risk || 'low')}
                   </div>
                 </div>
                 {/* Model Supply Chain Risk */}
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-4">
-                  <div className="text-xs text-gray-400 mb-2">Model Supply Chain Risk</div>
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-4">
+                  <div className="text-xs text-content-tertiary mb-2">Model Supply Chain Risk</div>
                   <div className="flex items-center gap-2">
                     {riskLevelBadge(assessment.data.model_supply_chain_risk || 'low')}
                   </div>
@@ -372,14 +372,14 @@ export default function LLMScannerPage() {
 
               {/* Recommendations */}
               {assessment.data.recommendations && assessment.data.recommendations.length > 0 && (
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
-                  <h4 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-5">
+                  <h4 className="text-sm font-semibold text-content-primary mb-3 flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-400" />
                     Recommendations
                   </h4>
                   <div className="space-y-2">
                     {assessment.data.recommendations.map((rec: string, i: number) => (
-                      <div key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                      <div key={i} className="flex items-start gap-2 text-sm text-content-secondary">
                         <ChevronRight className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                         <span>{rec}</span>
                       </div>
@@ -393,7 +393,7 @@ export default function LLMScannerPage() {
           {/* OWASP LLM Top 10 Mapping */}
           {selectedProduct && owaspLlm?.data && !owaspLoading && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-content-primary flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-yellow-400" />
                 OWASP LLM Top 10 Mapping
               </h3>
@@ -408,7 +408,7 @@ export default function LLMScannerPage() {
                   return (
                     <div
                       key={cat.id}
-                      className="bg-gray-800 border border-gray-700 rounded-xl p-4 hover:border-gray-600 transition-colors"
+                      className="bg-surface-tertiary border border-border-secondary rounded-xl p-4 hover:border-border-secondary transition-colors"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <span
@@ -424,9 +424,9 @@ export default function LLMScannerPage() {
                           {riskLevel === 'none' ? 'None' : riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}
                         </span>
                       </div>
-                      <h4 className="text-xs font-medium text-white mb-1 leading-snug">{cat.name}</h4>
+                      <h4 className="text-xs font-medium text-content-primary mb-1 leading-snug">{cat.name}</h4>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-[10px] text-gray-500">{findingCount} finding{findingCount !== 1 ? 's' : ''}</span>
+                        <span className="text-[10px] text-content-muted">{findingCount} finding{findingCount !== 1 ? 's' : ''}</span>
                         {findingCount === 0 ? (
                           <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
                         ) : (
@@ -434,7 +434,7 @@ export default function LLMScannerPage() {
                         )}
                       </div>
                       {match.description && (
-                        <p className="text-[10px] text-gray-500 mt-2 leading-relaxed line-clamp-2">{match.description}</p>
+                        <p className="text-[10px] text-content-muted mt-2 leading-relaxed line-clamp-2">{match.description}</p>
                       )}
                     </div>
                   )
@@ -456,28 +456,28 @@ export default function LLMScannerPage() {
             <>
               {/* Stats Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-5">
                   <div className="flex items-center gap-2 mb-2">
                     <Cpu className="w-4 h-4 text-violet-400" />
-                    <span className="text-xs text-gray-400">Products with AI Risk</span>
+                    <span className="text-xs text-content-tertiary">Products with AI Risk</span>
                   </div>
-                  <div className="text-3xl font-bold text-white">
+                  <div className="text-3xl font-bold text-content-primary">
                     {overview.data.products_with_ai_risk ?? overview.data.ai_component_count ?? 0}
                   </div>
                 </div>
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-5">
                   <div className="flex items-center gap-2 mb-2">
                     <Bug className="w-4 h-4 text-red-400" />
-                    <span className="text-xs text-gray-400">Total AI Vulnerabilities</span>
+                    <span className="text-xs text-content-tertiary">Total AI Vulnerabilities</span>
                   </div>
                   <div className="text-3xl font-bold text-red-400">
                     {overview.data.total_ai_vulnerabilities ?? overview.data.prompt_injection_count ?? 0}
                   </div>
                 </div>
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-5">
                   <div className="flex items-center gap-2 mb-2">
                     <AlertTriangle className="w-4 h-4 text-orange-400" />
-                    <span className="text-xs text-gray-400">Critical AI Findings</span>
+                    <span className="text-xs text-content-tertiary">Critical AI Findings</span>
                   </div>
                   <div className="text-3xl font-bold text-orange-400">
                     {overview.data.critical_ai_findings ?? 0}
@@ -487,10 +487,10 @@ export default function LLMScannerPage() {
 
               {/* Overall Risk Level */}
               {overview.data.overall_risk_level && (
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 flex items-center justify-between">
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Eye className="w-5 h-5 text-violet-400" />
-                    <span className="text-sm font-medium text-white">Organization AI Risk Level</span>
+                    <span className="text-sm font-medium text-content-primary">Organization AI Risk Level</span>
                   </div>
                   {riskLevelBadge(overview.data.overall_risk_level)}
                 </div>
@@ -498,9 +498,9 @@ export default function LLMScannerPage() {
 
               {/* Per-Product Risk Summary */}
               {overview.data.products && overview.data.products.length > 0 && (
-                <div className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
-                  <div className="p-4 border-b border-gray-700">
-                    <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl overflow-hidden">
+                  <div className="p-4 border-b border-border-secondary">
+                    <h3 className="text-sm font-semibold text-content-primary flex items-center gap-2">
                       <BarChart3 className="w-4 h-4 text-violet-400" />
                       Per-Product AI Risk Summary
                     </h3>
@@ -508,7 +508,7 @@ export default function LLMScannerPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="text-left text-xs text-gray-400 border-b border-gray-700">
+                        <tr className="text-left text-xs text-content-tertiary border-b border-border-secondary">
                           <th className="px-4 py-3 font-medium">Product</th>
                           <th className="px-4 py-3 font-medium">AI Risk Level</th>
                           <th className="px-4 py-3 font-medium">AI Vulnerabilities</th>
@@ -516,14 +516,14 @@ export default function LLMScannerPage() {
                           <th className="px-4 py-3 font-medium">OWASP Coverage</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-gray-700/50">
+                      <tbody className="divide-y divide-border-secondary/50">
                         {overview.data.products.map((p: any, i: number) => (
-                          <tr key={i} className="hover:bg-gray-700/20 transition-colors">
-                            <td className="px-4 py-3 text-white font-medium">{p.name || p.product_name || `Product ${p.id}`}</td>
+                          <tr key={i} className="hover:bg-border-secondary/20 transition-colors">
+                            <td className="px-4 py-3 text-content-primary font-medium">{p.name || p.product_name || `Product ${p.id}`}</td>
                             <td className="px-4 py-3">{riskLevelBadge(p.risk_level || p.ai_risk_level || 'none')}</td>
-                            <td className="px-4 py-3 text-gray-300">{p.ai_vulnerability_count ?? p.vulnerability_count ?? 0}</td>
-                            <td className="px-4 py-3 text-gray-300">{p.prompt_injection_count ?? 0}</td>
-                            <td className="px-4 py-3 text-gray-300">{p.owasp_coverage || 'N/A'}</td>
+                            <td className="px-4 py-3 text-content-secondary">{p.ai_vulnerability_count ?? p.vulnerability_count ?? 0}</td>
+                            <td className="px-4 py-3 text-content-secondary">{p.prompt_injection_count ?? 0}</td>
+                            <td className="px-4 py-3 text-content-secondary">{p.owasp_coverage || 'N/A'}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -534,10 +534,10 @@ export default function LLMScannerPage() {
 
               {/* Empty state for products list */}
               {(!overview.data.products || overview.data.products.length === 0) && (
-                <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-10 text-center">
-                  <Info className="w-10 h-10 text-gray-600 mx-auto mb-3" />
-                  <h3 className="text-base font-medium text-gray-400">No Product AI Data Yet</h3>
-                  <p className="text-sm text-gray-500 mt-1">Run AI analysis on your products to populate the overview</p>
+                <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-10 text-center">
+                  <Info className="w-10 h-10 text-content-muted mx-auto mb-3" />
+                  <h3 className="text-base font-medium text-content-tertiary">No Product AI Data Yet</h3>
+                  <p className="text-sm text-content-muted mt-1">Run AI analysis on your products to populate the overview</p>
                 </div>
               )}
             </>

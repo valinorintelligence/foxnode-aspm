@@ -159,7 +159,7 @@ export default function SecurityAgentPage() {
       case 'high': return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
       case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
       case 'low': return 'bg-green-500/20 text-green-400 border-green-500/30'
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+      default: return 'bg-gray-500/20 text-content-tertiary border-gray-500/30'
     }
   }
 
@@ -174,13 +174,13 @@ export default function SecurityAgentPage() {
               <Bot className="w-6 h-6 text-emerald-400" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">AI Security Agent</h1>
-              <p className="text-gray-400 text-sm">Ask questions about your security posture in natural language</p>
+              <h1 className="text-2xl font-bold text-content-primary">AI Security Agent</h1>
+              <p className="text-content-tertiary text-sm">Ask questions about your security posture in natural language</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <select
-              className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500/50"
+              className="bg-surface-tertiary border border-border-secondary rounded-lg px-3 py-2 text-sm text-content-primary focus:outline-none focus:border-emerald-500/50"
               value={selectedProduct || ''}
               onChange={(e) => setSelectedProduct(e.target.value ? Number(e.target.value) : null)}
             >
@@ -192,7 +192,7 @@ export default function SecurityAgentPage() {
             {!sidePanelOpen && sidePanelData && (
               <button
                 onClick={() => setSidePanelOpen(true)}
-                className="p-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-400 hover:text-white transition-colors"
+                className="p-2 bg-surface-tertiary border border-border-secondary rounded-lg text-content-tertiary hover:text-content-primary transition-colors"
                 title="Open side panel"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -202,7 +202,7 @@ export default function SecurityAgentPage() {
         </div>
 
         {/* Chat Container */}
-        <div className="flex-1 bg-gray-800/30 border border-gray-700/50 rounded-xl flex flex-col overflow-hidden">
+        <div className="flex-1 bg-surface-tertiary/30 border border-border-secondary/50 rounded-xl flex flex-col overflow-hidden">
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((msg) => (
@@ -215,9 +215,9 @@ export default function SecurityAgentPage() {
                 <div className={`max-w-[70%] ${
                   msg.role === 'user'
                     ? 'bg-blue-600/20 border-blue-500/30'
-                    : 'bg-gray-800 border-gray-700'
+                    : 'bg-surface-tertiary border-border-secondary'
                 } border rounded-xl p-4`}>
-                  <p className="text-sm text-gray-200 whitespace-pre-wrap">{msg.content}</p>
+                  <p className="text-sm text-content-secondary whitespace-pre-wrap">{msg.content}</p>
 
                   {/* Data tables */}
                   {msg.data && (
@@ -228,7 +228,7 @@ export default function SecurityAgentPage() {
                             msg.data.risk_level === 'critical' ? 'text-red-400' :
                             msg.data.risk_level === 'high' ? 'text-orange-400' : 'text-yellow-400'
                           }`} />
-                          <span className="text-sm font-medium text-white capitalize">
+                          <span className="text-sm font-medium text-content-primary capitalize">
                             Risk Level: {msg.data.risk_level}
                           </span>
                         </div>
@@ -236,9 +236,9 @@ export default function SecurityAgentPage() {
                       {msg.data.metrics && (
                         <div className="grid grid-cols-3 gap-2 mt-2">
                           {Object.entries(msg.data.metrics).slice(0, 6).map(([key, val]) => (
-                            <div key={key} className="bg-gray-900/50 rounded-lg p-2 text-center">
-                              <div className="text-xs text-gray-500">{key.replace(/_/g, ' ')}</div>
-                              <div className="text-sm font-bold text-white">{String(val)}</div>
+                            <div key={key} className="bg-surface-secondary/50 rounded-lg p-2 text-center">
+                              <div className="text-xs text-content-muted">{key.replace(/_/g, ' ')}</div>
+                              <div className="text-sm font-bold text-content-primary">{String(val)}</div>
                             </div>
                           ))}
                         </div>
@@ -246,7 +246,7 @@ export default function SecurityAgentPage() {
                       {msg.data.top_risks && msg.data.top_risks.length > 0 && (
                         <div className="mt-2 space-y-1">
                           {msg.data.top_risks.slice(0, 3).map((risk: any, i: number) => (
-                            <div key={i} className="flex items-center gap-2 text-xs text-gray-400">
+                            <div key={i} className="flex items-center gap-2 text-xs text-content-tertiary">
                               <Zap className="w-3 h-3 text-yellow-400" />
                               <span>{risk.title || risk}</span>
                             </div>
@@ -263,7 +263,7 @@ export default function SecurityAgentPage() {
                         <button
                           key={i}
                           onClick={() => sendMessage(s)}
-                          className="text-xs px-3 py-1 bg-gray-700/50 hover:bg-gray-600/50 text-gray-300 rounded-full border border-gray-600/50 transition-colors"
+                          className="text-xs px-3 py-1 bg-border-secondary/50 hover:bg-border-secondary/50 text-content-secondary rounded-full border border-border-secondary/50 transition-colors"
                         >
                           {s}
                         </button>
@@ -285,10 +285,10 @@ export default function SecurityAgentPage() {
                 <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center shrink-0">
                   <Bot className="w-4 h-4 text-emerald-400" />
                 </div>
-                <div className="bg-gray-800 border border-gray-700 rounded-xl p-4">
+                <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-4">
                   <div className="flex items-center gap-2">
                     <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />
-                    <span className="text-sm text-gray-400">Analyzing...</span>
+                    <span className="text-sm text-content-tertiary">Analyzing...</span>
                   </div>
                 </div>
               </div>
@@ -297,7 +297,7 @@ export default function SecurityAgentPage() {
           </div>
 
           {/* Quick Actions + Input */}
-          <div className="p-4 border-t border-gray-700/50 space-y-3">
+          <div className="p-4 border-t border-border-secondary/50 space-y-3">
             {/* Quick action buttons */}
             <div className="flex flex-wrap gap-2">
               {QUICK_ACTIONS.map((action) => (
@@ -305,7 +305,7 @@ export default function SecurityAgentPage() {
                   key={action.label}
                   onClick={() => sendMessage(action.message)}
                   disabled={isLoading}
-                  className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-700 transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 text-xs px-3 py-1.5 bg-surface-tertiary hover:bg-border-secondary text-content-secondary rounded-lg border border-border-secondary transition-colors disabled:opacity-50"
                 >
                   <action.icon className="w-3.5 h-3.5" />
                   {action.label}
@@ -321,7 +321,7 @@ export default function SecurityAgentPage() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
                 placeholder="Ask about your security posture..."
-                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500/50"
+                className="flex-1 bg-surface-secondary border border-border-secondary rounded-lg px-4 py-3 text-sm text-content-primary placeholder-content-muted focus:outline-none focus:border-emerald-500/50"
                 disabled={isLoading}
               />
               <button
@@ -338,18 +338,18 @@ export default function SecurityAgentPage() {
 
       {/* Collapsible Side Panel */}
       {sidePanelOpen && sidePanelData && (
-        <div className="w-80 flex flex-col bg-gray-800/50 border border-gray-700/50 rounded-xl overflow-hidden shrink-0">
+        <div className="w-80 flex flex-col bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl overflow-hidden shrink-0">
           {/* Panel Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-700/50">
+          <div className="flex items-center justify-between p-4 border-b border-border-secondary/50">
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-emerald-400" />
-              <h3 className="text-sm font-semibold text-white">Analysis Details</h3>
+              <h3 className="text-sm font-semibold text-content-primary">Analysis Details</h3>
             </div>
             <button
               onClick={() => setSidePanelOpen(false)}
-              className="p-1 hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-1 hover:bg-border-secondary rounded-lg transition-colors"
             >
-              <X className="w-4 h-4 text-gray-400" />
+              <X className="w-4 h-4 text-content-tertiary" />
             </button>
           </div>
 
@@ -358,7 +358,7 @@ export default function SecurityAgentPage() {
             {/* Risk Level Badge */}
             {sidePanelData.risk_level && (
               <div className="space-y-2">
-                <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Level</h4>
+                <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Risk Level</h4>
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium capitalize ${getRiskBadgeColor(sidePanelData.risk_level)}`}>
                   <Shield className="w-3.5 h-3.5" />
                   {sidePanelData.risk_level}
@@ -369,12 +369,12 @@ export default function SecurityAgentPage() {
             {/* Key Metrics */}
             {sidePanelData.metrics && (
               <div className="space-y-2">
-                <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Key Metrics</h4>
+                <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Key Metrics</h4>
                 <div className="space-y-2">
                   {Object.entries(sidePanelData.metrics).map(([key, val]) => (
-                    <div key={key} className="flex items-center justify-between bg-gray-900/50 rounded-lg px-3 py-2">
-                      <span className="text-xs text-gray-400 capitalize">{key.replace(/_/g, ' ')}</span>
-                      <span className="text-sm font-semibold text-white">{String(val)}</span>
+                    <div key={key} className="flex items-center justify-between bg-surface-secondary/50 rounded-lg px-3 py-2">
+                      <span className="text-xs text-content-tertiary capitalize">{key.replace(/_/g, ' ')}</span>
+                      <span className="text-sm font-semibold text-content-primary">{String(val)}</span>
                     </div>
                   ))}
                 </div>
@@ -384,10 +384,10 @@ export default function SecurityAgentPage() {
             {/* Score */}
             {sidePanelData.risk_score != null && (
               <div className="space-y-2">
-                <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Score</h4>
-                <div className="bg-gray-900/50 rounded-lg p-3 text-center">
-                  <div className="text-3xl font-bold text-white">{sidePanelData.risk_score}</div>
-                  <div className="text-xs text-gray-500 mt-1">out of 100</div>
+                <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Risk Score</h4>
+                <div className="bg-surface-secondary/50 rounded-lg p-3 text-center">
+                  <div className="text-3xl font-bold text-content-primary">{sidePanelData.risk_score}</div>
+                  <div className="text-xs text-content-muted mt-1">out of 100</div>
                 </div>
               </div>
             )}
@@ -395,12 +395,12 @@ export default function SecurityAgentPage() {
             {/* Top Risks */}
             {sidePanelData.top_risks && sidePanelData.top_risks.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Top Risks</h4>
+                <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Top Risks</h4>
                 <div className="space-y-2">
                   {sidePanelData.top_risks.map((risk: any, i: number) => (
-                    <div key={i} className="flex items-start gap-2 bg-gray-900/50 rounded-lg p-3">
+                    <div key={i} className="flex items-start gap-2 bg-surface-secondary/50 rounded-lg p-3">
                       <AlertTriangle className="w-3.5 h-3.5 text-yellow-400 mt-0.5 shrink-0" />
-                      <span className="text-xs text-gray-300">{risk.title || risk.name || risk}</span>
+                      <span className="text-xs text-content-secondary">{risk.title || risk.name || risk}</span>
                     </div>
                   ))}
                 </div>
@@ -410,18 +410,18 @@ export default function SecurityAgentPage() {
             {/* Attack Chains */}
             {sidePanelData.attack_chains && sidePanelData.attack_chains.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Attack Chains</h4>
+                <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Attack Chains</h4>
                 <div className="space-y-2">
                   {sidePanelData.attack_chains.map((chain: any, i: number) => (
-                    <div key={i} className="bg-gray-900/50 rounded-lg p-3 space-y-1">
+                    <div key={i} className="bg-surface-secondary/50 rounded-lg p-3 space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-white">{chain.name}</span>
+                        <span className="text-xs font-medium text-content-primary">{chain.name}</span>
                         {chain.risk_score != null && (
                           <span className="text-xs text-red-400 font-semibold">{chain.risk_score}/100</span>
                         )}
                       </div>
                       {chain.description && (
-                        <p className="text-xs text-gray-500">{chain.description}</p>
+                        <p className="text-xs text-content-muted">{chain.description}</p>
                       )}
                     </div>
                   ))}
@@ -432,12 +432,12 @@ export default function SecurityAgentPage() {
             {/* Recommendations */}
             {sidePanelData.recommendations && sidePanelData.recommendations.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Recommendations</h4>
+                <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Recommendations</h4>
                 <div className="space-y-2">
                   {sidePanelData.recommendations.map((rec: any, i: number) => (
-                    <div key={i} className="flex items-start gap-2 bg-gray-900/50 rounded-lg p-3">
+                    <div key={i} className="flex items-start gap-2 bg-surface-secondary/50 rounded-lg p-3">
                       <TrendingUp className="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0" />
-                      <span className="text-xs text-gray-300">{rec.text || rec.title || rec}</span>
+                      <span className="text-xs text-content-secondary">{rec.text || rec.title || rec}</span>
                     </div>
                   ))}
                 </div>
@@ -447,8 +447,8 @@ export default function SecurityAgentPage() {
             {/* Executive Summary */}
             {sidePanelData.executive_summary && (
               <div className="space-y-2">
-                <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Executive Summary</h4>
-                <p className="text-xs text-gray-300 bg-gray-900/50 rounded-lg p-3 leading-relaxed">
+                <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Executive Summary</h4>
+                <p className="text-xs text-content-secondary bg-surface-secondary/50 rounded-lg p-3 leading-relaxed">
                   {sidePanelData.executive_summary}
                 </p>
               </div>

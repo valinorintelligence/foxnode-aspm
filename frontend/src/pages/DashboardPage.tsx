@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { useChartTheme } from '../lib/chartTheme'
 import { dashboardAPI } from '../services/api'
 import {
   AlertTriangle,
@@ -33,6 +34,7 @@ const SEVERITY_COLORS = {
 }
 
 export default function DashboardPage() {
+  const chart = useChartTheme()
   const { data, isLoading } = useQuery({
     queryKey: ['dashboard'],
     queryFn: () => dashboardAPI.stats().then((r) => r.data),
@@ -41,7 +43,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-gray-500">Loading dashboard...</div>
+        <div className="animate-pulse text-content-muted">Loading dashboard...</div>
       </div>
     )
   }
@@ -63,8 +65,8 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Security Dashboard</h1>
-        <p className="text-gray-500 mt-1">Overview of your application security posture</p>
+        <h1 className="text-2xl font-bold text-content-primary">Security Dashboard</h1>
+        <p className="text-content-muted mt-1">Overview of your application security posture</p>
       </div>
 
       {/* Stats Cards */}
@@ -103,7 +105,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Severity Distribution */}
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Findings by Severity</h3>
+          <h3 className="text-lg font-semibold text-content-primary mb-4">Findings by Severity</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -122,8 +124,8 @@ export default function DashboardPage() {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid #374151',
+                    backgroundColor: chart.tooltipStyle.backgroundColor,
+                    border: chart.tooltipStyle.border,
                     borderRadius: '8px',
                     color: '#f3f4f6',
                   }}
@@ -135,7 +137,7 @@ export default function DashboardPage() {
             {severityData.map((item) => (
               <div key={item.name} className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                <span className="text-sm text-gray-400">
+                <span className="text-sm text-content-tertiary">
                   {item.name}: {item.value}
                 </span>
               </div>
@@ -145,17 +147,17 @@ export default function DashboardPage() {
 
         {/* Findings by Scanner */}
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Findings by Scanner</h3>
+          <h3 className="text-lg font-semibold text-content-primary mb-4">Findings by Scanner</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={scannerData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis type="number" stroke="#6b7280" />
-                <YAxis type="category" dataKey="name" stroke="#6b7280" width={100} tick={{ fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chart.gridStroke} />
+                <XAxis type="number" stroke={chart.axisStroke} />
+                <YAxis type="category" dataKey="name" stroke={chart.axisStroke} width={100} tick={{ fontSize: 12 }} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid #374151',
+                    backgroundColor: chart.tooltipStyle.backgroundColor,
+                    border: chart.tooltipStyle.border,
                     borderRadius: '8px',
                     color: '#f3f4f6',
                   }}
@@ -170,11 +172,11 @@ export default function DashboardPage() {
       {/* Top Vulnerable Products */}
       {data.top_vulnerable_products?.length > 0 && (
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Top Vulnerable Products</h3>
+          <h3 className="text-lg font-semibold text-content-primary mb-4">Top Vulnerable Products</h3>
           <div className="space-y-3">
             {data.top_vulnerable_products.map((product: any, i: number) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
-                <span className="text-gray-200 font-medium">{product.name}</span>
+              <div key={i} className="flex items-center justify-between p-3 bg-surface-tertiary/50 rounded-lg">
+                <span className="text-content-secondary font-medium">{product.name}</span>
                 <span className="text-sm text-red-400 font-mono">{product.count} findings</span>
               </div>
             ))}
@@ -184,28 +186,28 @@ export default function DashboardPage() {
 
       {/* Recent Findings */}
       <div className="card">
-        <h3 className="text-lg font-semibold text-white mb-4">Recent Findings</h3>
+        <h3 className="text-lg font-semibold text-content-primary mb-4">Recent Findings</h3>
         {data.recent_findings?.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-800">
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Severity</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Title</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Scanner</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Status</th>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Severity</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Title</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Scanner</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/50">
+              <tbody className="divide-y divide-border/50">
                 {data.recent_findings.map((finding: any) => (
-                  <tr key={finding.id} className="hover:bg-gray-800/30 transition-colors">
+                  <tr key={finding.id} className="hover:bg-surface-tertiary/30 transition-colors">
                     <td className="py-3 px-4">
                       <SeverityBadge severity={finding.severity} />
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-300 max-w-md truncate">{finding.title}</td>
-                    <td className="py-3 px-4 text-sm text-gray-400">{finding.scanner || '-'}</td>
+                    <td className="py-3 px-4 text-sm text-content-secondary max-w-md truncate">{finding.title}</td>
+                    <td className="py-3 px-4 text-sm text-content-tertiary">{finding.scanner || '-'}</td>
                     <td className="py-3 px-4">
-                      <span className="text-xs text-gray-400 capitalize">{finding.status}</span>
+                      <span className="text-xs text-content-tertiary capitalize">{finding.status}</span>
                     </td>
                   </tr>
                 ))}
@@ -213,7 +215,7 @@ export default function DashboardPage() {
             </table>
           </div>
         ) : (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-content-muted">
             <ShieldCheck className="w-12 h-12 mx-auto mb-3 opacity-50" />
             <p>No findings yet. Import a scan to get started.</p>
           </div>
@@ -242,8 +244,8 @@ function StatCard({
         <Icon className={`w-6 h-6 ${color}`} />
       </div>
       <div>
-        <p className="text-sm text-gray-500">{title}</p>
-        <p className="text-2xl font-bold text-white">{value.toLocaleString()}</p>
+        <p className="text-sm text-content-muted">{title}</p>
+        <p className="text-2xl font-bold text-content-primary">{value.toLocaleString()}</p>
       </div>
     </div>
   )

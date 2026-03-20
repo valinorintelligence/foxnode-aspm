@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useChartTheme } from '../lib/chartTheme'
 import { sbomAPI, productsAPI } from '../services/api'
 import {
   Package, AlertTriangle, Scale, Shield, Box, Layers, FileCode,
@@ -39,6 +40,7 @@ function getRiskBg(score: number) {
 
 export default function SBOMPage() {
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null)
+  const chart = useChartTheme()
   const [activeTab, setActiveTab] = useState<TabId>('components')
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -162,13 +164,13 @@ export default function SBOMPage() {
             <Package className="w-6 h-6 text-amber-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">SBOM &amp; Supply Chain</h1>
-            <p className="text-gray-400 text-sm">Software Bill of Materials and dependency risk analysis</p>
+            <h1 className="text-2xl font-bold text-content-primary">SBOM &amp; Supply Chain</h1>
+            <p className="text-content-tertiary text-sm">Software Bill of Materials and dependency risk analysis</p>
           </div>
         </div>
         <div className="relative">
           <select
-            className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white appearance-none pr-8 min-w-[200px]"
+            className="bg-surface-tertiary border border-border-secondary rounded-lg px-4 py-2 text-sm text-content-primary appearance-none pr-8 min-w-[200px]"
             value={selectedProduct || ''}
             onChange={(e) => {
               setSelectedProduct(e.target.value ? Number(e.target.value) : null)
@@ -181,7 +183,7 @@ export default function SBOMPage() {
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
           </select>
-          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-content-tertiary pointer-events-none" />
         </div>
       </div>
 
@@ -194,22 +196,22 @@ export default function SBOMPage() {
             { label: 'License Risks', value: overview.license_risks || 0, icon: Scale, color: 'text-yellow-400' },
             { label: 'Supply Chain Risk Score', value: overview.supply_chain_risk_score ?? overview.supply_chain_risks ?? 'N/A', icon: Shield, color: 'text-orange-400' },
           ].map((s) => (
-            <div key={s.label} className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-5">
+            <div key={s.label} className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-5">
               <div className="flex items-center gap-2 mb-2">
                 <s.icon className={`w-4 h-4 ${s.color}`} />
-                <span className="text-xs text-gray-400 uppercase tracking-wide">{s.label}</span>
+                <span className="text-xs text-content-tertiary uppercase tracking-wide">{s.label}</span>
               </div>
-              <div className="text-3xl font-bold text-white">{s.value}</div>
+              <div className="text-3xl font-bold text-content-primary">{s.value}</div>
             </div>
           ))}
         </div>
       )}
 
       {!selectedProduct && (
-        <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-12 text-center">
-          <Package className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-          <h3 className="text-lg font-medium text-gray-400">Select a Product</h3>
-          <p className="text-sm text-gray-500 mt-1">Choose a product to view its Software Bill of Materials and dependency analysis</p>
+        <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-12 text-center">
+          <Package className="w-12 h-12 text-content-muted mx-auto mb-3" />
+          <h3 className="text-lg font-medium text-content-tertiary">Select a Product</h3>
+          <p className="text-sm text-content-muted mt-1">Choose a product to view its Software Bill of Materials and dependency analysis</p>
         </div>
       )}
 
@@ -217,7 +219,7 @@ export default function SBOMPage() {
       {selectedProduct && (
         <>
           {/* Tab Navigation - underline style */}
-          <div className="border-b border-gray-700">
+          <div className="border-b border-border-secondary">
             <div className="flex gap-6">
               {tabs.map((tab) => (
                 <button
@@ -226,7 +228,7 @@ export default function SBOMPage() {
                   className={`flex items-center gap-2 pb-3 px-1 text-sm font-medium transition-colors border-b-2 ${
                     activeTab === tab.id
                       ? 'border-blue-500 text-blue-400'
-                      : 'border-transparent text-gray-400 hover:text-white'
+                      : 'border-transparent text-content-tertiary hover:text-content-primary'
                   }`}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -240,7 +242,7 @@ export default function SBOMPage() {
           {loading && (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
-              <span className="ml-3 text-gray-400 text-sm">Loading...</span>
+              <span className="ml-3 text-content-tertiary text-sm">Loading...</span>
             </div>
           )}
 
@@ -254,48 +256,48 @@ export default function SBOMPage() {
           {!loading && !error && activeTab === 'components' && (
             <div className="space-y-4">
               <div className="relative max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-content-muted" />
                 <input
                   type="text"
                   placeholder="Search components..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-gray-500"
+                  className="w-full bg-surface-tertiary border border-border-secondary rounded-lg pl-10 pr-4 py-2 text-sm text-content-primary placeholder-content-muted"
                 />
               </div>
 
               {filteredComponents.length === 0 ? (
-                <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-8 text-center text-gray-500 text-sm">
+                <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-8 text-center text-content-muted text-sm">
                   No components found.
                 </div>
               ) : (
-                <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl overflow-hidden">
+                <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl overflow-hidden">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-gray-700/50">
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Component</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Version</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Type</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Ecosystem</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">License</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Risk</th>
+                      <tr className="border-b border-border-secondary/50">
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">Component</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">Version</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">Type</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">Ecosystem</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">License</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">Risk</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredComponents.slice(0, 50).map((c: any, i: number) => (
-                        <tr key={i} className="border-b border-gray-800/50 hover:bg-gray-800/30">
-                          <td className="px-4 py-3 text-sm text-white flex items-center gap-2">
-                            <FileCode className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                        <tr key={i} className="border-b border-border/50 hover:bg-surface-tertiary/30">
+                          <td className="px-4 py-3 text-sm text-content-primary flex items-center gap-2">
+                            <FileCode className="w-4 h-4 text-content-muted flex-shrink-0" />
                             {c.name}
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-400 font-mono">{c.version || '-'}</td>
+                          <td className="px-4 py-3 text-sm text-content-tertiary font-mono">{c.version || '-'}</td>
                           <td className="px-4 py-3">
-                            <span className="text-xs px-2 py-0.5 bg-gray-700/50 rounded text-gray-300">
+                            <span className="text-xs px-2 py-0.5 bg-border-secondary/50 rounded text-content-secondary">
                               {c.type || 'library'}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-400">{c.ecosystem || c.language || '-'}</td>
-                          <td className="px-4 py-3 text-sm text-gray-400">{c.license || 'Unknown'}</td>
+                          <td className="px-4 py-3 text-sm text-content-tertiary">{c.ecosystem || c.language || '-'}</td>
+                          <td className="px-4 py-3 text-sm text-content-tertiary">{c.license || 'Unknown'}</td>
                           <td className="px-4 py-3">
                             <span className={`text-xs px-2 py-0.5 rounded-full ${SEVERITY_BADGE[c.risk_level || 'low'] || SEVERITY_BADGE.low}`}>
                               {c.risk_level || 'low'}
@@ -314,26 +316,26 @@ export default function SBOMPage() {
           {!loading && !error && activeTab === 'vulnerabilities' && (
             <div className="space-y-3">
               {vulns.length === 0 ? (
-                <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-8 text-center text-gray-500 text-sm">
+                <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-8 text-center text-content-muted text-sm">
                   No known vulnerabilities found.
                 </div>
               ) : (
-                <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl overflow-hidden">
+                <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl overflow-hidden">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-gray-700/50">
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">CVE ID</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Component</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Severity</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Description</th>
-                        <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide">Fix Version</th>
+                      <tr className="border-b border-border-secondary/50">
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">CVE ID</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">Component</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">Severity</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">Description</th>
+                        <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary uppercase tracking-wide">Fix Version</th>
                       </tr>
                     </thead>
                     <tbody>
                       {vulns.map((v: any, i: number) => (
-                        <tr key={i} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                        <tr key={i} className="border-b border-border/50 hover:bg-surface-tertiary/30">
                           <td className="px-4 py-3 text-sm text-blue-400 font-mono">{v.vulnerability_id || v.cve_id || '-'}</td>
-                          <td className="px-4 py-3 text-sm text-white">
+                          <td className="px-4 py-3 text-sm text-content-primary">
                             {v.component_name}{v.component_version ? ` ${v.component_version}` : ''}
                           </td>
                           <td className="px-4 py-3">
@@ -341,7 +343,7 @@ export default function SBOMPage() {
                               {v.severity}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-xs text-gray-400 max-w-xs truncate">{v.description || '-'}</td>
+                          <td className="px-4 py-3 text-xs text-content-tertiary max-w-xs truncate">{v.description || '-'}</td>
                           <td className="px-4 py-3 text-sm text-green-400 font-mono">{v.fixed_version || '-'}</td>
                         </tr>
                       ))}
@@ -358,8 +360,8 @@ export default function SBOMPage() {
               {licensePieData.length > 0 ? (
                 <div className="grid grid-cols-2 gap-6">
                   {/* Pie Chart */}
-                  <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6">
-                    <h3 className="text-sm font-semibold text-white mb-4">License Distribution</h3>
+                  <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6">
+                    <h3 className="text-sm font-semibold text-content-primary mb-4">License Distribution</h3>
                     <ResponsiveContainer width="100%" height={300}>
                       <PieChart>
                         <Pie
@@ -377,7 +379,7 @@ export default function SBOMPage() {
                           ))}
                         </Pie>
                         <Tooltip
-                          contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px' }}
+                          contentStyle={{ backgroundColor: chart.tooltipStyle.backgroundColor, border: chart.tooltipStyle.border, borderRadius: '8px' }}
                           itemStyle={{ color: '#e5e7eb' }}
                         />
                         <Legend
@@ -388,8 +390,8 @@ export default function SBOMPage() {
                   </div>
 
                   {/* Copyleft / Risky Licenses */}
-                  <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6">
-                    <h3 className="text-sm font-semibold text-white mb-4">Copyleft &amp; Risky Licenses</h3>
+                  <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6">
+                    <h3 className="text-sm font-semibold text-content-primary mb-4">Copyleft &amp; Risky Licenses</h3>
                     <div className="space-y-3">
                       {licensePieData
                         .filter((l) => ['GPL', 'AGPL', 'LGPL', 'SSPL', 'EUPL'].some((r) => l.name.toUpperCase().includes(r)))
@@ -397,7 +399,7 @@ export default function SBOMPage() {
                           <div key={i} className="flex items-center justify-between bg-red-500/5 border border-red-500/20 rounded-lg p-3">
                             <div className="flex items-center gap-2">
                               <AlertTriangle className="w-4 h-4 text-red-400" />
-                              <span className="text-sm text-white">{l.name}</span>
+                              <span className="text-sm text-content-primary">{l.name}</span>
                             </div>
                             <span className="text-xs text-red-400 font-medium">{l.value} components</span>
                           </div>
@@ -405,19 +407,19 @@ export default function SBOMPage() {
                       {licensePieData
                         .filter((l) => !['GPL', 'AGPL', 'LGPL', 'SSPL', 'EUPL'].some((r) => l.name.toUpperCase().includes(r)))
                         .map((l, i) => (
-                          <div key={i} className="flex items-center justify-between bg-gray-900/50 border border-gray-700/50 rounded-lg p-3">
-                            <span className="text-sm text-gray-300">{l.name}</span>
-                            <span className="text-xs text-gray-500">{l.value} components</span>
+                          <div key={i} className="flex items-center justify-between bg-surface-secondary/50 border border-border-secondary/50 rounded-lg p-3">
+                            <span className="text-sm text-content-secondary">{l.name}</span>
+                            <span className="text-xs text-content-muted">{l.value} components</span>
                           </div>
                         ))}
                       {licensePieData.length === 0 && (
-                        <p className="text-sm text-gray-500">No license data available.</p>
+                        <p className="text-sm text-content-muted">No license data available.</p>
                       )}
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-8 text-center text-gray-500 text-sm">
+                <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-8 text-center text-content-muted text-sm">
                   No license data available.
                 </div>
               )}
@@ -428,7 +430,7 @@ export default function SBOMPage() {
           {!loading && !error && activeTab === 'supply-chain' && (
             <div className="space-y-4">
               {supplyChain.length === 0 ? (
-                <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-8 text-center text-gray-500 text-sm">
+                <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-8 text-center text-content-muted text-sm">
                   No supply chain risks detected.
                 </div>
               ) : (
@@ -448,15 +450,15 @@ export default function SBOMPage() {
                             ) : (
                               <ShieldAlert className="w-5 h-5 text-yellow-400" />
                             )}
-                            <h4 className="text-sm font-semibold text-white">{r.risk_type || r.type || 'Unknown Risk'}</h4>
+                            <h4 className="text-sm font-semibold text-content-primary">{r.risk_type || r.type || 'Unknown Risk'}</h4>
                           </div>
                           <span className={`text-xs px-2 py-0.5 rounded-full ${SEVERITY_BADGE[sev] || SEVERITY_BADGE.medium}`}>
                             {sev}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-300 leading-relaxed">{r.description}</p>
+                        <p className="text-xs text-content-secondary leading-relaxed">{r.description}</p>
                         {r.affected_components && r.affected_components.length > 0 && (
-                          <p className="text-xs text-gray-500 mt-2">
+                          <p className="text-xs text-content-muted mt-2">
                             Affected: {r.affected_components.join(', ')}
                           </p>
                         )}
@@ -473,15 +475,15 @@ export default function SBOMPage() {
             <div className="space-y-6">
               <div className="grid grid-cols-3 gap-6">
                 {/* Risk Score Card */}
-                <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6 flex flex-col items-center justify-center">
-                  <h3 className="text-sm font-semibold text-gray-400 mb-4">Overall Risk Score</h3>
+                <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6 flex flex-col items-center justify-center">
+                  <h3 className="text-sm font-semibold text-content-tertiary mb-4">Overall Risk Score</h3>
                   {overallScore !== null ? (
                     <>
                       <div className={`text-5xl font-bold ${getRiskColor(overallScore)}`}>
                         {overallScore}
                       </div>
-                      <div className="text-xs text-gray-500 mt-2">out of 100</div>
-                      <div className="w-full mt-4 bg-gray-700 rounded-full h-2">
+                      <div className="text-xs text-content-muted mt-2">out of 100</div>
+                      <div className="w-full mt-4 bg-border-secondary rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all ${
                             overallScore >= 80 ? 'bg-red-500' :
@@ -493,13 +495,13 @@ export default function SBOMPage() {
                       </div>
                     </>
                   ) : (
-                    <div className="text-gray-500 text-sm">No score available</div>
+                    <div className="text-content-muted text-sm">No score available</div>
                   )}
                 </div>
 
                 {/* Component Breakdown Donut */}
-                <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6">
-                  <h3 className="text-sm font-semibold text-gray-400 mb-4">Component Breakdown by Type</h3>
+                <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6">
+                  <h3 className="text-sm font-semibold text-content-tertiary mb-4">Component Breakdown by Type</h3>
                   {componentTypeData.length > 0 ? (
                     <ResponsiveContainer width="100%" height={220}>
                       <PieChart>
@@ -518,7 +520,7 @@ export default function SBOMPage() {
                           ))}
                         </Pie>
                         <Tooltip
-                          contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px' }}
+                          contentStyle={{ backgroundColor: chart.tooltipStyle.backgroundColor, border: chart.tooltipStyle.border, borderRadius: '8px' }}
                           itemStyle={{ color: '#e5e7eb' }}
                         />
                         <Legend
@@ -527,15 +529,15 @@ export default function SBOMPage() {
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="flex items-center justify-center h-[220px] text-gray-500 text-sm">
+                    <div className="flex items-center justify-center h-[220px] text-content-muted text-sm">
                       No component data
                     </div>
                   )}
                 </div>
 
                 {/* Vulnerability Correlation Stats */}
-                <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6">
-                  <h3 className="text-sm font-semibold text-gray-400 mb-4">Vulnerability Correlation</h3>
+                <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6">
+                  <h3 className="text-sm font-semibold text-content-tertiary mb-4">Vulnerability Correlation</h3>
                   <div className="space-y-4">
                     {[
                       { label: 'Total Components', value: summary?.total_components ?? components.length, icon: Layers },
@@ -546,10 +548,10 @@ export default function SBOMPage() {
                     ].map((item) => (
                       <div key={item.label} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <item.icon className="w-4 h-4 text-gray-500" />
-                          <span className="text-xs text-gray-400">{item.label}</span>
+                          <item.icon className="w-4 h-4 text-content-muted" />
+                          <span className="text-xs text-content-tertiary">{item.label}</span>
                         </div>
-                        <span className="text-sm font-bold text-white">{item.value}</span>
+                        <span className="text-sm font-bold text-content-primary">{item.value}</span>
                       </div>
                     ))}
                   </div>

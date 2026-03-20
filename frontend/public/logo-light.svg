@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none">
+  <!-- Code brackets </> icon -->
+  <g transform="translate(4, 4)" stroke="#1e293b" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <polyline points="14,2 2,20 14,38" />
+    <polyline points="26,2 38,20 26,38" />
+    <line x1="22" y1="4" x2="18" y2="36" />
+  </g>
+  <!-- FoxNode text -->
+  <text x="52" y="33" fill="#1e293b" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="28" font-weight="700" letter-spacing="-0.5">FoxNode</text>
+</svg>

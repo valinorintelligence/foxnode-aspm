@@ -66,19 +66,19 @@ export default function ScanImportPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Import Scans</h1>
-        <p className="text-gray-500 mt-1">Upload security scan results from your tools</p>
+        <h1 className="text-2xl font-bold text-content-primary">Import Scans</h1>
+        <p className="text-content-muted mt-1">Upload security scan results from your tools</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Import Form */}
         <div className="lg:col-span-2 space-y-4">
           <div className="card">
-            <h3 className="text-lg font-semibold text-white mb-4">Upload Scan Report</h3>
+            <h3 className="text-lg font-semibold text-content-primary mb-4">Upload Scan Report</h3>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Scanner</label>
+                <label className="block text-sm font-medium text-content-tertiary mb-1">Scanner</label>
                 <select
                   className="input w-full"
                   value={selectedScanner}
@@ -93,7 +93,7 @@ export default function ScanImportPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Product</label>
+                <label className="block text-sm font-medium text-content-tertiary mb-1">Product</label>
                 <select
                   className="input w-full"
                   value={selectedProduct}
@@ -117,7 +117,7 @@ export default function ScanImportPage() {
                   ? 'border-foxnode-500 bg-foxnode-500/5'
                   : file
                   ? 'border-green-700 bg-green-500/5'
-                  : 'border-gray-700 hover:border-gray-600',
+                  : 'border-border-secondary hover:border-border-secondary',
               )}
               onClick={() => fileRef.current?.click()}
               onDragOver={(e) => {
@@ -139,16 +139,16 @@ export default function ScanImportPage() {
                   <FileUp className="w-8 h-8 text-green-400" />
                   <div>
                     <p className="text-green-400 font-medium">{file.name}</p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-content-muted mt-1">
                       {(file.size / 1024).toFixed(1)} KB
                     </p>
                   </div>
                 </div>
               ) : (
                 <>
-                  <Upload className="w-10 h-10 text-gray-600 mx-auto mb-3" />
-                  <p className="text-gray-400">Drop your scan report here or click to browse</p>
-                  <p className="text-xs text-gray-600 mt-2">
+                  <Upload className="w-10 h-10 text-content-muted mx-auto mb-3" />
+                  <p className="text-content-tertiary">Drop your scan report here or click to browse</p>
+                  <p className="text-xs text-content-muted mt-2">
                     Supports JSON, CSV, XML, JSONL, SARIF formats
                   </p>
                 </>
@@ -167,15 +167,15 @@ export default function ScanImportPage() {
 
         {/* Supported Parsers */}
         <div className="card h-fit">
-          <h3 className="text-lg font-semibold text-white mb-4">Supported Scanners</h3>
+          <h3 className="text-lg font-semibold text-content-primary mb-4">Supported Scanners</h3>
           <div className="space-y-2">
             {parsers?.map((p: any) => (
               <div
                 key={p.name}
-                className="flex items-center justify-between p-2.5 bg-gray-800/50 rounded-lg"
+                className="flex items-center justify-between p-2.5 bg-surface-tertiary/50 rounded-lg"
               >
-                <span className="text-sm text-gray-300">{p.name}</span>
-                <span className="text-xs text-gray-500 font-mono">{p.scan_type}</span>
+                <span className="text-sm text-content-secondary">{p.name}</span>
+                <span className="text-xs text-content-muted font-mono">{p.scan_type}</span>
               </div>
             ))}
           </div>
@@ -185,21 +185,21 @@ export default function ScanImportPage() {
       {/* Import History */}
       {history?.length > 0 && (
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Import History</h3>
+          <h3 className="text-lg font-semibold text-content-primary mb-4">Import History</h3>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-800">
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">File</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Scanner</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Created</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Duplicates</th>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Status</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">File</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Scanner</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Created</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Duplicates</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/50">
+              <tbody className="divide-y divide-border/50">
                 {history.map((scan: any) => (
-                  <tr key={scan.id} className="hover:bg-gray-800/30">
+                  <tr key={scan.id} className="hover:bg-surface-tertiary/30">
                     <td className="py-3 px-4">
                       {scan.status === 'completed' ? (
                         <div className="flex items-center gap-1.5 text-green-400">
@@ -218,12 +218,12 @@ export default function ScanImportPage() {
                         </div>
                       )}
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-300 font-mono">{scan.filename}</td>
-                    <td className="py-3 px-4 text-sm text-gray-400">{scan.scanner}</td>
-                    <td className="py-3 px-4 text-xs text-gray-500">
+                    <td className="py-3 px-4 text-sm text-content-secondary font-mono">{scan.filename}</td>
+                    <td className="py-3 px-4 text-sm text-content-tertiary">{scan.scanner}</td>
+                    <td className="py-3 px-4 text-xs text-content-muted">
                       {new Date(scan.created_at).toLocaleString()}
                     </td>
-                    <td className="py-3 px-4 text-xs text-gray-500">{scan.findings_duplicates}</td>
+                    <td className="py-3 px-4 text-xs text-content-muted">{scan.findings_duplicates}</td>
                   </tr>
                 ))}
               </tbody>

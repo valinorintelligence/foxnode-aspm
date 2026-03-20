@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { Shield, Eye, EyeOff } from 'lucide-react'
+import { useThemeStore } from '../store/themeStore'
+import { Eye, EyeOff } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [form, setForm] = useState({ username: '', password: '', email: '', full_name: '' })
   const [loading, setLoading] = useState(false)
   const { login, register } = useAuthStore()
+  const { theme } = useThemeStore()
   const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,20 +34,21 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-surface-primary flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-foxnode-600 rounded-2xl mb-4">
-            <Shield className="w-9 h-9 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-white">Foxnode ASPM</h1>
-          <p className="text-gray-500 mt-1">Application Security Posture Management</p>
+        <div className="flex flex-col items-center mb-8">
+          <img
+            src={theme === 'dark' ? '/logo-dark.svg' : '/logo-light.svg'}
+            alt="FoxNode"
+            className="h-12 mb-3"
+          />
+          <p className="text-content-muted mt-1">Application Security Posture Management</p>
         </div>
 
         {/* Form */}
         <div className="card">
-          <h2 className="text-xl font-semibold text-white mb-6">
+          <h2 className="text-xl font-semibold text-content-primary mb-6">
             {isRegister ? 'Create Account' : 'Sign In'}
           </h2>
 
@@ -53,7 +56,7 @@ export default function LoginPage() {
             {isRegister && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
+                  <label className="block text-sm font-medium text-content-tertiary mb-1">Full Name</label>
                   <input
                     type="text"
                     className="input w-full"
@@ -62,7 +65,7 @@ export default function LoginPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-content-tertiary mb-1">Email</label>
                   <input
                     type="email"
                     className="input w-full"
@@ -75,7 +78,7 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Username</label>
+              <label className="block text-sm font-medium text-content-tertiary mb-1">Username</label>
               <input
                 type="text"
                 className="input w-full"
@@ -86,7 +89,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
+              <label className="block text-sm font-medium text-content-tertiary mb-1">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -98,7 +101,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-content-muted hover:text-content-secondary"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>

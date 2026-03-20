@@ -5,7 +5,6 @@ import {
   AlertTriangle,
   Plug,
   Upload,
-  Shield,
   Calendar,
   Settings,
   Brain,
@@ -20,6 +19,7 @@ import {
   ShieldAlert,
 } from 'lucide-react'
 import clsx from 'clsx'
+import { useThemeStore } from '../../store/themeStore'
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard', end: true },
@@ -41,17 +41,17 @@ const navItems = [
 ]
 
 export default function Sidebar() {
+  const { theme } = useThemeStore()
+
   return (
-    <aside className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col">
+    <aside className="w-64 bg-surface-secondary border-r border-border flex flex-col">
       {/* Logo */}
-      <div className="h-16 flex items-center gap-3 px-6 border-b border-gray-800">
-        <div className="w-8 h-8 bg-foxnode-600 rounded-lg flex items-center justify-center">
-          <Shield className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <h1 className="text-lg font-bold text-white tracking-tight">Foxnode</h1>
-          <p className="text-[10px] text-gray-500 uppercase tracking-widest -mt-1">ASPM Platform</p>
-        </div>
+      <div className="h-16 flex items-center px-5 border-b border-border">
+        <img
+          src={theme === 'dark' ? '/logo-dark.svg' : '/logo-light.svg'}
+          alt="FoxNode"
+          className="h-8"
+        />
       </div>
 
       {/* Navigation */}
@@ -66,7 +66,7 @@ export default function Sidebar() {
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
                 isActive
                   ? 'bg-foxnode-600/15 text-foxnode-400 border border-foxnode-500/20'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50',
+                  : 'text-content-tertiary hover:text-content-secondary hover:bg-surface-tertiary',
               )
             }
           >
@@ -85,7 +85,7 @@ export default function Sidebar() {
               'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
               isActive
                 ? 'bg-foxnode-600/15 text-foxnode-400 border border-foxnode-500/20'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50',
+                : 'text-content-tertiary hover:text-content-secondary hover:bg-surface-tertiary',
             )
           }
         >
@@ -95,9 +95,9 @@ export default function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="p-4 border-t border-gray-800">
-        <div className="text-xs text-gray-600 text-center">
-          Foxnode ASPM v1.0.0
+      <div className="p-4 border-t border-border">
+        <div className="text-xs text-content-muted text-center">
+          FoxNode v1.0.0
         </div>
       </div>
     </aside>

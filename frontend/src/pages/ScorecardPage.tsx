@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { useChartTheme } from '../lib/chartTheme'
 import { scorecardAPI } from '../services/api'
 import {
   Award,
@@ -32,10 +33,11 @@ const GRADE_COLORS: Record<string, { text: string; bg: string; border: string; g
 const TREND_ICONS: Record<string, { icon: any; color: string; label: string }> = {
   improving: { icon: TrendingUp, color: 'text-green-400', label: 'Improving' },
   declining: { icon: TrendingDown, color: 'text-red-400', label: 'Declining' },
-  stable: { icon: Minus, color: 'text-gray-400', label: 'Stable' },
+  stable: { icon: Minus, color: 'text-content-tertiary', label: 'Stable' },
 }
 
 export default function ScorecardPage() {
+  const chart = useChartTheme()
   const { data: overview, isLoading } = useQuery({
     queryKey: ['scorecard-overview'],
     queryFn: () => scorecardAPI.overview().then((r) => r.data),
@@ -47,7 +49,7 @@ export default function ScorecardPage() {
   })
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-64 text-gray-500">Loading scorecard...</div>
+    return <div className="flex items-center justify-center h-64 text-content-muted">Loading scorecard...</div>
   }
 
   // Handle both object-style {score, grade, trend} and flat-style {org_score, org_grade, org_trend}
@@ -67,8 +69,8 @@ export default function ScorecardPage() {
             <Award className="w-5 h-5 text-amber-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Security Scorecard</h1>
-            <p className="text-gray-500 text-sm">Track security posture with letter grades and trends</p>
+            <h1 className="text-2xl font-bold text-content-primary">Security Scorecard</h1>
+            <p className="text-content-muted text-sm">Track security posture with letter grades and trends</p>
           </div>
         </div>
       </div>
@@ -78,11 +80,11 @@ export default function ScorecardPage() {
         <div className="absolute top-0 right-0 w-64 h-64 opacity-5" style={{ background: `radial-gradient(circle, ${orgGrade.glow}, transparent 70%)` }} />
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-500 mb-1">Organization Security Score</p>
+            <p className="text-sm text-content-muted mb-1">Organization Security Score</p>
             <div className="flex items-end gap-4">
               <div className={clsx('text-7xl font-black', orgGrade.text)}>{orgScore.grade}</div>
               <div className="mb-2">
-                <p className="text-3xl font-bold text-white">{orgScore.score}<span className="text-lg text-gray-500">/100</span></p>
+                <p className="text-3xl font-bold text-content-primary">{orgScore.score}<span className="text-lg text-content-muted">/100</span></p>
                 <div className={clsx('flex items-center gap-1 mt-1', orgTrend.color)}>
                   <OrgTrendIcon className="w-4 h-4" />
                   <span className="text-sm font-medium">{orgTrend.label}</span>
@@ -93,11 +95,11 @@ export default function ScorecardPage() {
           <div className="text-right space-y-1">
             {overview?.breakdown && Object.entries(overview.breakdown).map(([key, val]: [string, any]) => (
               <div key={key} className="flex items-center gap-3 justify-end">
-                <span className="text-xs text-gray-500 capitalize">{key.replace(/_/g, ' ')}</span>
-                <div className="w-24 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                <span className="text-xs text-content-muted capitalize">{key.replace(/_/g, ' ')}</span>
+                <div className="w-24 h-1.5 bg-surface-tertiary rounded-full overflow-hidden">
                   <div className="h-full bg-foxnode-500 rounded-full" style={{ width: `${Math.min(val, 100)}%` }} />
                 </div>
-                <span className="text-xs text-gray-400 font-mono w-8 text-right">{val}%</span>
+                <span className="text-xs text-content-tertiary font-mono w-8 text-right">{val}%</span>
               </div>
             ))}
           </div>
@@ -107,15 +109,15 @@ export default function ScorecardPage() {
       {/* Score Trend Chart */}
       {trends?.data_points?.length > 0 && (
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">Score Trend — Last 30 Days</h3>
+          <h3 className="text-lg font-semibold text-content-primary mb-4">Score Trend — Last 30 Days</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={trends.data_points}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="date" stroke="#6b7280" tick={{ fontSize: 11 }} />
-                <YAxis domain={[0, 100]} stroke="#6b7280" tick={{ fontSize: 11 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={chart.gridStroke} />
+                <XAxis dataKey="date" stroke={chart.axisStroke} tick={{ fontSize: 11 }} />
+                <YAxis domain={[0, 100]} stroke={chart.axisStroke} tick={{ fontSize: 11 }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px', color: '#f3f4f6' }}
+                  contentStyle={{ backgroundColor: chart.tooltipStyle.backgroundColor, border: chart.tooltipStyle.border, borderRadius: chart.tooltipStyle.borderRadius, color: chart.tooltipStyle.color }}
                 />
                 <defs>
                   <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
@@ -132,55 +134,55 @@ export default function ScorecardPage() {
 
       {/* Product Leaderboard */}
       <div className="card p-0 overflow-hidden">
-        <div className="p-6 border-b border-gray-800">
+        <div className="p-6 border-b border-border">
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-amber-400" />
-            <h3 className="text-lg font-semibold text-white">Product Leaderboard</h3>
+            <h3 className="text-lg font-semibold text-content-primary">Product Leaderboard</h3>
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-800/50">
-                <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase w-12">Rank</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Product</th>
-                <th className="text-center py-3 px-4 text-xs font-medium text-gray-500 uppercase">Grade</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Score</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Trend</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Open Findings</th>
-                <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Recommendations</th>
+              <tr className="bg-surface-tertiary/50">
+                <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase w-12">Rank</th>
+                <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Product</th>
+                <th className="text-center py-3 px-4 text-xs font-medium text-content-muted uppercase">Grade</th>
+                <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Score</th>
+                <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Trend</th>
+                <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Open Findings</th>
+                <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Recommendations</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800/50">
+            <tbody className="divide-y divide-border/50">
               {overview?.leaderboard?.map((product: any, index: number) => {
                 const grade = GRADE_COLORS[product.grade] || GRADE_COLORS.F
                 const trend = TREND_ICONS[product.trend] || TREND_ICONS.stable
                 const TIcon = trend.icon
                 return (
-                  <tr key={product.product_id} className="hover:bg-gray-800/30 transition-colors">
+                  <tr key={product.product_id} className="hover:bg-surface-tertiary/30 transition-colors">
                     <td className="py-3 px-4">
                       {index < 3 ? (
                         <div className={clsx(
                           'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold',
                           index === 0 ? 'bg-amber-500/20 text-amber-400' :
-                          index === 1 ? 'bg-gray-400/20 text-gray-300' :
+                          index === 1 ? 'bg-gray-400/20 text-content-secondary' :
                           'bg-orange-600/20 text-orange-400'
                         )}>
                           {index === 0 ? <Star className="w-3.5 h-3.5" /> : index + 1}
                         </div>
                       ) : (
-                        <span className="text-sm text-gray-500 pl-2">{index + 1}</span>
+                        <span className="text-sm text-content-muted pl-2">{index + 1}</span>
                       )}
                     </td>
                     <td className="py-3 px-4">
-                      <p className="text-sm font-medium text-gray-200">{product.product_name}</p>
+                      <p className="text-sm font-medium text-content-secondary">{product.product_name}</p>
                     </td>
                     <td className="py-3 px-4 text-center">
                       <span className={clsx('text-2xl font-black', grade.text)}>{product.grade}</span>
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-20 h-2 bg-gray-800 rounded-full overflow-hidden">
+                        <div className="w-20 h-2 bg-surface-tertiary rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full"
                             style={{
@@ -189,7 +191,7 @@ export default function ScorecardPage() {
                             }}
                           />
                         </div>
-                        <span className="text-xs text-gray-400 font-mono">{product.score}</span>
+                        <span className="text-xs text-content-tertiary font-mono">{product.score}</span>
                       </div>
                     </td>
                     <td className="py-3 px-4">
@@ -199,11 +201,11 @@ export default function ScorecardPage() {
                       </span>
                     </td>
                     <td className="py-3 px-4">
-                      <span className="text-sm text-gray-400">{product.open_findings || 0}</span>
+                      <span className="text-sm text-content-tertiary">{product.open_findings || 0}</span>
                     </td>
                     <td className="py-3 px-4">
                       {product.recommendations?.[0] && (
-                        <p className="text-xs text-gray-500 max-w-xs truncate">{product.recommendations[0]}</p>
+                        <p className="text-xs text-content-muted max-w-xs truncate">{product.recommendations[0]}</p>
                       )}
                     </td>
                   </tr>

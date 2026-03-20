@@ -66,18 +66,18 @@ export default function IntegrationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Integrations</h1>
-        <p className="text-gray-500 mt-1">Connect your security tools and services</p>
+        <h1 className="text-2xl font-bold text-content-primary">Integrations</h1>
+        <p className="text-content-muted mt-1">Connect your security tools and services</p>
       </div>
 
       {/* Active Integrations */}
       {active?.length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-white mb-3">Active Integrations</h2>
+          <h2 className="text-lg font-semibold text-content-primary mb-3">Active Integrations</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {active.map((integration: any) => {
               const Icon = TYPE_ICONS[integration.integration_type] || Plug
-              const colors = TYPE_COLORS[integration.integration_type] || 'text-gray-400 bg-gray-500/10'
+              const colors = TYPE_COLORS[integration.integration_type] || 'text-content-tertiary bg-gray-500/10'
               return (
                 <div key={integration.id} className="card-hover group">
                   <div className="flex items-start justify-between">
@@ -86,7 +86,7 @@ export default function IntegrationsPage() {
                         <Icon className="w-5 h-5" />
                       </div>
                       <div>
-                        <h3 className="font-medium text-white">{integration.name}</h3>
+                        <h3 className="font-medium text-content-primary">{integration.name}</h3>
                         <div className="flex items-center gap-2 mt-0.5">
                           <CheckCircle className="w-3.5 h-3.5 text-green-400" />
                           <span className="text-xs text-green-400">Connected</span>
@@ -95,7 +95,7 @@ export default function IntegrationsPage() {
                     </div>
                     <button
                       onClick={() => deleteMutation.mutate(integration.id)}
-                      className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-500 hover:text-red-400 transition-all"
+                      className="opacity-0 group-hover:opacity-100 p-1.5 text-content-muted hover:text-red-400 transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -109,11 +109,11 @@ export default function IntegrationsPage() {
 
       {/* Available Tools */}
       <div>
-        <h2 className="text-lg font-semibold text-white mb-3">Available Tools</h2>
+        <h2 className="text-lg font-semibold text-content-primary mb-3">Available Tools</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {tools?.map((tool: any) => {
             const Icon = TYPE_ICONS[tool.type] || Plug
-            const colors = TYPE_COLORS[tool.type] || 'text-gray-400 bg-gray-500/10'
+            const colors = TYPE_COLORS[tool.type] || 'text-content-tertiary bg-gray-500/10'
             const isActive = activeToolNames.has(tool.name)
 
             return (
@@ -128,8 +128,8 @@ export default function IntegrationsPage() {
                   <Icon className="w-4.5 h-4.5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-white truncate">{tool.name}</h3>
-                  <p className="text-xs text-gray-500 truncate">{tool.description}</p>
+                  <h3 className="text-sm font-medium text-content-primary truncate">{tool.name}</h3>
+                  <p className="text-xs text-content-muted truncate">{tool.description}</p>
                 </div>
                 {isActive ? (
                   <CheckCircle className="w-4 h-4 text-green-400 shrink-0" />

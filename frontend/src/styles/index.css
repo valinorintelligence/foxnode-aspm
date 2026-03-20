@@ -10,6 +10,47 @@
     --color-medium: #d97706;
     --color-low: #2563eb;
     --color-info: #6b7280;
+
+    /* Theme: Light mode (default) */
+    --surface-primary: 248 250 252;
+    --surface-secondary: 255 255 255;
+    --surface-tertiary: 241 245 249;
+    --surface-elevated: 255 255 255;
+
+    --text-primary: 15 23 42;
+    --text-secondary: 51 65 85;
+    --text-tertiary: 100 116 139;
+    --text-muted: 148 163 184;
+
+    --border-primary: 226 232 240;
+    --border-secondary: 203 213 225;
+
+    --chart-bg: #ffffff;
+    --chart-border: #e2e8f0;
+    --chart-text: #334155;
+    --chart-grid: #e2e8f0;
+    --chart-axis: #94a3b8;
+  }
+
+  .dark {
+    --surface-primary: 2 6 23;
+    --surface-secondary: 17 24 39;
+    --surface-tertiary: 31 41 55;
+    --surface-elevated: 17 24 39;
+
+    --text-primary: 255 255 255;
+    --text-secondary: 229 231 235;
+    --text-tertiary: 156 163 175;
+    --text-muted: 107 114 128;
+
+    --border-primary: 31 41 55;
+    --border-secondary: 55 65 81;
+
+    --chart-bg: #1f2937;
+    --chart-border: #374151;
+    --chart-text: #f3f4f6;
+    --chart-grid: #374151;
+    --chart-axis: #6b7280;
   }
 
   body {
@@ -26,21 +67,22 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-700 rounded-full;
+    background-color: rgb(var(--border-secondary));
+    @apply rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-600;
+    background-color: rgb(var(--text-muted));
   }
 }
 
 @layer components {
   .card {
-    @apply bg-gray-900 border border-gray-800 rounded-xl p-6;
+    @apply bg-surface-elevated border border-border rounded-xl p-6;
   }
 
   .card-hover {
-    @apply card transition-all duration-200 hover:border-gray-700 hover:shadow-lg hover:shadow-black/20;
+    @apply card transition-all duration-200 hover:border-border-secondary hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/20;
   }
 
   .btn-primary {
@@ -48,7 +90,7 @@
   }
 
   .btn-secondary {
-    @apply bg-gray-800 hover:bg-gray-700 text-gray-200 font-medium px-4 py-2 rounded-lg border border-gray-700 transition-colors;
+    @apply bg-surface-tertiary hover:bg-border-secondary text-content-secondary font-medium px-4 py-2 rounded-lg border border-border-secondary transition-colors;
   }
 
   .btn-danger {
@@ -56,7 +98,7 @@
   }
 
   .input {
-    @apply bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-foxnode-500 focus:border-transparent transition-all;
+    @apply bg-surface-tertiary border border-border-secondary rounded-lg px-3 py-2 text-content-primary placeholder-content-muted focus:outline-none focus:ring-2 focus:ring-foxnode-500 focus:border-transparent transition-all;
   }
 
   .badge {

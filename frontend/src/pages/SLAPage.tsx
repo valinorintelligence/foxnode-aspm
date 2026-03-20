@@ -18,7 +18,7 @@ const RISK_COLORS: Record<string, string> = {
   high: 'bg-orange-500',
   medium: 'bg-yellow-500',
   low: 'bg-blue-500',
-  none: 'bg-gray-800',
+  none: 'bg-surface-tertiary',
 }
 
 const RISK_BG: Record<string, string> = {
@@ -26,7 +26,7 @@ const RISK_BG: Record<string, string> = {
   high: 'bg-orange-500/20 text-orange-300',
   medium: 'bg-yellow-500/20 text-yellow-300',
   low: 'bg-blue-500/20 text-blue-300',
-  none: 'bg-gray-800/50 text-gray-600',
+  none: 'bg-surface-tertiary/50 text-content-muted',
 }
 
 export default function SLAPage() {
@@ -51,7 +51,7 @@ export default function SLAPage() {
   })
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-64 text-gray-500">Loading SLA data...</div>
+    return <div className="flex items-center justify-center h-64 text-content-muted">Loading SLA data...</div>
   }
 
   return (
@@ -63,8 +63,8 @@ export default function SLAPage() {
             <Timer className="w-5 h-5 text-rose-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">SLA Tracker & Risk Heatmap</h1>
-            <p className="text-gray-500 text-sm">Monitor remediation timelines and identify risk concentration</p>
+            <h1 className="text-2xl font-bold text-content-primary">SLA Tracker & Risk Heatmap</h1>
+            <p className="text-content-muted text-sm">Monitor remediation timelines and identify risk concentration</p>
           </div>
         </div>
       </div>
@@ -77,7 +77,7 @@ export default function SLAPage() {
               <CheckCircle className="w-5 h-5 text-green-400" />
             </div>
             <div>
-              <p className="text-xs text-gray-500">Within SLA</p>
+              <p className="text-xs text-content-muted">Within SLA</p>
               <p className="text-2xl font-bold text-green-400">{status?.in_sla || 0}</p>
             </div>
           </div>
@@ -88,7 +88,7 @@ export default function SLAPage() {
               <XCircle className="w-5 h-5 text-red-400" />
             </div>
             <div>
-              <p className="text-xs text-gray-500">SLA Breached</p>
+              <p className="text-xs text-content-muted">SLA Breached</p>
               <p className="text-2xl font-bold text-red-400">{status?.breached || 0}</p>
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function SLAPage() {
               <Flame className="w-5 h-5 text-amber-400" />
             </div>
             <div>
-              <p className="text-xs text-gray-500">Breach Rate</p>
+              <p className="text-xs text-content-muted">Breach Rate</p>
               <p className="text-2xl font-bold text-amber-400">{status?.breach_rate || 0}%</p>
             </div>
           </div>
@@ -110,8 +110,8 @@ export default function SLAPage() {
               <Clock className="w-5 h-5 text-blue-400" />
             </div>
             <div>
-              <p className="text-xs text-gray-500">Avg Time to Fix</p>
-              <p className="text-2xl font-bold text-blue-400">{status?.avg_time_to_remediate_days || 0}<span className="text-sm text-gray-500">d</span></p>
+              <p className="text-xs text-content-muted">Avg Time to Fix</p>
+              <p className="text-2xl font-bold text-blue-400">{status?.avg_time_to_remediate_days || 0}<span className="text-sm text-content-muted">d</span></p>
             </div>
           </div>
         </div>
@@ -120,12 +120,12 @@ export default function SLAPage() {
       {/* SLA Targets */}
       {config && (
         <div className="card">
-          <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">SLA Targets</h3>
+          <h3 className="text-sm font-semibold text-content-tertiary uppercase mb-3">SLA Targets</h3>
           <div className="flex flex-wrap gap-4">
             {Object.entries(config.targets || {}).map(([sev, hours]: [string, any]) => (
-              <div key={sev} className="flex items-center gap-2 px-3 py-2 bg-gray-800/50 rounded-lg">
+              <div key={sev} className="flex items-center gap-2 px-3 py-2 bg-surface-tertiary/50 rounded-lg">
                 <SeverityBadge severity={sev} />
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-content-tertiary">
                   {hours < 24 ? `${hours}h` : hours < 168 ? `${Math.round(hours / 24)}d` : `${Math.round(hours / 168)}w`}
                 </span>
               </div>
@@ -139,8 +139,8 @@ export default function SLAPage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Shield className="w-5 h-5 text-foxnode-400" />
-            <h3 className="text-lg font-semibold text-white">Risk Heatmap</h3>
-            <span className="text-xs text-gray-500">Products × Severity</span>
+            <h3 className="text-lg font-semibold text-content-primary">Risk Heatmap</h3>
+            <span className="text-xs text-content-muted">Products × Severity</span>
           </div>
 
           <div className="overflow-x-auto">
@@ -163,16 +163,16 @@ export default function SLAPage() {
                 <table className="w-full">
                   <thead>
                     <tr>
-                      <th className="text-left py-2 px-3 text-xs font-medium text-gray-500 uppercase w-48">Product</th>
+                      <th className="text-left py-2 px-3 text-xs font-medium text-content-muted uppercase w-48">Product</th>
                       {['critical', 'high', 'medium', 'low', 'info'].map((sev) => (
-                        <th key={sev} className="text-center py-2 px-3 text-xs font-medium text-gray-500 uppercase">{sev}</th>
+                        <th key={sev} className="text-center py-2 px-3 text-xs font-medium text-content-muted uppercase">{sev}</th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-800/30">
+                  <tbody className="divide-y divide-border/30">
                     {matrixRows.map((row: any) => (
-                      <tr key={row.product_id} className="hover:bg-gray-800/20">
-                        <td className="py-2 px-3 text-sm text-gray-200 font-medium">{row.product_name}</td>
+                      <tr key={row.product_id} className="hover:bg-surface-tertiary/20">
+                        <td className="py-2 px-3 text-sm text-content-secondary font-medium">{row.product_name}</td>
                         {['critical', 'high', 'medium', 'low', 'info'].map((sev) => {
                           const cell = row.cells?.[sev] || { count: 0, breached_count: 0, risk_level: 'none' }
                           return (
@@ -192,7 +192,7 @@ export default function SLAPage() {
                                   )}
                                 </div>
                               ) : (
-                                <span className="text-gray-700">—</span>
+                                <span className="text-content-muted">—</span>
                               )}
                             </td>
                           )
@@ -206,17 +206,17 @@ export default function SLAPage() {
           </div>
 
           {/* Legend */}
-          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-800">
-            <span className="text-xs text-gray-500">Risk Level:</span>
+          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border">
+            <span className="text-xs text-content-muted">Risk Level:</span>
             {['critical', 'high', 'medium', 'low'].map((level) => (
               <span key={level} className="flex items-center gap-1.5 text-xs">
                 <div className={clsx('w-3 h-3 rounded', RISK_COLORS[level])} />
-                <span className="text-gray-400 capitalize">{level}</span>
+                <span className="text-content-tertiary capitalize">{level}</span>
               </span>
             ))}
             <span className="flex items-center gap-1.5 text-xs ml-4">
               <Flame className="w-3 h-3 text-red-400" />
-              <span className="text-gray-400">= SLA Breached</span>
+              <span className="text-content-tertiary">= SLA Breached</span>
             </span>
           </div>
         </div>
@@ -227,10 +227,10 @@ export default function SLAPage() {
         const breachList = Array.isArray(breaches) ? breaches : breaches?.findings || []
         return breachList.length > 0 ? (
         <div className="card p-0 overflow-hidden">
-          <div className="p-6 border-b border-gray-800">
+          <div className="p-6 border-b border-border">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-red-400" />
-              <h3 className="text-lg font-semibold text-white">SLA Breached Findings</h3>
+              <h3 className="text-lg font-semibold text-content-primary">SLA Breached Findings</h3>
               <span className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 px-2 py-0.5 rounded-full">
                 {breachList.length} breaches
               </span>
@@ -239,27 +239,27 @@ export default function SLAPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-800/50">
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Severity</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Title</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Product</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">SLA Target</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Elapsed</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Overdue By</th>
+                <tr className="bg-surface-tertiary/50">
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Severity</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Title</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Product</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">SLA Target</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Elapsed</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Overdue By</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/50">
+              <tbody className="divide-y divide-border/50">
                 {breachList.map((b: any) => {
                   const overdue = Math.max(0, b.elapsed_hours - b.sla_target_hours)
                   return (
-                    <tr key={b.finding_id} className="hover:bg-gray-800/30 transition-colors">
+                    <tr key={b.finding_id} className="hover:bg-surface-tertiary/30 transition-colors">
                       <td className="py-3 px-4"><SeverityBadge severity={b.severity} /></td>
-                      <td className="py-3 px-4 text-sm text-gray-200 max-w-xs truncate">{b.title}</td>
-                      <td className="py-3 px-4 text-sm text-gray-400">{b.product_name}</td>
-                      <td className="py-3 px-4 text-xs text-gray-500 font-mono">
+                      <td className="py-3 px-4 text-sm text-content-secondary max-w-xs truncate">{b.title}</td>
+                      <td className="py-3 px-4 text-sm text-content-tertiary">{b.product_name}</td>
+                      <td className="py-3 px-4 text-xs text-content-muted font-mono">
                         {b.sla_target_hours < 24 ? `${b.sla_target_hours}h` : `${Math.round(b.sla_target_hours / 24)}d`}
                       </td>
-                      <td className="py-3 px-4 text-xs text-gray-400 font-mono">
+                      <td className="py-3 px-4 text-xs text-content-tertiary font-mono">
                         {Math.round(b.elapsed_hours / 24)}d {Math.round(b.elapsed_hours % 24)}h
                       </td>
                       <td className="py-3 px-4">

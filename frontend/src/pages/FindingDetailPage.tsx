@@ -46,11 +46,11 @@ export default function FindingDetailPage() {
   })
 
   if (isLoading) {
-    return <div className="text-gray-500 text-center py-12">Loading finding...</div>
+    return <div className="text-content-muted text-center py-12">Loading finding...</div>
   }
 
   if (!finding) {
-    return <div className="text-gray-500 text-center py-12">Finding not found</div>
+    return <div className="text-content-muted text-center py-12">Finding not found</div>
   }
 
   return (
@@ -59,17 +59,17 @@ export default function FindingDetailPage() {
       <div className="flex items-start gap-4">
         <button
           onClick={() => navigate('/findings')}
-          className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded-lg transition-colors mt-0.5"
+          className="p-2 text-content-tertiary hover:text-content-secondary hover:bg-surface-tertiary rounded-lg transition-colors mt-0.5"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
             <SeverityBadge severity={finding.severity} />
-            <span className="text-xs text-gray-500 capitalize px-2 py-0.5 bg-gray-800 rounded">{finding.status}</span>
+            <span className="text-xs text-content-muted capitalize px-2 py-0.5 bg-surface-tertiary rounded">{finding.status}</span>
           </div>
-          <h1 className="text-xl font-bold text-white">{finding.title}</h1>
-          <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+          <h1 className="text-xl font-bold text-content-primary">{finding.title}</h1>
+          <div className="flex items-center gap-4 mt-2 text-xs text-content-muted">
             {finding.scanner && (
               <span className="flex items-center gap-1.5">
                 <Shield className="w-3.5 h-3.5" /> {finding.scanner}
@@ -93,18 +93,18 @@ export default function FindingDetailPage() {
           {/* Description */}
           {finding.description && (
             <div className="card">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">Description</h3>
-              <p className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">{finding.description}</p>
+              <h3 className="text-sm font-semibold text-content-tertiary uppercase mb-3">Description</h3>
+              <p className="text-sm text-content-secondary whitespace-pre-wrap leading-relaxed">{finding.description}</p>
             </div>
           )}
 
           {/* File Location */}
           {finding.file_path && (
             <div className="card">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">Location</h3>
-              <div className="flex items-center gap-2 p-3 bg-gray-800/50 rounded-lg font-mono text-sm">
-                <FileCode className="w-4 h-4 text-gray-500 shrink-0" />
-                <span className="text-gray-300">{finding.file_path}</span>
+              <h3 className="text-sm font-semibold text-content-tertiary uppercase mb-3">Location</h3>
+              <div className="flex items-center gap-2 p-3 bg-surface-tertiary/50 rounded-lg font-mono text-sm">
+                <FileCode className="w-4 h-4 text-content-muted shrink-0" />
+                <span className="text-content-secondary">{finding.file_path}</span>
                 {finding.line_number && (
                   <span className="text-foxnode-400">:{finding.line_number}</span>
                 )}
@@ -115,8 +115,8 @@ export default function FindingDetailPage() {
           {/* Mitigation */}
           {finding.mitigation && (
             <div className="card">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3">Recommended Mitigation</h3>
-              <p className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">{finding.mitigation}</p>
+              <h3 className="text-sm font-semibold text-content-tertiary uppercase mb-3">Recommended Mitigation</h3>
+              <p className="text-sm text-content-secondary whitespace-pre-wrap leading-relaxed">{finding.mitigation}</p>
             </div>
           )}
         </div>
@@ -125,9 +125,9 @@ export default function FindingDetailPage() {
         <div className="space-y-6">
           {/* Status / Actions */}
           <div className="card space-y-4">
-            <h3 className="text-sm font-semibold text-gray-400 uppercase">Actions</h3>
+            <h3 className="text-sm font-semibold text-content-tertiary uppercase">Actions</h3>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Status</label>
+              <label className="block text-xs text-content-muted mb-1">Status</label>
               <select
                 className="input w-full"
                 value={finding.status}
@@ -141,7 +141,7 @@ export default function FindingDetailPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Severity</label>
+              <label className="block text-xs text-content-muted mb-1">Severity</label>
               <select
                 className="input w-full"
                 value={finding.severity}
@@ -158,7 +158,7 @@ export default function FindingDetailPage() {
 
           {/* Details */}
           <div className="card space-y-3">
-            <h3 className="text-sm font-semibold text-gray-400 uppercase">Details</h3>
+            <h3 className="text-sm font-semibold text-content-tertiary uppercase">Details</h3>
             {finding.cvss_score != null && (
               <DetailRow label="CVSS Score" value={String(finding.cvss_score)} />
             )}
@@ -176,11 +176,11 @@ export default function FindingDetailPage() {
 
           {/* Jira Integration */}
           <div className="card space-y-3">
-            <h3 className="text-sm font-semibold text-gray-400 uppercase flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-content-tertiary uppercase flex items-center gap-2">
               <Link2 className="w-4 h-4" /> Jira
             </h3>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Project Key</label>
+              <label className="block text-xs text-content-muted mb-1">Project Key</label>
               <input
                 className="input w-full"
                 value={jiraProjectKey}
@@ -206,8 +206,8 @@ export default function FindingDetailPage() {
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between py-1.5">
-      <span className="text-xs text-gray-500">{label}</span>
-      <span className="text-xs text-gray-300 font-mono">{value}</span>
+      <span className="text-xs text-content-muted">{label}</span>
+      <span className="text-xs text-content-secondary font-mono">{value}</span>
     </div>
   )
 }

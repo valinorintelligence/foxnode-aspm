@@ -26,15 +26,15 @@ export default function FindingsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Findings</h1>
-          <p className="text-gray-500 mt-1">Vulnerability findings across all products</p>
+          <h1 className="text-2xl font-bold text-content-primary">Findings</h1>
+          <p className="text-content-muted mt-1">Vulnerability findings across all products</p>
         </div>
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-content-muted" />
           <input
             type="text"
             placeholder="Search findings..."
@@ -71,71 +71,71 @@ export default function FindingsPage() {
 
       {/* Table */}
       {isLoading ? (
-        <div className="text-gray-500 text-center py-12">Loading findings...</div>
+        <div className="text-content-muted text-center py-12">Loading findings...</div>
       ) : (
         <div className="card p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-800/50">
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Severity</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Title</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Scanner</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">File</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">CVE</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <tr className="bg-surface-tertiary/50">
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Severity</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Title</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Scanner</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">File</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">CVE</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Status</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/50">
+              <tbody className="divide-y divide-border/50">
                 {findings?.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="py-12 text-center">
-                      <AlertTriangle className="w-10 h-10 mx-auto mb-3 text-gray-600" />
-                      <p className="text-gray-500">No findings match your filters</p>
+                      <AlertTriangle className="w-10 h-10 mx-auto mb-3 text-content-muted" />
+                      <p className="text-content-muted">No findings match your filters</p>
                     </td>
                   </tr>
                 ) : (
                   findings?.map((finding: any) => (
-                    <tr key={finding.id} className="hover:bg-gray-800/30 transition-colors">
+                    <tr key={finding.id} className="hover:bg-surface-tertiary/30 transition-colors">
                       <td className="py-3 px-4">
                         <SeverityBadge severity={finding.severity} />
                       </td>
                       <td className="py-3 px-4">
                         <div className="max-w-sm">
-                          <p className="text-sm text-gray-200 font-medium truncate">{finding.title}</p>
+                          <p className="text-sm text-content-secondary font-medium truncate">{finding.title}</p>
                           {finding.component && (
-                            <p className="text-xs text-gray-500 mt-0.5">
+                            <p className="text-xs text-content-muted mt-0.5">
                               {finding.component}
                               {finding.component_version && `@${finding.component_version}`}
                             </p>
                           )}
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-sm text-gray-400">{finding.scanner || '-'}</td>
+                      <td className="py-3 px-4 text-sm text-content-tertiary">{finding.scanner || '-'}</td>
                       <td className="py-3 px-4">
                         {finding.file_path ? (
                           <div className="flex items-center gap-1.5">
-                            <FileCode className="w-3.5 h-3.5 text-gray-600 shrink-0" />
-                            <span className="text-xs text-gray-400 font-mono truncate max-w-[200px]">
+                            <FileCode className="w-3.5 h-3.5 text-content-muted shrink-0" />
+                            <span className="text-xs text-content-tertiary font-mono truncate max-w-[200px]">
                               {finding.file_path}
                               {finding.line_number && `:${finding.line_number}`}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-gray-600">-</span>
+                          <span className="text-content-muted">-</span>
                         )}
                       </td>
                       <td className="py-3 px-4">
                         {finding.cve ? (
                           <span className="text-xs text-foxnode-400 font-mono">{finding.cve}</span>
                         ) : (
-                          <span className="text-gray-600">-</span>
+                          <span className="text-content-muted">-</span>
                         )}
                       </td>
                       <td className="py-3 px-4">
                         <select
-                          className="bg-transparent text-xs text-gray-400 border border-gray-700 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-foxnode-500"
+                          className="bg-transparent text-xs text-content-tertiary border border-border-secondary rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-foxnode-500"
                           value={finding.status}
                           onChange={(e) =>
                             updateMutation.mutate({ id: finding.id, data: { status: e.target.value } })
@@ -151,7 +151,7 @@ export default function FindingsPage() {
                       <td className="py-3 px-4">
                         <button
                           onClick={() => navigate(`/findings/${finding.id}`)}
-                          className="p-1.5 text-gray-500 hover:text-foxnode-400 transition-colors"
+                          className="p-1.5 text-content-muted hover:text-foxnode-400 transition-colors"
                           title="View details"
                         >
                           <Eye className="w-4 h-4" />

@@ -108,14 +108,14 @@ export default function AttackPathPage() {
             <Network className="w-6 h-6 text-red-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Attack Path Analysis</h1>
-            <p className="text-gray-400 text-sm">
+            <h1 className="text-2xl font-bold text-content-primary">Attack Path Analysis</h1>
+            <p className="text-content-tertiary text-sm">
               Discover attack chains and visualize your attack surface
             </p>
           </div>
         </div>
         <select
-          className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-500/50"
+          className="bg-surface-tertiary border border-border-secondary rounded-lg px-3 py-2 text-sm text-content-primary focus:outline-none focus:ring-2 focus:ring-red-500/50"
           value={selectedProduct || ''}
           onChange={(e) =>
             setSelectedProduct(e.target.value ? Number(e.target.value) : null)
@@ -133,8 +133,8 @@ export default function AttackPathPage() {
       {/* Overview Stats (always shown) */}
       {overviewLoading ? (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
-          <span className="ml-2 text-gray-400 text-sm">Loading overview...</span>
+          <Loader2 className="w-6 h-6 text-content-tertiary animate-spin" />
+          <span className="ml-2 text-content-tertiary text-sm">Loading overview...</span>
         </div>
       ) : overviewData ? (
         <div className="grid grid-cols-4 gap-4">
@@ -170,13 +170,13 @@ export default function AttackPathPage() {
           ].map((s) => (
             <div
               key={s.label}
-              className={`bg-gradient-to-br ${s.gradient} border border-gray-700/50 rounded-xl p-4`}
+              className={`bg-gradient-to-br ${s.gradient} border border-border-secondary/50 rounded-xl p-4`}
             >
               <div className="flex items-center gap-2 mb-2">
                 <s.icon className={`w-4 h-4 ${s.color}`} />
-                <span className="text-xs text-gray-400">{s.label}</span>
+                <span className="text-xs text-content-tertiary">{s.label}</span>
               </div>
-              <div className={`text-2xl font-bold text-white`}>{s.value}</div>
+              <div className={`text-2xl font-bold text-content-primary`}>{s.value}</div>
             </div>
           ))}
         </div>
@@ -186,8 +186,8 @@ export default function AttackPathPage() {
       {!selectedProduct ? (
         <div className="space-y-4">
           {overviewData?.product_breakdown?.length > 0 ? (
-            <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6">
-              <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+            <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6">
+              <h3 className="text-sm font-semibold text-content-primary mb-4 flex items-center gap-2">
                 <Activity className="w-4 h-4 text-red-400" />
                 Products with Attack Paths
               </h3>
@@ -199,14 +199,14 @@ export default function AttackPathPage() {
                     <button
                       key={p.product_id}
                       onClick={() => setSelectedProduct(p.product_id)}
-                      className="w-full text-left bg-gray-900/50 border border-gray-700/50 rounded-lg p-4 hover:border-gray-600 transition-all"
+                      className="w-full text-left bg-surface-secondary/50 border border-border-secondary/50 rounded-lg p-4 hover:border-border-secondary transition-all"
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <h4 className="text-sm font-semibold text-white">
+                          <h4 className="text-sm font-semibold text-content-primary">
                             {p.product_name}
                           </h4>
-                          <p className="text-xs text-gray-400 mt-1">
+                          <p className="text-xs text-content-tertiary mt-1">
                             {p.attack_path_count} attack path{p.attack_path_count !== 1 ? 's' : ''} discovered
                             {' '}&middot;{' '}
                             Top chain: {p.top_path}
@@ -223,7 +223,7 @@ export default function AttackPathPage() {
                           >
                             {p.highest_risk_score}/100
                           </span>
-                          <ArrowRight className="w-4 h-4 text-gray-500" />
+                          <ArrowRight className="w-4 h-4 text-content-muted" />
                         </div>
                       </div>
                     </button>
@@ -232,10 +232,10 @@ export default function AttackPathPage() {
               </div>
             </div>
           ) : (
-            <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-12 text-center">
-              <Network className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-400">Select a Product</h3>
-              <p className="text-sm text-gray-500 mt-1">
+            <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-12 text-center">
+              <Network className="w-12 h-12 text-content-muted mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-content-tertiary">Select a Product</h3>
+              <p className="text-sm text-content-muted mt-1">
                 Choose a product to discover attack paths and visualize your attack surface
               </p>
             </div>
@@ -247,8 +247,8 @@ export default function AttackPathPage() {
           {/* Loading state */}
           {(pathsLoading || surfaceLoading) && (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
-              <span className="ml-2 text-gray-400 text-sm">Analyzing attack paths...</span>
+              <Loader2 className="w-6 h-6 text-content-tertiary animate-spin" />
+              <span className="ml-2 text-content-tertiary text-sm">Analyzing attack paths...</span>
             </div>
           )}
 
@@ -257,14 +257,14 @@ export default function AttackPathPage() {
             <div className="grid grid-cols-12 gap-6">
               {/* Attack Path Cards */}
               <div className="col-span-4 space-y-3">
-                <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-content-primary flex items-center gap-2">
                   <Zap className="w-4 h-4 text-orange-400" />
                   Discovered Attack Chains
                 </h3>
                 {attackPaths.length === 0 ? (
-                  <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6 text-center">
+                  <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6 text-center">
                     <Shield className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                    <p className="text-sm text-gray-400">No attack chains discovered</p>
+                    <p className="text-sm text-content-tertiary">No attack chains discovered</p>
                   </div>
                 ) : (
                   attackPaths.map((path: any, i: number) => {
@@ -278,11 +278,11 @@ export default function AttackPathPage() {
                         className={`w-full text-left border rounded-xl p-4 transition-all ${
                           isSelected
                             ? `${colors.bg} ${colors.border}`
-                            : 'bg-gray-800/50 border-gray-700/50 hover:border-gray-600'
+                            : 'bg-surface-tertiary/50 border-border-secondary/50 hover:border-border-secondary'
                         }`}
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="text-sm font-semibold text-white truncate pr-2">
+                          <h4 className="text-sm font-semibold text-content-primary truncate pr-2">
                             {path.name}
                           </h4>
                           <span
@@ -291,19 +291,19 @@ export default function AttackPathPage() {
                             {path.risk_score}/100
                           </span>
                         </div>
-                        <p className="text-xs text-gray-400 line-clamp-2 mb-2">
+                        <p className="text-xs text-content-tertiary line-clamp-2 mb-2">
                           {path.description}
                         </p>
 
                         {/* Likelihood & Impact badges */}
                         <div className="flex items-center gap-2 mb-2">
                           {path.likelihood && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-700/50 text-gray-300">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-border-secondary/50 text-content-secondary">
                               Likelihood: {path.likelihood}
                             </span>
                           )}
                           {path.impact && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-700/50 text-gray-300">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-border-secondary/50 text-content-secondary">
                               Impact: {path.impact}
                             </span>
                           )}
@@ -321,7 +321,7 @@ export default function AttackPathPage() {
                                 </span>
                               </div>
                               {ni < Math.min((path.nodes || []).length, 5) - 1 && (
-                                <ArrowRight className="w-3 h-3 text-gray-600 mx-0.5" />
+                                <ArrowRight className="w-3 h-3 text-content-muted mx-0.5" />
                               )}
                             </div>
                           ))}
@@ -356,13 +356,13 @@ export default function AttackPathPage() {
               {/* Attack Path Detail / Visualization */}
               <div className="col-span-8">
                 {selectedPath ? (
-                  <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6">
+                  <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h3 className="text-lg font-semibold text-white">
+                        <h3 className="text-lg font-semibold text-content-primary">
                           {selectedPath.name}
                         </h3>
-                        <p className="text-sm text-gray-400 mt-1">
+                        <p className="text-sm text-content-tertiary mt-1">
                           {selectedPath.description}
                         </p>
                       </div>
@@ -374,20 +374,20 @@ export default function AttackPathPage() {
                         >
                           {selectedPath.risk_score}/100
                         </div>
-                        <div className="text-xs text-gray-500">Risk Score</div>
+                        <div className="text-xs text-content-muted">Risk Score</div>
                       </div>
                     </div>
 
                     {/* Info badges */}
                     <div className="flex items-center gap-3 mb-6">
                       {selectedPath.likelihood && (
-                        <span className="text-xs px-2 py-1 rounded-lg bg-gray-700/50 text-gray-300 border border-gray-600/50">
-                          Likelihood: <span className="font-semibold text-white">{selectedPath.likelihood}</span>
+                        <span className="text-xs px-2 py-1 rounded-lg bg-border-secondary/50 text-content-secondary border border-border-secondary/50">
+                          Likelihood: <span className="font-semibold text-content-primary">{selectedPath.likelihood}</span>
                         </span>
                       )}
                       {selectedPath.impact && (
-                        <span className="text-xs px-2 py-1 rounded-lg bg-gray-700/50 text-gray-300 border border-gray-600/50">
-                          Impact: <span className="font-semibold text-white">{selectedPath.impact}</span>
+                        <span className="text-xs px-2 py-1 rounded-lg bg-border-secondary/50 text-content-secondary border border-border-secondary/50">
+                          Impact: <span className="font-semibold text-content-primary">{selectedPath.impact}</span>
                         </span>
                       )}
                       {selectedPath.mitigation_priority && (
@@ -442,12 +442,12 @@ export default function AttackPathPage() {
                                   />
                                 </div>
                                 {!isLast && (
-                                  <div className="w-px h-8 bg-gray-700 mt-2" />
+                                  <div className="w-px h-8 bg-border-secondary mt-2" />
                                 )}
                               </div>
-                              <div className="flex-1 bg-gray-900/50 rounded-lg p-3 border border-gray-700/50">
+                              <div className="flex-1 bg-surface-secondary/50 rounded-lg p-3 border border-border-secondary/50">
                                 <div className="flex items-center justify-between">
-                                  <h4 className="text-sm font-medium text-white">
+                                  <h4 className="text-sm font-medium text-content-primary">
                                     {typeof node === 'string'
                                       ? node
                                       : node.title || node.name}
@@ -458,7 +458,7 @@ export default function AttackPathPage() {
                                         riskColors[node.severity]?.bg || ''
                                       } ${
                                         riskColors[node.severity]?.text ||
-                                        'text-gray-400'
+                                        'text-content-tertiary'
                                       }`}
                                     >
                                       {node.severity}
@@ -466,12 +466,12 @@ export default function AttackPathPage() {
                                   )}
                                 </div>
                                 {node.description && (
-                                  <p className="text-xs text-gray-400 mt-1">
+                                  <p className="text-xs text-content-tertiary mt-1">
                                     {node.description}
                                   </p>
                                 )}
                                 {node.cwe && (
-                                  <span className="text-xs text-gray-500 mt-1 block">
+                                  <span className="text-xs text-content-muted mt-1 block">
                                     CWE-{node.cwe}
                                   </span>
                                 )}
@@ -488,7 +488,7 @@ export default function AttackPathPage() {
                         <h4 className="text-sm font-semibold text-blue-400 mb-2 flex items-center gap-2">
                           <Lock className="w-4 h-4" /> Mitigation Priority
                         </h4>
-                        <p className="text-sm text-gray-300">
+                        <p className="text-sm text-content-secondary">
                           {selectedPath.mitigation_priority === 'immediate'
                             ? 'This attack chain should be addressed immediately. The combination of vulnerabilities presents a critical risk to the system.'
                             : selectedPath.mitigation_priority === 'next_sprint'
@@ -499,12 +499,12 @@ export default function AttackPathPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-12 flex flex-col items-center justify-center h-full">
-                    <Network className="w-12 h-12 text-gray-600 mb-4" />
-                    <h3 className="text-lg font-medium text-gray-400">
+                  <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-12 flex flex-col items-center justify-center h-full">
+                    <Network className="w-12 h-12 text-content-muted mb-4" />
+                    <h3 className="text-lg font-medium text-content-tertiary">
                       Select an Attack Path
                     </h3>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-content-muted mt-1">
                       Click on an attack path to see the full chain visualization
                     </p>
                   </div>
@@ -516,7 +516,7 @@ export default function AttackPathPage() {
           {/* Attack Surface Section */}
           {!surfaceLoading && surfaceData && (
             <div>
-              <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-content-primary mb-3 flex items-center gap-2">
                 <Target className="w-4 h-4 text-yellow-400" />
                 Attack Surface
               </h3>
@@ -561,16 +561,16 @@ export default function AttackPathPage() {
                 ].map((cat) => (
                   <div
                     key={cat.label}
-                    className={`bg-gradient-to-br ${cat.bg} border border-gray-700/50 rounded-xl p-4`}
+                    className={`bg-gradient-to-br ${cat.bg} border border-border-secondary/50 rounded-xl p-4`}
                   >
                     <div className="flex items-center gap-2 mb-3">
                       <cat.icon className={`w-4 h-4 ${cat.color}`} />
                       <div>
-                        <span className="text-xs font-semibold text-white">{cat.label}</span>
-                        <span className="text-[10px] text-gray-500 block">{cat.subtitle}</span>
+                        <span className="text-xs font-semibold text-content-primary">{cat.label}</span>
+                        <span className="text-[10px] text-content-muted block">{cat.subtitle}</span>
                       </div>
                     </div>
-                    <div className="text-2xl font-bold text-white mb-3">{cat.count}</div>
+                    <div className="text-2xl font-bold text-content-primary mb-3">{cat.count}</div>
                     {/* Severity breakdown */}
                     <div className="space-y-1">
                       {['critical', 'high', 'medium', 'low'].map((sev) => {
@@ -598,14 +598,14 @@ export default function AttackPathPage() {
           {/* Risk Graph Visualization */}
           {!graphLoading && graphData && graphData.nodes?.length > 0 && (
             <div>
-              <h3 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-content-primary mb-3 flex items-center gap-2">
                 <Network className="w-4 h-4 text-cyan-400" />
                 Risk Graph
-                <span className="text-xs text-gray-500 font-normal ml-2">
+                <span className="text-xs text-content-muted font-normal ml-2">
                   {graphData.nodes.length} nodes &middot; {graphData.edges?.length || 0} edges
                 </span>
               </h3>
-              <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-6 overflow-hidden">
+              <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6 overflow-hidden">
                 {/* CSS-based graph layout */}
                 <div className="relative" style={{ minHeight: '320px' }}>
                   {/* Render edges as SVG lines */}
@@ -668,7 +668,7 @@ export default function AttackPathPage() {
                       const typeColors =
                         nodeTypeColors[nodeType] ||
                         nodeTypeColors['vulnerability'] ||
-                        { bg: 'bg-gray-500/20', text: 'text-gray-400', ring: 'ring-gray-500/40' }
+                        { bg: 'bg-gray-500/20', text: 'text-content-tertiary', ring: 'ring-gray-500/40' }
                       const sevColors = riskColors[severity] || riskColors['medium']
 
                       return (
@@ -683,7 +683,7 @@ export default function AttackPathPage() {
                               {node.cwe ? `${node.cwe}` : node.id}
                             </span>
                           </div>
-                          <p className="text-[10px] text-gray-300 leading-tight max-w-[120px] truncate">
+                          <p className="text-[10px] text-content-secondary leading-tight max-w-[120px] truncate">
                             {node.label}
                           </p>
                           <span
@@ -698,8 +698,8 @@ export default function AttackPathPage() {
                 </div>
 
                 {/* Legend */}
-                <div className="mt-4 pt-4 border-t border-gray-700/50 flex items-center gap-4 flex-wrap">
-                  <span className="text-[10px] text-gray-500 font-medium">Node Types:</span>
+                <div className="mt-4 pt-4 border-t border-border-secondary/50 flex items-center gap-4 flex-wrap">
+                  <span className="text-[10px] text-content-muted font-medium">Node Types:</span>
                   {[
                     { label: 'Entry Point', color: 'bg-red-400' },
                     { label: 'Weakness', color: 'bg-yellow-400' },
@@ -708,7 +708,7 @@ export default function AttackPathPage() {
                   ].map((leg) => (
                     <div key={leg.label} className="flex items-center gap-1.5">
                       <div className={`w-2.5 h-2.5 rounded-full ${leg.color}`} />
-                      <span className="text-[10px] text-gray-400">{leg.label}</span>
+                      <span className="text-[10px] text-content-tertiary">{leg.label}</span>
                     </div>
                   ))}
                 </div>

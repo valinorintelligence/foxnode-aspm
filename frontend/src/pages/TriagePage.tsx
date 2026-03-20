@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useChartTheme } from '../lib/chartTheme'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { triageAPI, productsAPI } from '../services/api'
 import {
@@ -20,11 +21,12 @@ const PRIORITY_CONFIG: Record<string, { color: string; bg: string; icon: any; la
   immediate: { color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/30', icon: Zap, label: 'Immediate' },
   next_sprint: { color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/30', icon: Clock, label: 'Next Sprint' },
   backlog: { color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/30', icon: ArrowRight, label: 'Backlog' },
-  monitor: { color: 'text-gray-400', bg: 'bg-gray-500/10 border-gray-500/30', icon: Eye, label: 'Monitor' },
+  monitor: { color: 'text-content-tertiary', bg: 'bg-gray-500/10 border-gray-500/30', icon: Eye, label: 'Monitor' },
 }
 
 export default function TriagePage() {
   const [selectedProduct, setSelectedProduct] = useState<string>('')
+  const chart = useChartTheme()
 
   const { data: products } = useQuery({
     queryKey: ['products'],
@@ -53,8 +55,8 @@ export default function TriagePage() {
               <Brain className="w-5 h-5 text-purple-400" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">AI Finding Triage</h1>
-              <p className="text-gray-500 text-sm">Intelligent prioritization and false positive detection</p>
+              <h1 className="text-2xl font-bold text-content-primary">AI Finding Triage</h1>
+              <p className="text-content-muted text-sm">Intelligent prioritization and false positive detection</p>
             </div>
           </div>
         </div>
@@ -93,8 +95,8 @@ export default function TriagePage() {
                     <Icon className={clsx('w-5 h-5', config.color)} />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500">{config.label}</p>
-                    <p className="text-2xl font-bold text-white">{count}</p>
+                    <p className="text-xs text-content-muted">{config.label}</p>
+                    <p className="text-2xl font-bold text-content-primary">{count}</p>
                   </div>
                 </div>
               </div>
@@ -110,19 +112,19 @@ export default function TriagePage() {
           <div className="card">
             <div className="flex items-center gap-2 mb-4">
               <XCircle className="w-5 h-5 text-yellow-400" />
-              <h3 className="text-lg font-semibold text-white">Likely False Positives</h3>
+              <h3 className="text-lg font-semibold text-content-primary">Likely False Positives</h3>
               <span className="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/30 px-2 py-0.5 rounded-full">
                 {fpCandidates.length} detected
               </span>
             </div>
             <div className="space-y-2">
               {fpCandidates.slice(0, 8).map((fp: any) => (
-                <div key={fp.finding_id} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                <div key={fp.finding_id} className="flex items-center justify-between p-3 bg-surface-tertiary/50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <SeverityBadge severity={fp.severity || 'medium'} />
                     <div>
-                      <p className="text-sm text-gray-200">{fp.title || `Finding #${fp.finding_id}`}</p>
-                      <p className="text-xs text-gray-500">{Array.isArray(fp.reasoning) ? fp.reasoning[0] : fp.reasoning}</p>
+                      <p className="text-sm text-content-secondary">{fp.title || `Finding #${fp.finding_id}`}</p>
+                      <p className="text-xs text-content-muted">{Array.isArray(fp.reasoning) ? fp.reasoning[0] : fp.reasoning}</p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -142,13 +144,13 @@ export default function TriagePage() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Filter className="w-5 h-5 text-blue-400" />
-            <h3 className="text-lg font-semibold text-white">Auto-Grouped Findings</h3>
+            <h3 className="text-lg font-semibold text-content-primary">Auto-Grouped Findings</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {Object.entries(summary.grouped_findings).map(([groupKey, findingIds]: [string, any]) => (
-              <div key={groupKey} className="p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+              <div key={groupKey} className="p-4 bg-surface-tertiary/50 rounded-lg border border-border-secondary/50">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-sm font-semibold text-white">{groupKey}</h4>
+                  <h4 className="text-sm font-semibold text-content-primary">{groupKey}</h4>
                   <span className="text-xs text-foxnode-400 font-mono">{Array.isArray(findingIds) ? findingIds.length : findingIds} findings</span>
                 </div>
               </div>
@@ -160,40 +162,40 @@ export default function TriagePage() {
       {/* Bulk Analysis Results */}
       {bulkResults?.results?.length > 0 && (
         <div className="card p-0 overflow-hidden">
-          <div className="p-6 border-b border-gray-800">
+          <div className="p-6 border-b border-border">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-green-400" />
-              <h3 className="text-lg font-semibold text-white">Triage Results</h3>
-              <span className="text-xs text-gray-500">Sorted by priority score</span>
+              <h3 className="text-lg font-semibold text-content-primary">Triage Results</h3>
+              <span className="text-xs text-content-muted">Sorted by priority score</span>
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-gray-800/50">
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Score</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Priority</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Severity</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Title</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">FP Likelihood</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase">Reasoning</th>
+                <tr className="bg-surface-tertiary/50">
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Score</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Priority</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Severity</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Title</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">FP Likelihood</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-content-muted uppercase">Reasoning</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/50">
+              <tbody className="divide-y divide-border/50">
                 {bulkResults.results.map((result: any) => {
                   const priorityConf = PRIORITY_CONFIG[result.priority] || PRIORITY_CONFIG.monitor
                   const PIcon = priorityConf.icon
                   return (
-                    <tr key={result.finding_id} className="hover:bg-gray-800/30 transition-colors">
+                    <tr key={result.finding_id} className="hover:bg-surface-tertiary/30 transition-colors">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           <div
                             className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
                             style={{
-                              background: `conic-gradient(${result.score >= 70 ? '#ef4444' : result.score >= 40 ? '#f59e0b' : '#10b981'} ${result.score}%, #1f2937 0)`,
+                              background: `conic-gradient(${result.score >= 70 ? '#ef4444' : result.score >= 40 ? '#f59e0b' : '#10b981'} ${result.score}%, var(--chart-border) 0)`,
                             }}
                           >
-                            <div className="w-6 h-6 rounded-full bg-gray-900 flex items-center justify-center text-white text-[10px]">
+                            <div className="w-6 h-6 rounded-full bg-surface-secondary flex items-center justify-center text-content-primary text-[10px]">
                               {result.score}
                             </div>
                           </div>
@@ -209,21 +211,21 @@ export default function TriagePage() {
                         <SeverityBadge severity={result.severity} />
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-sm text-gray-200 max-w-xs truncate">{result.title}</p>
+                        <p className="text-sm text-content-secondary max-w-xs truncate">{result.title}</p>
                       </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
-                          <div className="w-16 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                          <div className="w-16 h-1.5 bg-surface-tertiary rounded-full overflow-hidden">
                             <div
                               className={clsx('h-full rounded-full', result.false_positive_likelihood > 0.6 ? 'bg-yellow-400' : 'bg-gray-600')}
                               style={{ width: `${result.false_positive_likelihood * 100}%` }}
                             />
                           </div>
-                          <span className="text-xs text-gray-500">{Math.round(result.false_positive_likelihood * 100)}%</span>
+                          <span className="text-xs text-content-muted">{Math.round(result.false_positive_likelihood * 100)}%</span>
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <p className="text-xs text-gray-500 max-w-xs truncate">{result.reasoning?.[0]}</p>
+                        <p className="text-xs text-content-muted max-w-xs truncate">{result.reasoning?.[0]}</p>
                       </td>
                     </tr>
                   )
@@ -238,8 +240,8 @@ export default function TriagePage() {
       {!selectedProduct && !bulkResults && (
         <div className="card text-center py-16">
           <Brain className="w-16 h-16 mx-auto mb-4 text-purple-500/30" />
-          <h3 className="text-lg font-medium text-gray-300 mb-2">Select a Product to Begin</h3>
-          <p className="text-gray-500 max-w-md mx-auto">
+          <h3 className="text-lg font-medium text-content-secondary mb-2">Select a Product to Begin</h3>
+          <p className="text-content-muted max-w-md mx-auto">
             The AI triage engine analyzes your findings using pattern matching, severity weighting,
             and contextual scoring to prioritize what matters most.
           </p>

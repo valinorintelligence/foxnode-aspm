@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useChartTheme } from '../lib/chartTheme'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { apiSecurityAPI, productsAPI } from '../services/api'
 import { Globe, Shield, Lock, Unlock, AlertTriangle, Upload, Server, Key, Loader2, CheckCircle, XCircle, Clock } from 'lucide-react'
@@ -6,6 +7,7 @@ import toast from 'react-hot-toast'
 
 export default function APISecurityPage() {
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null)
+  const chart = useChartTheme()
   const [activeTab, setActiveTab] = useState<'posture' | 'endpoints' | 'risks'>('posture')
 
   const { data: products } = useQuery({ queryKey: ['products'], queryFn: () => productsAPI.list() })
@@ -55,13 +57,13 @@ export default function APISecurityPage() {
             <Globe className="w-6 h-6 text-green-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">API Security Posture</h1>
-            <p className="text-gray-400 text-sm">Monitor API endpoints, auth coverage, and data exposure risks</p>
+            <h1 className="text-2xl font-bold text-content-primary">API Security Posture</h1>
+            <p className="text-content-tertiary text-sm">Monitor API endpoints, auth coverage, and data exposure risks</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <select
-            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white"
+            className="bg-surface-tertiary border border-border-secondary rounded-lg px-3 py-2 text-sm text-content-primary"
             value={selectedProduct || ''}
             onChange={(e) => setSelectedProduct(e.target.value ? Number(e.target.value) : null)}
           >
@@ -89,12 +91,12 @@ export default function APISecurityPage() {
             { label: 'Data Exposure', value: overview.data.data_exposure_risks || 0, icon: AlertTriangle, color: 'text-yellow-400' },
             { label: 'Rate Limited', value: overview.data.rate_limited || '0%', icon: Clock, color: 'text-cyan-400' },
           ].map((s) => (
-            <div key={s.label} className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-4">
+            <div key={s.label} className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <s.icon className={`w-4 h-4 ${s.color}`} />
-                <span className="text-xs text-gray-400">{s.label}</span>
+                <span className="text-xs text-content-tertiary">{s.label}</span>
               </div>
-              <div className="text-2xl font-bold text-white">{s.value}</div>
+              <div className="text-2xl font-bold text-content-primary">{s.value}</div>
             </div>
           ))}
         </div>
@@ -103,7 +105,7 @@ export default function APISecurityPage() {
       {selectedProduct ? (
         <>
           {/* Tabs */}
-          <div className="flex gap-1 bg-gray-800/50 rounded-lg p-1 w-fit">
+          <div className="flex gap-1 bg-surface-tertiary/50 rounded-lg p-1 w-fit">
             {[
               { id: 'posture', label: 'Security Posture', icon: Shield },
               { id: 'endpoints', label: 'Endpoints', icon: Server },
@@ -113,7 +115,7 @@ export default function APISecurityPage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  activeTab === tab.id ? 'bg-green-600 text-white' : 'text-gray-400 hover:text-white'
+                  activeTab === tab.id ? 'bg-green-600 text-white' : 'text-content-tertiary hover:text-content-primary'
                 }`}
               >
                 <tab.icon className="w-4 h-4" /> {tab.label}
@@ -123,12 +125,12 @@ export default function APISecurityPage() {
 
           {activeTab === 'posture' && posture?.data && (
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-5">
-                <h3 className="text-lg font-semibold text-white mb-4">API Security Score</h3>
+              <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-5">
+                <h3 className="text-lg font-semibold text-content-primary mb-4">API Security Score</h3>
                 <div className="flex items-center justify-center mb-6">
                   <div className="relative w-32 h-32">
                     <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
-                      <circle cx="60" cy="60" r="50" stroke="#374151" strokeWidth="10" fill="none" />
+                      <circle cx="60" cy="60" r="50" stroke={chart.gridStroke} strokeWidth="10" fill="none" />
                       <circle
                         cx="60" cy="60" r="50" stroke="#10b981" strokeWidth="10" fill="none"
                         strokeDasharray={`${(posture.data.risk_score || posture.data.score || 65) * 3.14} 314`}
@@ -136,7 +138,7 @@ export default function APISecurityPage() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-3xl font-bold text-white">{posture.data.risk_score || posture.data.score || 65}</span>
+                      <span className="text-3xl font-bold text-content-primary">{posture.data.risk_score || posture.data.score || 65}</span>
                     </div>
                   </div>
                 </div>
@@ -147,19 +149,19 @@ export default function APISecurityPage() {
                     { label: 'Input Validation', status: posture.data.input_validation || 'Partial', ok: false },
                     { label: 'HTTPS Only', status: posture.data.https_only || 'Yes', ok: true },
                   ].map((item) => (
-                    <div key={item.label} className="flex items-center justify-between py-2 border-b border-gray-700/50 last:border-0">
-                      <span className="text-sm text-gray-400">{item.label}</span>
+                    <div key={item.label} className="flex items-center justify-between py-2 border-b border-border-secondary/50 last:border-0">
+                      <span className="text-sm text-content-tertiary">{item.label}</span>
                       <div className="flex items-center gap-2">
                         {item.ok ? <CheckCircle className="w-4 h-4 text-green-400" /> : <XCircle className="w-4 h-4 text-red-400" />}
-                        <span className="text-sm text-white">{item.status}</span>
+                        <span className="text-sm text-content-primary">{item.status}</span>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-5">
-                <h3 className="text-lg font-semibold text-white mb-4">API Categories</h3>
+              <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-5">
+                <h3 className="text-lg font-semibold text-content-primary mb-4">API Categories</h3>
                 <div className="space-y-3">
                   {(posture.data.api_findings_by_category || [
                     { category: 'Authentication', count: 3, severity: 'high' },
@@ -168,13 +170,13 @@ export default function APISecurityPage() {
                     { category: 'Rate Limiting', count: 1, severity: 'low' },
                     { category: 'Input Validation', count: 4, severity: 'high' },
                   ]).map((cat: any, i: number) => (
-                    <div key={i} className="flex items-center justify-between bg-gray-900/50 rounded-lg p-3">
+                    <div key={i} className="flex items-center justify-between bg-surface-secondary/50 rounded-lg p-3">
                       <div className="flex items-center gap-2">
-                        <Key className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm text-white">{cat.category}</span>
+                        <Key className="w-4 h-4 text-content-muted" />
+                        <span className="text-sm text-content-primary">{cat.category}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">{cat.count} findings</span>
+                        <span className="text-xs text-content-tertiary">{cat.count} findings</span>
                         <span className={`text-xs px-2 py-0.5 rounded-full ${
                           cat.severity === 'critical' ? 'bg-red-500/10 text-red-400' :
                           cat.severity === 'high' ? 'bg-orange-500/10 text-orange-400' :
@@ -189,26 +191,26 @@ export default function APISecurityPage() {
           )}
 
           {activeTab === 'endpoints' && (
-            <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl overflow-hidden">
+            <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl overflow-hidden">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-700/50">
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Method</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Path</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Auth</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Rate Limit</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-gray-400">Findings</th>
+                  <tr className="border-b border-border-secondary/50">
+                    <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary">Method</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary">Path</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary">Auth</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary">Rate Limit</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-content-tertiary">Findings</th>
                   </tr>
                 </thead>
                 <tbody>
                   {(endpoints?.data?.endpoints || endpoints?.data || []).map((ep: any, i: number) => (
-                    <tr key={i} className="border-b border-gray-800/50 hover:bg-gray-800/30">
+                    <tr key={i} className="border-b border-border/50 hover:bg-surface-tertiary/30">
                       <td className="px-4 py-3">
-                        <span className={`text-xs px-2 py-0.5 rounded font-mono font-bold ${methodColors[ep.method] || 'text-gray-400'}`}>
+                        <span className={`text-xs px-2 py-0.5 rounded font-mono font-bold ${methodColors[ep.method] || 'text-content-tertiary'}`}>
                           {ep.method}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm text-white font-mono">{ep.path}</td>
+                      <td className="px-4 py-3 text-sm text-content-primary font-mono">{ep.path}</td>
                       <td className="px-4 py-3">
                         {ep.auth_required || ep.authenticated ? (
                           <Lock className="w-4 h-4 text-green-400" />
@@ -220,10 +222,10 @@ export default function APISecurityPage() {
                         {ep.rate_limited ? (
                           <CheckCircle className="w-4 h-4 text-green-400" />
                         ) : (
-                          <XCircle className="w-4 h-4 text-gray-500" />
+                          <XCircle className="w-4 h-4 text-content-muted" />
                         )}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-400">{ep.finding_count || 0}</td>
+                      <td className="px-4 py-3 text-sm text-content-tertiary">{ep.finding_count || 0}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -240,12 +242,12 @@ export default function APISecurityPage() {
                   'bg-yellow-500/5 border-yellow-500/20'
                 }`}>
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-semibold text-white">{risk.title || risk.risk_type}</h4>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-gray-900/50 text-gray-300">{risk.severity}</span>
+                    <h4 className="text-sm font-semibold text-content-primary">{risk.title || risk.risk_type}</h4>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-surface-secondary/50 text-content-secondary">{risk.severity}</span>
                   </div>
-                  <p className="text-xs text-gray-400">{risk.description}</p>
+                  <p className="text-xs text-content-tertiary">{risk.description}</p>
                   {risk.affected_endpoints && (
-                    <p className="text-xs text-gray-500 mt-1">{risk.affected_endpoints.length} endpoints affected</p>
+                    <p className="text-xs text-content-muted mt-1">{risk.affected_endpoints.length} endpoints affected</p>
                   )}
                 </div>
               ))}
@@ -253,10 +255,10 @@ export default function APISecurityPage() {
           )}
         </>
       ) : (
-        <div className="bg-gray-800/50 border border-gray-700/50 rounded-xl p-12 text-center">
-          <Globe className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-400">Select a Product</h3>
-          <p className="text-sm text-gray-500 mt-1">Choose a product to analyze its API security posture</p>
+        <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-12 text-center">
+          <Globe className="w-12 h-12 text-content-muted mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-content-tertiary">Select a Product</h3>
+          <p className="text-sm text-content-muted mt-1">Choose a product to analyze its API security posture</p>
         </div>
       )}
     </div>
