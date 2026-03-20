@@ -99,3 +99,36 @@ export const notificationsAPI = {
   configure: (data: any) => api.post('/notifications/configure', data),
   testSlack: (webhookUrl?: string) => api.post('/notifications/test-slack', { webhook_url: webhookUrl }),
 }
+
+// AI Triage
+export const triageAPI = {
+  analyze: (findingId: number) => api.post(`/triage/analyze/${findingId}`),
+  bulkAnalyze: (productId: number) => api.post('/triage/bulk-analyze', { product_id: productId }),
+  summary: (productId: number) => api.get(`/triage/summary/${productId}`),
+}
+
+// Security Scorecard
+export const scorecardAPI = {
+  product: (productId: number) => api.get(`/scorecard/product/${productId}`),
+  overview: () => api.get('/scorecard/overview'),
+  trends: () => api.get('/scorecard/trends'),
+}
+
+// Compliance
+export const complianceAPI = {
+  frameworks: () => api.get('/compliance/frameworks'),
+  report: (frameworkId: string, productId?: number) =>
+    api.get(`/compliance/report/${frameworkId}`, { params: productId ? { product_id: productId } : {} }),
+  overview: () => api.get('/compliance/overview'),
+  gaps: (frameworkId: string) => api.get(`/compliance/gaps/${frameworkId}`),
+}
+
+// SLA & Risk Heatmap
+export const slaAPI = {
+  status: () => api.get('/sla/status'),
+  product: (productId: number) => api.get(`/sla/product/${productId}`),
+  breaches: () => api.get('/sla/breaches'),
+  heatmap: () => api.get('/sla/heatmap'),
+  config: () => api.get('/sla/config'),
+  updateConfig: (data: any) => api.post('/sla/config', data),
+}

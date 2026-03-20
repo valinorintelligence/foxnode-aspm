@@ -45,6 +45,10 @@ Foxnode ASPM is a modern, developer-friendly platform for managing application s
 | 🐳 **Docker-Ready** | One-command deployment with Docker Compose |
 | ⚡ **REST API** | Full API for CI/CD pipeline integration |
 | 🔄 **GitHub Actions CI/CD** | Built-in pipelines for lint, test, build, security scan, and Docker publish |
+| 🧠 **AI Finding Triage** | Intelligent prioritization engine with false positive detection, auto-grouping, and contextual scoring |
+| 🏆 **Security Scorecard** | Letter-grade (A–F) security posture scores per product with trend tracking and leaderboard |
+| 📋 **Compliance Mapping** | Map findings to OWASP Top 10, PCI-DSS, SOC 2, CIS Benchmarks, and ISO 27001 with gap analysis |
+| ⏱️ **SLA Tracker & Risk Heatmap** | Monitor remediation timelines, breach rates, and visualize risk concentration across products × severities |
 
 ---
 
@@ -129,7 +133,7 @@ foxnode-aspm/
 ├── frontend/                 # React 18 + TypeScript + Vite + TailwindCSS
 │   ├── src/
 │   │   ├── components/       # Layout (Sidebar, Header), SeverityBadge
-│   │   ├── pages/            # Dashboard, Products, Findings, Engagements, Integrations, ScanImport, Settings
+│   │   ├── pages/            # Dashboard, Products, Findings, Engagements, Integrations, ScanImport, Settings, AI Triage, Scorecard, Compliance, SLA Tracker
 │   │   ├── services/         # Axios API client (auth, products, findings, scans, jira, notifications, users)
 │   │   └── store/            # Zustand auth state management
 │   └── package.json
@@ -162,6 +166,17 @@ Once running, visit:
 | `POST` | `/api/v1/jira/create-issue/:findingId` | Create Jira issue from finding |
 | `POST` | `/api/v1/notifications/test-slack` | Test Slack webhook |
 | `GET/PATCH` | `/api/v1/users` | User management (Admin) |
+| `POST` | `/api/v1/triage/analyze/:findingId` | AI triage analysis for a finding |
+| `POST` | `/api/v1/triage/bulk-analyze` | Bulk AI triage for a product |
+| `GET` | `/api/v1/triage/summary/:productId` | Triage summary with priorities |
+| `GET` | `/api/v1/scorecard/overview` | Org-wide security scorecard |
+| `GET` | `/api/v1/scorecard/trends` | Score trend data (30 days) |
+| `GET` | `/api/v1/compliance/overview` | All frameworks compliance overview |
+| `GET` | `/api/v1/compliance/report/:frameworkId` | Detailed compliance report |
+| `GET` | `/api/v1/compliance/gaps/:frameworkId` | Gap analysis for framework |
+| `GET` | `/api/v1/sla/status` | SLA status summary |
+| `GET` | `/api/v1/sla/heatmap` | Risk heatmap (products × severity) |
+| `GET` | `/api/v1/sla/breaches` | SLA breached findings |
 
 ---
 

@@ -8,6 +8,10 @@ import {
   Shield,
   Calendar,
   Settings,
+  Brain,
+  Award,
+  ClipboardCheck,
+  Timer,
 } from 'lucide-react'
 import clsx from 'clsx'
 
@@ -18,6 +22,10 @@ const navItems = [
   { to: '/engagements', icon: Calendar, label: 'Engagements' },
   { to: '/integrations', icon: Plug, label: 'Integrations' },
   { to: '/scans/import', icon: Upload, label: 'Import Scans' },
+  { to: '/triage', icon: Brain, label: 'AI Triage' },
+  { to: '/scorecard', icon: Award, label: 'Scorecard' },
+  { to: '/compliance', icon: ClipboardCheck, label: 'Compliance' },
+  { to: '/sla', icon: Timer, label: 'SLA Tracker' },
 ]
 
 export default function Sidebar() {

@@ -11,6 +11,10 @@ import EngagementsPage from './pages/EngagementsPage'
 import IntegrationsPage from './pages/IntegrationsPage'
 import ScanImportPage from './pages/ScanImportPage'
 import SettingsPage from './pages/SettingsPage'
+import TriagePage from './pages/TriagePage'
+import ScorecardPage from './pages/ScorecardPage'
+import CompliancePage from './pages/CompliancePage'
+import SLAPage from './pages/SLAPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore()
@@ -36,6 +40,10 @@ export default function App() {
         <Route path="engagements" element={<EngagementsPage />} />
         <Route path="integrations" element={<IntegrationsPage />} />
         <Route path="scans/import" element={<ScanImportPage />} />
+        <Route path="triage" element={<TriagePage />} />
+        <Route path="scorecard" element={<ScorecardPage />} />
+        <Route path="compliance" element={<CompliancePage />} />
+        <Route path="sla" element={<SLAPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
     </Routes>
