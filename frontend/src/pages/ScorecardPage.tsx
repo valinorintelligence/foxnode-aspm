@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useChartTheme } from '../lib/chartTheme'
+import { safeObj } from '../lib/safe'
 import { scorecardAPI } from '../services/api'
 import {
   Award,
@@ -93,7 +94,7 @@ export default function ScorecardPage() {
             </div>
           </div>
           <div className="text-right space-y-1">
-            {overview?.breakdown && Object.entries(overview.breakdown).map(([key, val]: [string, any]) => (
+            {overview?.breakdown && Object.entries(safeObj(overview.breakdown)).map(([key, val]: [string, any]) => (
               <div key={key} className="flex items-center gap-3 justify-end">
                 <span className="text-xs text-content-muted capitalize">{key.replace(/_/g, ' ')}</span>
                 <div className="w-24 h-1.5 bg-surface-tertiary rounded-full overflow-hidden">

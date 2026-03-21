@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="docs/images/architecture-flowchart.svg" alt="Foxnode ASPM Architecture" width="100%"/>
+  <img src="docs/images/architecture-flowchart.svg" alt="FoxNode ASPM Architecture" width="100%"/>
 </p>
 
-<h1 align="center">Foxnode ASPM</h1>
+<h1 align="center">FoxNode ASPM</h1>
 <p align="center"><strong>Open-source Application Security Posture Management Platform</strong></p>
 
 <p align="center">
@@ -27,11 +27,11 @@
 
 ---
 
-## What is Foxnode ASPM?
+## What is FoxNode ASPM?
 
-Foxnode ASPM is a modern, developer-friendly platform for managing application security vulnerabilities across your entire software portfolio. It aggregates findings from **16+ security scanners**, deduplicates them intelligently, and provides actionable dashboards to track your security posture.
+FoxNode ASPM is a modern, developer-friendly platform for managing application security vulnerabilities across your entire software portfolio. It aggregates findings from **16+ security scanners**, deduplicates them intelligently, and provides actionable dashboards to track your security posture.
 
-> Built from the ground up with **React 18**, **TailwindCSS** dark theme, **FastAPI** async backend, and first-class integrations with **Jira** and **Slack**.
+> Built from the ground up with **React 18**, **TailwindCSS** with dark/light theme toggle, **FastAPI** async backend, and first-class integrations with **Jira** and **Slack**.
 
 ---
 
@@ -41,7 +41,14 @@ Foxnode ASPM is a modern, developer-friendly platform for managing application s
 > Real-time overview of your application security posture with severity distribution, scanner breakdown, and risk trends.
 
 <p align="center">
-  <img src="docs/images/screenshots/dashboard.png" alt="Security Dashboard" width="100%" style="border-radius: 8px;"/>
+  <img src="docs/images/screenshots/dashboard.png" alt="Security Dashboard — Dark Mode" width="100%" style="border-radius: 8px;"/>
+</p>
+
+### Dark & Light Theme
+> Toggle between dark and light modes with a single click. Theme preference is persisted across sessions.
+
+<p align="center">
+  <img src="docs/images/screenshots/dashboard-light.png" alt="Security Dashboard — Light Mode" width="100%" style="border-radius: 8px;"/>
 </p>
 
 ### Scan Import — 16+ Scanner Support
@@ -162,7 +169,7 @@ Foxnode ASPM is a modern, developer-friendly platform for managing application s
 ### Core Platform
 | | Feature | Description |
 |---|---------|-------------|
-| 🎨 | **Modern Dark UI** | React 18 + TailwindCSS — fast, beautiful, responsive dark theme |
+| 🎨 | **Dark & Light Theme** | React 18 + TailwindCSS — toggleable dark/light theme with localStorage persistence |
 | 🔍 | **16 Scanner Parsers** | Semgrep, Trivy, Snyk, ZAP, Nuclei, Gitleaks, Bandit, Checkov, SonarQube, Prowler, tfsec, TruffleHog, Dependency-Check, SARIF, and more |
 | 🧬 | **Smart Deduplication** | Hash-based dedup prevents duplicate findings across scans |
 | 📊 | **Real-time Dashboard** | Severity distribution, scanner breakdown, risk trends, top vulnerable products |
@@ -237,7 +244,7 @@ npm run dev
 
 ## 🔍 Supported Scanners
 
-Foxnode ASPM includes **16 built-in parsers** covering every category of security scanning:
+FoxNode ASPM includes **16 built-in parsers** covering every category of security scanning:
 
 | Category | Tools | Parser Key |
 |----------|-------|------------|
@@ -255,7 +262,7 @@ Foxnode ASPM includes **16 built-in parsers** covering every category of securit
 ## 📐 Architecture
 
 <p align="center">
-  <img src="docs/images/data-flow.svg" alt="Foxnode ASPM Data Flow" width="100%"/>
+  <img src="docs/images/data-flow.svg" alt="FoxNode ASPM Data Flow" width="100%"/>
 </p>
 
 ```
@@ -274,7 +281,7 @@ foxnode-aspm/
 │   │   ├── components/       # Layout (Sidebar, Header), SeverityBadge
 │   │   ├── pages/            # 19 pages: Dashboard, Products, Findings, Engagements, Integrations, ScanImport, Settings, AI Triage, Scorecard, Compliance, SLA Tracker, Metrics, Attack Paths, Security Agent, SBOM, Copilot, LLM Scanner, API Security
 │   │   ├── services/         # Axios API client
-│   │   └── store/            # Zustand auth state management
+│   │   └── store/            # Zustand auth + theme state management
 │   └── package.json
 ├── docker/                   # Dockerfiles + nginx config
 ├── .github/workflows/        # CI/CD pipeline + release workflow
@@ -415,7 +422,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ## ⭐ Star History
 
-If you find Foxnode ASPM useful, please consider giving it a star! It helps others discover the project.
+If you find FoxNode ASPM useful, please consider giving it a star! It helps others discover the project.
 
 ---
 

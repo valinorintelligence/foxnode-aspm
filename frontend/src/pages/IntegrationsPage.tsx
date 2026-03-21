@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { integrationsAPI } from '../services/api'
+import { safeArray } from '../lib/safe'
 import { Plus, Plug, Trash2, CheckCircle, Zap, Cloud, Shield, Search as SearchIcon, Bug, Key, Server, Bell } from 'lucide-react'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
@@ -71,11 +72,11 @@ export default function IntegrationsPage() {
       </div>
 
       {/* Active Integrations */}
-      {active?.length > 0 && (
+      {safeArray(active).length > 0 && (
         <div>
           <h2 className="text-lg font-semibold text-content-primary mb-3">Active Integrations</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {active.map((integration: any) => {
+            {safeArray(active).map((integration: any) => {
               const Icon = TYPE_ICONS[integration.integration_type] || Plug
               const colors = TYPE_COLORS[integration.integration_type] || 'text-content-tertiary bg-gray-500/10'
               return (

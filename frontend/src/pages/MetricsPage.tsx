@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useChartTheme } from '../lib/chartTheme'
+import { safeArray, safeObj } from '../lib/safe'
 import { metricsAPI } from '../services/api'
 import {
   Activity,
@@ -175,7 +176,7 @@ export default function MetricsPage() {
         {/* Key Metrics Row */}
         {execSummary?.key_metrics && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            {Object.entries(execSummary.key_metrics).slice(0, 4).map(([key, value]: [string, any]) => (
+            {Object.entries(safeObj(execSummary.key_metrics)).slice(0, 4).map(([key, value]: [string, any]) => (
               <div key={key} className="bg-surface-tertiary/40 rounded-lg p-3">
                 <div className="text-xs text-content-muted capitalize">{key.replace(/_/g, ' ')}</div>
                 <div className="text-lg font-bold text-content-primary">{value}</div>
@@ -185,11 +186,11 @@ export default function MetricsPage() {
         )}
 
         {/* Highlights */}
-        {execSummary?.highlights && execSummary.highlights.length > 0 && (
+        {safeArray(execSummary?.highlights).length > 0 && (
           <div className="mb-3">
             <h4 className="text-xs font-semibold text-content-tertiary uppercase mb-2">Highlights</h4>
             <div className="flex flex-wrap gap-2">
-              {execSummary.highlights.map((h: string, i: number) => (
+              {safeArray(execSummary.highlights).map((h: string, i: number) => (
                 <span key={i} className="text-xs bg-surface-tertiary/60 text-content-secondary px-3 py-1 rounded-full border border-border-secondary/50">
                   {h}
                 </span>
@@ -199,11 +200,11 @@ export default function MetricsPage() {
         )}
 
         {/* Action Items */}
-        {execSummary?.action_items && execSummary.action_items.length > 0 && (
+        {safeArray(execSummary?.action_items).length > 0 && (
           <div>
             <h4 className="text-xs font-semibold text-content-tertiary uppercase mb-2">Action Items</h4>
             <ul className="space-y-1">
-              {execSummary.action_items.map((item: string, i: number) => (
+              {safeArray(execSummary.action_items).map((item: string, i: number) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-content-secondary">
                   <Zap className="w-3 h-3 text-amber-400 mt-1 flex-shrink-0" />
                   {item}
@@ -268,11 +269,11 @@ export default function MetricsPage() {
           </div>
 
           {/* MTTR Trend Sparkline */}
-          {mttr.trend_data && mttr.trend_data.length > 0 && (
+          {safeArray(mttr.trend_data).length > 0 && (
             <div>
               <h4 className="text-xs text-content-muted mb-2">30-Day MTTR Trend</h4>
               <ResponsiveContainer width="100%" height={100}>
-                <AreaChart data={mttr.trend_data}>
+                <AreaChart data={safeArray(mttr.trend_data)}>
                   <CartesianGrid strokeDasharray="3 3" stroke={chart.gridStroke} />
                   <XAxis dataKey="date" tick={{ fill: '#6b7280', fontSize: 10 }} />
                   <YAxis tick={{ fill: '#6b7280', fontSize: 10 }} />
@@ -314,13 +315,12 @@ export default function MetricsPage() {
             <ResponsiveContainer width="100%" height={260}>
               <BarChart
                 layout="vertical"
-                data={aging.buckets || [
-                  { bucket: '0-7d', critical: 2, high: 5, medium: 8, low: 3 },
-                  { bucket: '7-30d', critical: 1, high: 3, medium: 12, low: 7 },
-                  { bucket: '30-90d', critical: 0, high: 2, medium: 6, low: 10 },
-                  { bucket: '90-180d', critical: 0, high: 1, medium: 3, low: 5 },
-                  { bucket: '180d+', critical: 0, high: 0, medium: 1, low: 2 },
-                ]}
+                data={Array.isArray(aging.buckets)
+                  ? aging.buckets
+                  : typeof aging.buckets === 'object' && aging.buckets
+                    ? Object.entries(aging.buckets).map(([bucket, counts]: [string, any]) => ({ bucket, ...safeObj(counts) }))
+                    : []}
+
               >
                 <CartesianGrid strokeDasharray="3 3" stroke={chart.gridStroke} />
                 <XAxis type="number" tick={{ fill: '#9ca3af', fontSize: 11 }} />
@@ -360,12 +360,12 @@ export default function MetricsPage() {
               )}
             </h3>
             <ResponsiveContainer width="100%" height={240}>
-              <AreaChart data={Array.isArray(burndown.data_points) ? burndown.data_points : Array.isArray(burndown) ? burndown : []}>
+              <AreaChart data={safeArray(burndown.data_points ?? burndown)}>
                 <CartesianGrid strokeDasharray="3 3" stroke={chart.gridStroke} />
                 <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 11 }} />
                 <YAxis tick={{ fill: '#9ca3af', fontSize: 11 }} />
                 <Tooltip {...DARK_TOOLTIP} />
-                <Area type="monotone" dataKey="risk_score" stroke="#10b981" fill="#10b981" fillOpacity={0.1} name="Risk Score" />
+                <Area type="monotone" dataKey="value" stroke="#10b981" fill="#10b981" fillOpacity={0.1} name="Risk Score" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -389,7 +389,7 @@ export default function MetricsPage() {
             <div>
               <h4 className="text-xs text-content-muted uppercase mb-3">Top Resolvers</h4>
               <div className="space-y-2">
-                {(velocity.top_resolvers || []).slice(0, 5).map((user: any, i: number) => (
+                {safeArray(velocity.top_resolvers).slice(0, 5).map((user: any, i: number) => (
                   <div key={i} className="flex items-center gap-3 bg-surface-secondary/30 rounded-lg p-2.5">
                     <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center text-sm font-bold text-purple-400">
                       {i + 1}
@@ -400,7 +400,7 @@ export default function MetricsPage() {
                     </div>
                   </div>
                 ))}
-                {(!velocity.top_resolvers || velocity.top_resolvers.length === 0) && (
+                {safeArray(velocity.top_resolvers).length === 0 && (
                   <p className="text-xs text-content-muted">No resolver data</p>
                 )}
               </div>
@@ -416,9 +416,9 @@ export default function MetricsPage() {
                   </span>
                 )}
               </div>
-              {velocity.weekly_data && velocity.weekly_data.length > 0 ? (
+              {safeArray(velocity.weekly_data).length > 0 ? (
                 <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={velocity.weekly_data}>
+                  <BarChart data={safeArray(velocity.weekly_data)}>
                     <CartesianGrid strokeDasharray="3 3" stroke={chart.gridStroke} />
                     <XAxis dataKey="week" tick={{ fill: '#9ca3af', fontSize: 11 }} />
                     <YAxis tick={{ fill: '#9ca3af', fontSize: 11 }} />
@@ -461,14 +461,13 @@ export default function MetricsPage() {
                 </tr>
               </thead>
               <tbody>
-                {(Array.isArray(scannerEff.scanners) ? scannerEff.scanners : Array.isArray(scannerEff) ? scannerEff : []).map((scanner: any, i: number) => {
-                  const name = scanner.name || (Array.isArray(scanner) ? scanner[0] : `Scanner ${i + 1}`)
-                  const data = scanner.data || scanner.stats || (Array.isArray(scanner) ? scanner[1] : scanner)
-                  const total = data?.total_findings ?? data?.total ?? 0
-                  const unique = data?.unique_findings ?? data?.unique ?? 0
-                  const duplicates = data?.duplicate_findings ?? data?.duplicates ?? (total - unique)
-                  const fpRate = data?.false_positive_rate ?? data?.fp_rate ?? 0
-                  const sevDist = data?.severity_distribution || data?.severities || {}
+                {safeArray(scannerEff.scanners ?? scannerEff).map((scanner: any, i: number) => {
+                  const name = scanner.name ?? scanner.scanner ?? `Scanner ${i + 1}`
+                  const total = scanner.total_findings ?? scanner.total ?? 0
+                  const unique = scanner.unique_findings ?? scanner.unique ?? 0
+                  const duplicates = scanner.duplicate_findings ?? scanner.duplicates ?? (total - unique)
+                  const fpRate = scanner.false_positive_rate ?? scanner.fp_rate ?? 0
+                  const sevDist = scanner.severity_distribution ?? scanner.severities ?? {}
 
                   return (
                     <tr key={i} className="border-b border-border-secondary/20 hover:bg-border-secondary/10">
@@ -483,7 +482,7 @@ export default function MetricsPage() {
                       </td>
                       <td className="py-3 pl-3">
                         <div className="flex items-center gap-1">
-                          {Object.entries(sevDist).map(([sev, count]: [string, any]) => (
+                          {Object.entries(safeObj(sevDist)).map(([sev, count]: [string, any]) => (
                             <span
                               key={sev}
                               className="text-[10px] px-1.5 py-0.5 rounded font-mono"
@@ -524,7 +523,7 @@ export default function MetricsPage() {
             Vulnerability Trends (90 Days)
           </h3>
           <ResponsiveContainer width="100%" height={280}>
-            <LineChart data={trends.data_points || trends.trend_data || []}>
+            <LineChart data={safeArray(trends.data_points ?? trends.trend_data)}>
               <CartesianGrid strokeDasharray="3 3" stroke={chart.gridStroke} />
               <XAxis dataKey="date" tick={{ fill: '#9ca3af', fontSize: 11 }} />
               <YAxis tick={{ fill: '#9ca3af', fontSize: 11 }} />

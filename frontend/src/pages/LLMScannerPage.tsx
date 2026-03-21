@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { safeArray } from '../lib/safe'
 import { llmScannerAPI, productsAPI } from '../services/api'
 import {
   ShieldAlert, Scan, Code, AlertTriangle, Loader2, CheckCircle, XCircle,
@@ -298,7 +299,7 @@ export default function LLMScannerPage() {
               onChange={(e) => setSelectedProduct(e.target.value ? Number(e.target.value) : null)}
             >
               <option value="">Select a product...</option>
-              {products?.data?.map((p: any) => (
+              {safeArray(products?.data).map((p: any) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
@@ -371,14 +372,14 @@ export default function LLMScannerPage() {
               </div>
 
               {/* Recommendations */}
-              {assessment.data.recommendations && assessment.data.recommendations.length > 0 && (
+              {safeArray(assessment.data.recommendations).length > 0 && (
                 <div className="bg-surface-tertiary border border-border-secondary rounded-xl p-5">
                   <h4 className="text-sm font-semibold text-content-primary mb-3 flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-400" />
                     Recommendations
                   </h4>
                   <div className="space-y-2">
-                    {assessment.data.recommendations.map((rec: string, i: number) => (
+                    {safeArray(assessment.data.recommendations).map((rec: string, i: number) => (
                       <div key={i} className="flex items-start gap-2 text-sm text-content-secondary">
                         <ChevronRight className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                         <span>{rec}</span>
@@ -497,7 +498,7 @@ export default function LLMScannerPage() {
               )}
 
               {/* Per-Product Risk Summary */}
-              {overview.data.products && overview.data.products.length > 0 && (
+              {safeArray(overview.data.products).length > 0 && (
                 <div className="bg-surface-tertiary border border-border-secondary rounded-xl overflow-hidden">
                   <div className="p-4 border-b border-border-secondary">
                     <h3 className="text-sm font-semibold text-content-primary flex items-center gap-2">
@@ -517,7 +518,7 @@ export default function LLMScannerPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border-secondary/50">
-                        {overview.data.products.map((p: any, i: number) => (
+                        {safeArray(overview.data.products).map((p: any, i: number) => (
                           <tr key={i} className="hover:bg-border-secondary/20 transition-colors">
                             <td className="px-4 py-3 text-content-primary font-medium">{p.name || p.product_name || `Product ${p.id}`}</td>
                             <td className="px-4 py-3">{riskLevelBadge(p.risk_level || p.ai_risk_level || 'none')}</td>
@@ -533,7 +534,7 @@ export default function LLMScannerPage() {
               )}
 
               {/* Empty state for products list */}
-              {(!overview.data.products || overview.data.products.length === 0) && (
+              {safeArray(overview.data.products).length === 0 && (
                 <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-10 text-center">
                   <Info className="w-10 h-10 text-content-muted mx-auto mb-3" />
                   <h3 className="text-base font-medium text-content-tertiary">No Product AI Data Yet</h3>

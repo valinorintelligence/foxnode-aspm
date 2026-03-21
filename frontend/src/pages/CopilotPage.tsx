@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { safeArray } from '../lib/safe'
 import { copilotAPI, productsAPI, findingsAPI } from '../services/api'
 import {
   Wand2,
@@ -87,7 +88,7 @@ export default function CopilotPage() {
     setTimeout(() => setCopiedBlock(null), 2000)
   }
 
-  const selectedFindingData = findings?.find((f: any) => f.id === selectedFinding)
+  const selectedFindingData = safeArray(findings).find((f: any) => f.id === selectedFinding)
   const bulkResults = bulkMutation.data?.data?.results
 
   return (
@@ -124,21 +125,21 @@ export default function CopilotPage() {
               }}
             >
               <option value="">Choose a product...</option>
-              {products?.map((p: any) => (
+              {safeArray(products).map((p: any) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
           </div>
 
           {/* Finding List */}
-          {findings && findings.length > 0 && (
+          {safeArray(findings).length > 0 && (
             <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-4 flex-1 flex flex-col min-h-0">
               <h3 className="text-sm font-semibold text-content-primary mb-3 flex items-center gap-2">
                 <FileWarning className="w-4 h-4 text-orange-400" />
-                Findings ({findings.length})
+                Findings ({safeArray(findings).length})
               </h3>
               <div className="flex-1 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
-                {findings.map((f: any) => (
+                {safeArray(findings).map((f: any) => (
                   <button
                     key={f.id}
                     onClick={() => handleFindingClick(f.id)}
@@ -250,14 +251,14 @@ export default function CopilotPage() {
               )}
 
               {/* Remediation Steps */}
-              {remediation.remediation_steps && remediation.remediation_steps.length > 0 && (
+              {safeArray(remediation.remediation_steps).length > 0 && (
                 <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-5">
                   <h3 className="text-base font-semibold text-content-primary mb-4 flex items-center gap-2">
                     <ListOrdered className="w-5 h-5 text-yellow-400" />
                     Remediation Steps
                   </h3>
                   <ol className="space-y-3">
-                    {remediation.remediation_steps.map((step: string, i: number) => (
+                    {safeArray(remediation.remediation_steps).map((step: string, i: number) => (
                       <li key={i} className="flex items-start gap-3">
                         <span className="w-7 h-7 bg-purple-500/20 text-purple-400 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 border border-purple-500/20">
                           {i + 1}
@@ -338,14 +339,14 @@ export default function CopilotPage() {
               )}
 
               {/* References */}
-              {remediation.references && remediation.references.length > 0 && (
+              {safeArray(remediation.references).length > 0 && (
                 <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-5">
                   <h3 className="text-base font-semibold text-content-primary mb-3 flex items-center gap-2">
                     <BookOpen className="w-5 h-5 text-blue-400" />
                     References
                   </h3>
                   <div className="space-y-2">
-                    {remediation.references.map((ref: any, i: number) => (
+                    {safeArray(remediation.references).map((ref: any, i: number) => (
                       <a
                         key={i}
                         href={typeof ref === 'string' ? ref : ref.url}
@@ -416,7 +417,7 @@ export default function CopilotPage() {
       </div>
 
       {/* Bulk Remediation Modal */}
-      {showBulkModal && bulkResults && (
+      {showBulkModal && safeArray(bulkResults).length > 0 && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="bg-surface-secondary border border-border-secondary rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] flex flex-col mx-4">
             {/* Modal Header */}
@@ -427,7 +428,7 @@ export default function CopilotPage() {
                 </div>
                 <div>
                   <h2 className="text-lg font-bold text-content-primary">Bulk Remediation Results</h2>
-                  <p className="text-sm text-content-tertiary">{bulkResults.length} findings analyzed</p>
+                  <p className="text-sm text-content-tertiary">{safeArray(bulkResults).length} findings analyzed</p>
                 </div>
               </div>
               <button
@@ -451,7 +452,7 @@ export default function CopilotPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {bulkResults.map((r: any, i: number) => (
+                  {safeArray(bulkResults).map((r: any, i: number) => (
                     <tr key={i} className="hover:bg-surface-tertiary/50 transition-colors">
                       <td className="py-3 pr-4">
                         <p className="text-sm text-content-primary font-medium truncate max-w-[250px]">

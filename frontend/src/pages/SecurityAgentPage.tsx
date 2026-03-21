@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { safeArray, safeObj } from '../lib/safe'
 import { securityAgentAPI, productsAPI } from '../services/api'
 import {
   Bot, Send, User, AlertTriangle, Shield, TrendingUp, Loader2,
@@ -185,7 +186,7 @@ export default function SecurityAgentPage() {
               onChange={(e) => setSelectedProduct(e.target.value ? Number(e.target.value) : null)}
             >
               <option value="">All Products</option>
-              {products?.data?.map((p: any) => (
+              {safeArray(products?.data).map((p: any) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
@@ -235,7 +236,7 @@ export default function SecurityAgentPage() {
                       )}
                       {msg.data.metrics && (
                         <div className="grid grid-cols-3 gap-2 mt-2">
-                          {Object.entries(msg.data.metrics).slice(0, 6).map(([key, val]) => (
+                          {Object.entries(safeObj(msg.data.metrics)).slice(0, 6).map(([key, val]) => (
                             <div key={key} className="bg-surface-secondary/50 rounded-lg p-2 text-center">
                               <div className="text-xs text-content-muted">{key.replace(/_/g, ' ')}</div>
                               <div className="text-sm font-bold text-content-primary">{String(val)}</div>
@@ -371,7 +372,7 @@ export default function SecurityAgentPage() {
               <div className="space-y-2">
                 <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Key Metrics</h4>
                 <div className="space-y-2">
-                  {Object.entries(sidePanelData.metrics).map(([key, val]) => (
+                  {Object.entries(safeObj(sidePanelData.metrics)).map(([key, val]) => (
                     <div key={key} className="flex items-center justify-between bg-surface-secondary/50 rounded-lg px-3 py-2">
                       <span className="text-xs text-content-tertiary capitalize">{key.replace(/_/g, ' ')}</span>
                       <span className="text-sm font-semibold text-content-primary">{String(val)}</span>
@@ -393,11 +394,11 @@ export default function SecurityAgentPage() {
             )}
 
             {/* Top Risks */}
-            {sidePanelData.top_risks && sidePanelData.top_risks.length > 0 && (
+            {safeArray(sidePanelData.top_risks).length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Top Risks</h4>
                 <div className="space-y-2">
-                  {sidePanelData.top_risks.map((risk: any, i: number) => (
+                  {safeArray(sidePanelData.top_risks).map((risk: any, i: number) => (
                     <div key={i} className="flex items-start gap-2 bg-surface-secondary/50 rounded-lg p-3">
                       <AlertTriangle className="w-3.5 h-3.5 text-yellow-400 mt-0.5 shrink-0" />
                       <span className="text-xs text-content-secondary">{risk.title || risk.name || risk}</span>
@@ -408,11 +409,11 @@ export default function SecurityAgentPage() {
             )}
 
             {/* Attack Chains */}
-            {sidePanelData.attack_chains && sidePanelData.attack_chains.length > 0 && (
+            {safeArray(sidePanelData.attack_chains).length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Attack Chains</h4>
                 <div className="space-y-2">
-                  {sidePanelData.attack_chains.map((chain: any, i: number) => (
+                  {safeArray(sidePanelData.attack_chains).map((chain: any, i: number) => (
                     <div key={i} className="bg-surface-secondary/50 rounded-lg p-3 space-y-1">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-medium text-content-primary">{chain.name}</span>
@@ -430,11 +431,11 @@ export default function SecurityAgentPage() {
             )}
 
             {/* Recommendations */}
-            {sidePanelData.recommendations && sidePanelData.recommendations.length > 0 && (
+            {safeArray(sidePanelData.recommendations).length > 0 && (
               <div className="space-y-2">
                 <h4 className="text-xs font-medium text-content-muted uppercase tracking-wider">Recommendations</h4>
                 <div className="space-y-2">
-                  {sidePanelData.recommendations.map((rec: any, i: number) => (
+                  {safeArray(sidePanelData.recommendations).map((rec: any, i: number) => (
                     <div key={i} className="flex items-start gap-2 bg-surface-secondary/50 rounded-lg p-3">
                       <TrendingUp className="w-3.5 h-3.5 text-emerald-400 mt-0.5 shrink-0" />
                       <span className="text-xs text-content-secondary">{rec.text || rec.title || rec}</span>

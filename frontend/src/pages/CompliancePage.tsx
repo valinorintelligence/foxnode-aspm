@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useChartTheme } from '../lib/chartTheme'
 import { useQuery } from '@tanstack/react-query'
+import { safeArray, safeObj, safeNum } from '../lib/safe'
 import { complianceAPI } from '../services/api'
 import {
   ClipboardCheck,
@@ -132,9 +133,9 @@ export default function CompliancePage() {
             {/* Progress Bar */}
             <div className="w-full h-3 bg-surface-tertiary rounded-full overflow-hidden">
               <div className="h-full flex">
-                <div className="bg-green-500 h-full" style={{ width: `${(report.passing_controls / report.total_controls) * 100}%` }} />
-                <div className="bg-red-500 h-full" style={{ width: `${(report.failing_controls / report.total_controls) * 100}%` }} />
-                <div className="bg-gray-600 h-full" style={{ width: `${((report.total_controls - report.passing_controls - report.failing_controls) / report.total_controls) * 100}%` }} />
+                <div className="bg-green-500 h-full" style={{ width: `${safeNum(report.total_controls) > 0 ? (safeNum(report.passing_controls) / safeNum(report.total_controls)) * 100 : 0}%` }} />
+                <div className="bg-red-500 h-full" style={{ width: `${safeNum(report.total_controls) > 0 ? (safeNum(report.failing_controls) / safeNum(report.total_controls)) * 100 : 0}%` }} />
+                <div className="bg-gray-600 h-full" style={{ width: `${safeNum(report.total_controls) > 0 ? ((safeNum(report.total_controls) - safeNum(report.passing_controls) - safeNum(report.failing_controls)) / safeNum(report.total_controls)) * 100 : 0}%` }} />
               </div>
             </div>
             <div className="flex gap-6 mt-3">
@@ -151,13 +152,13 @@ export default function CompliancePage() {
           </div>
 
           {/* Controls List (from report.gaps which contains all controls with their status) */}
-          {report.gaps && report.gaps.length > 0 && (
+          {safeArray(report.gaps).length > 0 && (
             <div className="card p-0 overflow-hidden">
               <div className="p-6 border-b border-border">
                 <h3 className="text-lg font-semibold text-content-primary">Controls</h3>
               </div>
               <div className="divide-y divide-border/50">
-                {report.gaps.map((control: any) => (
+                {safeArray(report.gaps).map((control: any) => (
                   <div key={control.control_id} className="flex items-center justify-between p-4 hover:bg-surface-tertiary/30 transition-colors">
                     <div className="flex items-center gap-3 flex-1">
                       {control.gap_type === 'no_coverage' ? (
@@ -194,7 +195,7 @@ export default function CompliancePage() {
           )}
 
           {/* Gap Analysis */}
-          {gaps && (gaps.no_coverage?.length > 0 || gaps.failing?.length > 0) && (
+          {gaps && (safeArray(gaps.no_coverage).length > 0 || safeArray(gaps.failing).length > 0) && (
             <div className="card">
               <div className="flex items-center gap-2 mb-4">
                 <BarChart3 className="w-5 h-5 text-amber-400" />
@@ -206,7 +207,7 @@ export default function CompliancePage() {
                 )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {[...(gaps.no_coverage || []), ...(gaps.failing || [])].map((gap: any, i: number) => (
+                {[...safeArray(gaps.no_coverage), ...safeArray(gaps.failing)].map((gap: any, i: number) => (
                   <div key={i} className={clsx(
                     'p-4 rounded-lg border',
                     gap.gap_type === 'failing' ? 'bg-red-500/5 border-red-800/30' : 'bg-amber-500/5 border-amber-800/30'

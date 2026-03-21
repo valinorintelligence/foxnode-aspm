@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { scansAPI, productsAPI } from '../services/api'
+import { safeArray } from '../lib/safe'
 import { Upload, FileUp, CheckCircle, XCircle, Clock, AlertTriangle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
@@ -85,7 +86,7 @@ export default function ScanImportPage() {
                   onChange={(e) => setSelectedScanner(e.target.value)}
                 >
                   <option value="">Select scanner...</option>
-                  {parsers?.map((p: any) => (
+                  {safeArray(parsers).map((p: any) => (
                     <option key={p.name} value={p.name}>
                       {p.name} ({p.scan_type})
                     </option>
@@ -100,7 +101,7 @@ export default function ScanImportPage() {
                   onChange={(e) => setSelectedProduct(e.target.value)}
                 >
                   <option value="">Select product...</option>
-                  {products?.map((p: any) => (
+                  {safeArray(products).map((p: any) => (
                     <option key={p.id} value={p.id}>
                       {p.name}
                     </option>
@@ -169,7 +170,7 @@ export default function ScanImportPage() {
         <div className="card h-fit">
           <h3 className="text-lg font-semibold text-content-primary mb-4">Supported Scanners</h3>
           <div className="space-y-2">
-            {parsers?.map((p: any) => (
+            {safeArray(parsers).map((p: any) => (
               <div
                 key={p.name}
                 className="flex items-center justify-between p-2.5 bg-surface-tertiary/50 rounded-lg"
@@ -183,7 +184,7 @@ export default function ScanImportPage() {
       </div>
 
       {/* Import History */}
-      {history?.length > 0 && (
+      {safeArray(history).length > 0 && (
         <div className="card">
           <h3 className="text-lg font-semibold text-content-primary mb-4">Import History</h3>
           <div className="overflow-x-auto">
@@ -198,7 +199,7 @@ export default function ScanImportPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
-                {history.map((scan: any) => (
+                {safeArray(history).map((scan: any) => (
                   <tr key={scan.id} className="hover:bg-surface-tertiary/30">
                     <td className="py-3 px-4">
                       {scan.status === 'completed' ? (

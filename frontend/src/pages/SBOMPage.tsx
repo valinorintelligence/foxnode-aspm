@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useChartTheme } from '../lib/chartTheme'
+import { safeArray, safeObj } from '../lib/safe'
 import { sbomAPI, productsAPI } from '../services/api'
 import {
   Package, AlertTriangle, Scale, Shield, Box, Layers, FileCode,
@@ -57,7 +58,7 @@ export default function SBOMPage() {
 
   // Load products and overview on mount
   useEffect(() => {
-    productsAPI.list().then((res) => setProducts(res.data || [])).catch(() => {})
+    productsAPI.list().then((res) => setProducts(safeArray(res.data))).catch(() => {})
     sbomAPI.overview().then((res) => setOverview(res.data)).catch(() => {})
   }, [])
 
@@ -79,16 +80,16 @@ export default function SBOMPage() {
       try {
         if (activeTab === 'components') {
           const res = await sbomAPI.components(selectedProduct)
-          setComponents(res.data?.components || res.data || [])
+          setComponents(safeArray(res.data?.components ?? res.data))
         } else if (activeTab === 'vulnerabilities') {
           const res = await sbomAPI.vulnerabilities(selectedProduct)
-          setVulns(res.data?.vulnerabilities || res.data || [])
+          setVulns(safeArray(res.data?.vulnerabilities ?? res.data))
         } else if (activeTab === 'licenses') {
           const res = await sbomAPI.licenses(selectedProduct)
           setLicenses(res.data)
         } else if (activeTab === 'supply-chain') {
           const res = await sbomAPI.supplyChainRisks(selectedProduct)
-          setSupplyChain(res.data?.risks || res.data || [])
+          setSupplyChain(safeArray(res.data?.risks ?? res.data))
         } else if (activeTab === 'summary') {
           const res = await sbomAPI.product(selectedProduct)
           setSummary(res.data)
@@ -134,7 +135,7 @@ export default function SBOMPage() {
   const componentTypeData = (() => {
     if (!components.length && !summary?.component_breakdown) return []
     if (summary?.component_breakdown) {
-      return Object.entries(summary.component_breakdown).map(([name, value]: [string, any]) => ({
+      return Object.entries(safeObj(summary.component_breakdown)).map(([name, value]: [string, any]) => ({
         name,
         value: typeof value === 'number' ? value : 0,
       }))

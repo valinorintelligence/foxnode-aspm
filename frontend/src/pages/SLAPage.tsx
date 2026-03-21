@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { safeObj } from '../lib/safe'
 import { slaAPI } from '../services/api'
 import {
   Timer,
@@ -122,7 +123,7 @@ export default function SLAPage() {
         <div className="card">
           <h3 className="text-sm font-semibold text-content-tertiary uppercase mb-3">SLA Targets</h3>
           <div className="flex flex-wrap gap-4">
-            {Object.entries(config.targets || {}).map(([sev, hours]: [string, any]) => (
+            {Object.entries(safeObj(config?.targets)).map(([sev, hours]: [string, any]) => (
               <div key={sev} className="flex items-center gap-2 px-3 py-2 bg-surface-tertiary/50 rounded-lg">
                 <SeverityBadge severity={sev} />
                 <span className="text-xs text-content-tertiary">

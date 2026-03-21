@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { safeArray, safeNum } from '../lib/safe'
 import { useChartTheme } from '../lib/chartTheme'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { apiSecurityAPI, productsAPI } from '../services/api'

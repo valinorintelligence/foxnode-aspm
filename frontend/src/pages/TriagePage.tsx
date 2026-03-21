@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useChartTheme } from '../lib/chartTheme'
 import { useQuery, useMutation } from '@tanstack/react-query'
+import { safeArray, safeObj } from '../lib/safe'
 import { triageAPI, productsAPI } from '../services/api'
 import {
   Brain,
@@ -67,7 +68,7 @@ export default function TriagePage() {
             onChange={(e) => setSelectedProduct(e.target.value)}
           >
             <option value="">Select product...</option>
-            {products?.map((p: any) => (
+            {safeArray(products).map((p: any) => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
           </select>
@@ -140,14 +141,14 @@ export default function TriagePage() {
       })()}
 
       {/* Grouped Findings */}
-      {summary?.grouped_findings && Object.keys(summary.grouped_findings).length > 0 && (
+      {Object.keys(safeObj(summary?.grouped_findings)).length > 0 && (
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Filter className="w-5 h-5 text-blue-400" />
             <h3 className="text-lg font-semibold text-content-primary">Auto-Grouped Findings</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {Object.entries(summary.grouped_findings).map(([groupKey, findingIds]: [string, any]) => (
+            {Object.entries(safeObj(summary?.grouped_findings)).map(([groupKey, findingIds]: [string, any]) => (
               <div key={groupKey} className="p-4 bg-surface-tertiary/50 rounded-lg border border-border-secondary/50">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-sm font-semibold text-content-primary">{groupKey}</h4>

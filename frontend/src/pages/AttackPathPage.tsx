@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { safeArray, safeObj, safeNum } from '../lib/safe'
 import { attackPathAPI, productsAPI } from '../services/api'
 import {
   Network, AlertTriangle, Shield, Target, ArrowRight, Zap, Globe,
@@ -90,12 +91,13 @@ export default function AttackPathPage() {
   const overviewData = overview?.data || null
 
   // Compute average risk score from overview product_breakdown
-  const avgRiskScore = overviewData?.product_breakdown?.length
+  const productBreakdown = safeArray(overviewData?.product_breakdown)
+  const avgRiskScore = productBreakdown.length
     ? Math.round(
-        overviewData.product_breakdown.reduce(
-          (sum: number, p: any) => sum + (p.highest_risk_score || 0),
+        productBreakdown.reduce(
+          (sum: number, p: any) => sum + safeNum(p.highest_risk_score),
           0
-        ) / overviewData.product_breakdown.length
+        ) / productBreakdown.length
       )
     : 0
 
@@ -122,7 +124,7 @@ export default function AttackPathPage() {
           }
         >
           <option value="">Select product...</option>
-          {products?.data?.map((p: any) => (
+          {safeArray(products?.data).map((p: any) => (
             <option key={p.id} value={p.id}>
               {p.name}
             </option>
@@ -185,14 +187,14 @@ export default function AttackPathPage() {
       {/* Product Not Selected - Overview Details */}
       {!selectedProduct ? (
         <div className="space-y-4">
-          {overviewData?.product_breakdown?.length > 0 ? (
+          {productBreakdown.length > 0 ? (
             <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6">
               <h3 className="text-sm font-semibold text-content-primary mb-4 flex items-center gap-2">
                 <Activity className="w-4 h-4 text-red-400" />
                 Products with Attack Paths
               </h3>
               <div className="space-y-3">
-                {overviewData.product_breakdown.map((p: any) => {
+                {productBreakdown.map((p: any) => {
                   const risk = getRiskLevel(p.highest_risk_score || 0)
                   const colors = riskColors[risk]
                   return (
@@ -596,13 +598,13 @@ export default function AttackPathPage() {
           )}
 
           {/* Risk Graph Visualization */}
-          {!graphLoading && graphData && graphData.nodes?.length > 0 && (
+          {!graphLoading && graphData && safeArray(graphData.nodes).length > 0 && (
             <div>
               <h3 className="text-sm font-semibold text-content-primary mb-3 flex items-center gap-2">
                 <Network className="w-4 h-4 text-cyan-400" />
                 Risk Graph
                 <span className="text-xs text-content-muted font-normal ml-2">
-                  {graphData.nodes.length} nodes &middot; {graphData.edges?.length || 0} edges
+                  {safeArray(graphData.nodes).length} nodes &middot; {safeArray(graphData.edges).length} edges
                 </span>
               </h3>
               <div className="bg-surface-tertiary/50 border border-border-secondary/50 rounded-xl p-6 overflow-hidden">
@@ -613,16 +615,16 @@ export default function AttackPathPage() {
                     className="absolute inset-0 w-full h-full pointer-events-none"
                     style={{ zIndex: 0 }}
                   >
-                    {(graphData.edges || []).map((edge: any, ei: number) => {
-                      const sourceIdx = graphData.nodes.findIndex(
+                    {safeArray(graphData.edges).map((edge: any, ei: number) => {
+                      const sourceIdx = safeArray(graphData.nodes).findIndex(
                         (n: any) => n.id === edge.source
                       )
-                      const targetIdx = graphData.nodes.findIndex(
+                      const targetIdx = safeArray(graphData.nodes).findIndex(
                         (n: any) => n.id === edge.target
                       )
                       if (sourceIdx === -1 || targetIdx === -1) return null
 
-                      const cols = Math.min(graphData.nodes.length, 6)
+                      const cols = Math.min(safeArray(graphData.nodes).length, 6)
                       const sRow = Math.floor(sourceIdx / cols)
                       const sCol = sourceIdx % cols
                       const tRow = Math.floor(targetIdx / cols)
@@ -656,13 +658,13 @@ export default function AttackPathPage() {
                     className="relative grid gap-4"
                     style={{
                       gridTemplateColumns: `repeat(${Math.min(
-                        graphData.nodes.length,
+                        safeArray(graphData.nodes).length,
                         6
                       )}, 1fr)`,
                       zIndex: 1,
                     }}
                   >
-                    {graphData.nodes.map((node: any) => {
+                    {safeArray(graphData.nodes).map((node: any) => {
                       const severity = node.severity || 'medium'
                       const nodeType = node.type || severity
                       const typeColors =

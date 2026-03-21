@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useChartTheme } from '../lib/chartTheme'
 import { dashboardAPI } from '../services/api'
+import { safeArray, safeObj, safeNum } from '../lib/safe'
 import {
   AlertTriangle,
   ShieldAlert,
@@ -62,13 +63,13 @@ export default function DashboardPage() {
     )
   }
 
-  const severityData = Object.entries(data.findings_by_severity || {}).map(([name, value]) => ({
+  const severityData = Object.entries(safeObj(data.findings_by_severity)).map(([name, value]) => ({
     name: name.charAt(0).toUpperCase() + name.slice(1),
     value: value as number,
     color: SEVERITY_COLORS[name as keyof typeof SEVERITY_COLORS] || '#6b7280',
   }))
 
-  const scannerData = Object.entries(data.findings_by_scanner || {}).map(([name, value]) => ({
+  const scannerData = Object.entries(safeObj(data.findings_by_scanner)).map(([name, value]) => ({
     name,
     count: value as number,
   }))
@@ -182,11 +183,11 @@ export default function DashboardPage() {
       </div>
 
       {/* Top Vulnerable Products */}
-      {data.top_vulnerable_products?.length > 0 && (
+      {safeArray(data.top_vulnerable_products).length > 0 && (
         <div className="card">
           <h3 className="text-lg font-semibold text-content-primary mb-4">Top Vulnerable Products</h3>
           <div className="space-y-3">
-            {data.top_vulnerable_products.map((product: any, i: number) => (
+            {safeArray(data.top_vulnerable_products).map((product: any, i: number) => (
               <div key={i} className="flex items-center justify-between p-3 bg-surface-tertiary/50 rounded-lg">
                 <span className="text-content-secondary font-medium">{product.name}</span>
                 <span className="text-sm text-red-400 font-mono">{product.count} findings</span>
@@ -199,7 +200,7 @@ export default function DashboardPage() {
       {/* Recent Findings */}
       <div className="card">
         <h3 className="text-lg font-semibold text-content-primary mb-4">Recent Findings</h3>
-        {data.recent_findings?.length > 0 ? (
+        {safeArray(data.recent_findings).length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -211,7 +212,7 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
-                {data.recent_findings.map((finding: any) => (
+                {safeArray(data.recent_findings).map((finding: any) => (
                   <tr key={finding.id} className="hover:bg-surface-tertiary/30 transition-colors">
                     <td className="py-3 px-4">
                       <SeverityBadge severity={finding.severity} />
