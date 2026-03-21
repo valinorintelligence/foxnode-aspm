@@ -1,5 +1,9 @@
 import axios from 'axios'
 
+export function isDemoMode(): boolean {
+  return localStorage.getItem('foxnode_demo') === 'true'
+}
+
 const api = axios.create({
   baseURL: '/api/v1',
   headers: { 'Content-Type': 'application/json' },
@@ -16,13 +20,19 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !isDemoMode()) {
       localStorage.removeItem('foxnode_token')
       window.location.href = '/login'
     }
     return Promise.reject(error)
   },
 )
+
+// Activate demo mode if enabled
+import { activateDemoMode } from './mockApi'
+if (isDemoMode()) {
+  activateDemoMode(api)
+}
 
 export default api
 

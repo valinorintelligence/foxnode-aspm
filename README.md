@@ -16,6 +16,11 @@
 </p>
 
 <p align="center">
+  <a href="https://foxnode-aspm.vercel.app/login"><img src="https://img.shields.io/badge/🚀_Live_Demo-Try_Now-10b981?style=for-the-badge" alt="Live Demo"></a>
+</p>
+
+<p align="center">
+  <a href="https://foxnode-aspm.vercel.app/login">Live Demo</a> &nbsp;·&nbsp;
   <a href="#-quick-start">Quick Start</a> &nbsp;·&nbsp;
   <a href="#-features">Features</a> &nbsp;·&nbsp;
   <a href="#-screenshots">Screenshots</a> &nbsp;·&nbsp;

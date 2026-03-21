@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { useThemeStore } from '../store/themeStore'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Play } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
@@ -10,9 +10,15 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [form, setForm] = useState({ username: '', password: '', email: '', full_name: '' })
   const [loading, setLoading] = useState(false)
-  const { login, register } = useAuthStore()
+  const { login, register, demoLogin } = useAuthStore()
   const { theme } = useThemeStore()
   const navigate = useNavigate()
+
+  const handleDemoLogin = () => {
+    demoLogin()
+    toast.success('Welcome to FoxNode Demo!')
+    navigate('/')
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -125,6 +131,20 @@ export default function LoginPage() {
               {isRegister ? 'Already have an account? Sign in' : "Don't have an account? Register"}
             </button>
           </div>
+        </div>
+
+        {/* Demo Mode */}
+        <div className="mt-4">
+          <button
+            onClick={handleDemoLogin}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition-colors"
+          >
+            <Play className="w-4 h-4" />
+            Try Live Demo
+          </button>
+          <p className="text-center text-xs text-content-muted mt-2">
+            No account needed — explore all features with sample data
+          </p>
         </div>
       </div>
     </div>

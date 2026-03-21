@@ -10,16 +10,17 @@
     "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2",
     "@tanstack/react-query": "^5.56.2",
     "axios": "^1.7.7",
-    "recharts": "^2.12.7",
-    "lucide-react": "^0.441.0",
+    "axios-mock-adapter": "^2.1.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "lucide-react": "^0.441.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
+    "react-router-dom": "^6.26.2",
+    "recharts": "^2.12.7",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
