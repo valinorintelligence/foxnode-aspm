@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arcanum Core</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            surface: { 950: '#0a0a0f', 900: '#111827', 800: '#1a1f2e', 700: '#252b3d' },
+            accent: { cyan: '#06b6d4', green: '#10b981', red: '#ef4444', orange: '#f97316', yellow: '#eab308', blue: '#3b82f6' },
+          },
+          fontFamily: { mono: ['JetBrains Mono', 'Fira Code', 'monospace'] },
+        },
+      },
+    };
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; background: #0a0a0f; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #111827; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+    .fade-in { animation: fadeIn 0.2s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 4px rgba(6,182,212,0.3); } 50% { box-shadow: 0 0 12px rgba(6,182,212,0.6); } }
+    .glow-pulse { animation: pulse-glow 2s ease-in-out infinite; }
+    .console-line { white-space: pre-wrap; word-break: break-all; }
+
+    /* Grid overlay */
+    .grid-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: linear-gradient(rgba(6,182,212,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(6,182,212,0.03) 1px, transparent 1px);
+      background-size: 40px 40px; pointer-events: none; z-index: 0;
+    }
+
+    /* Scan line effect */
+    @keyframes scanline { 0% { top: -100%; } 100% { top: 100%; } }
+    .scan-line::after {
+      content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 40px;
+      background: linear-gradient(to bottom, transparent, rgba(6,182,212,0.08), transparent);
+      animation: scanline 6s linear infinite; pointer-events: none;
+    }
+
+    /* Gradient border animation */
+    @keyframes borderShift { 0%,100% { border-color: rgba(6,182,212,0.3); } 50% { border-color: rgba(16,185,129,0.3); } }
+    .border-shift { animation: borderShift 8s ease-in-out infinite; }
+
+    /* Severity badges */
+    .sev-critical { background: #dc2626; } .sev-high { background: #ea580c; }
+    .sev-medium { background: #ca8a04; } .sev-low { background: #2563eb; } .sev-info { background: #6b7280; }
+
+    /* Phase indicator */
+    .phase-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .phase-active { background: #06b6d4; box-shadow: 0 0 8px rgba(6,182,212,0.6); }
+    .phase-done { background: #10b981; }
+    .phase-pending { background: #374151; }
+
+    /* Particle canvas */
+    #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+
+    /* Tool gallery image frames */
+    .gallery-frame { position: relative; overflow: hidden; border-radius: 8px; border: 1px solid rgba(6,182,212,0.2); }
+    .gallery-frame::after {
+      content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 40px;
+      background: linear-gradient(to bottom, transparent, rgba(6,182,212,0.06), transparent);
+      animation: scanline 6s linear infinite;
+    }
+
+    /* Progress bar */
+    @keyframes progressPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+    .progress-active { animation: progressPulse 1.5s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-surface-950 text-gray-200 min-h-screen" x-data="arcanum()" x-init="init()">
+  <!-- Particle canvas background -->
+  <canvas id="particles"></canvas>
+  <div class="grid-overlay"></div>
+
+  <script>
+  // Particle system
+  (function(){
+    const c=document.getElementById('particles'),ctx=c.getContext('2d');
+    let w,h,particles=[];
+    function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}
+    window.addEventListener('resize',resize);resize();
+    for(let i=0;i<50;i++)particles.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,r:Math.random()*1.5+0.5});
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      particles.forEach((p,i)=>{
+        p.x+=p.vx;p.y+=p.vy;
+        if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(6,182,212,0.3)';ctx.fill();
+        for(let j=i+1;j<particles.length;j++){
+          const dx=p.x-particles[j].x,dy=p.y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);
+          if(d<120){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(6,182,212,${0.1*(1-d/120)})`;ctx.stroke();}
+        }
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+  </script>
+
+  <!-- ============================================================ -->
+  <!-- HEADER                                                        -->
+  <!-- ============================================================ -->
+  <header class="sticky top-0 z-50 bg-surface-900/95 backdrop-blur border-b border-gray-800">
+    <div class="max-w-[1920px] mx-auto flex items-center justify-between px-4 h-14">
+      <!-- Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" @click="currentView = 'dashboard'; currentSession = null">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <span class="text-lg font-bold tracking-wider text-white">ARCANUM <span class="text-cyan-400">CORE</span></span>
+        <span class="text-[10px] font-mono text-gray-500 bg-gray-800 px-1.5 py-0.5 rounded">v3.0.0</span>
+      </div>
+
+      <!-- Nav -->
+      <nav class="hidden md:flex items-center gap-1">
+        <template x-for="v in ['dashboard','findings','stash','reports','cve']" :key="v">
+          <button
+            @click="currentView = v; if(v !== 'session') currentSession = null"
+            :class="currentView === v ? 'bg-gray-800 text-cyan-400' : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'"
+            class="px-3 py-1.5 rounded-md text-sm font-medium capitalize transition-colors"
+            x-text="v === 'cve' ? 'CVE Search' : v"
+          ></button>
+        </template>
+      </nav>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <!-- New Op -->
+        <button @click="showNewOp = true" class="flex items-center gap-1.5 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium px-3 py-1.5 rounded-md transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          New Op
+        </button>
+        <!-- Mode -->
+        <select x-model="globalMode" class="bg-gray-800 border border-gray-700 text-sm text-gray-300 rounded-md px-2 py-1.5 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500">
+          <option value="autopilot">Autopilot</option>
+          <option value="copilot">Copilot</option>
+          <option value="manual">Manual</option>
+        </select>
+        <!-- Settings -->
+        <button @click="showSettings = !showSettings" class="p-1.5 text-gray-400 hover:text-gray-200 hover:bg-gray-800 rounded-md transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <!-- Connection indicator -->
+        <div class="flex items-center gap-1.5 text-xs text-gray-500">
+          <div :class="wsConnected ? 'bg-emerald-500' : 'bg-red-500'" class="w-2 h-2 rounded-full"></div>
+          <span x-text="wsConnected ? 'Live' : 'Offline'"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-[1920px] mx-auto">
+
+    <!-- ============================================================ -->
+    <!-- DASHBOARD VIEW                                               -->
+    <!-- ============================================================ -->
+    <div x-show="currentView === 'dashboard'" x-cloak class="p-4 md:p-6 space-y-6 fade-in">
+      <!-- Stats -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Active Ops -->
+        <div class="bg-surface-900 border border-gray-800 rounded-xl p-4 hover:border-cyan-800 transition-colors">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs text-gray-500 uppercase tracking-wider">Active Ops</span>
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+              <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-white" x-text="stats.ops"></div>
+          <div class="text-xs text-gray-500 mt-1" x-text="sessions.filter(s => s.status === 'running').length + ' running'"></div>
+        </div>
+        <!-- Targets -->
+        <div class="bg-surface-900 border border-gray-800 rounded-xl p-4 hover:border-cyan-800 transition-colors">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs text-gray-500 uppercase tracking-wider">Targets</span>
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-white" x-text="stats.targets"></div>
+          <div class="text-xs text-gray-500 mt-1">unique targets</div>
+        </div>
+        <!-- Findings -->
+        <div class="bg-surface-900 border border-gray-800 rounded-xl p-4 hover:border-cyan-800 transition-colors">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs text-gray-500 uppercase tracking-wider">Findings</span>
+            <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
+              <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-white" x-text="findings.length"></div>
+          <div class="flex gap-2 mt-1">
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-400" x-text="(stats.findings.critical || 0) + ' C'"></span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400" x-text="(stats.findings.high || 0) + ' H'"></span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400" x-text="(stats.findings.medium || 0) + ' M'"></span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400" x-text="(stats.findings.low || 0) + ' L'"></span>
+          </div>
+        </div>
+        <!-- Stash -->
+        <div class="bg-surface-900 border border-gray-800 rounded-xl p-4 hover:border-cyan-800 transition-colors">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs text-gray-500 uppercase tracking-wider">Stash Items</span>
+            <div class="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center">
+              <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+            </div>
+          </div>
+          <div class="text-2xl font-bold text-white" x-text="stats.stash"></div>
+          <div class="text-xs text-gray-500 mt-1">artifacts stored</div>
+        </div>
+      </div>
+
+      <!-- Operations Table -->
+      <div class="bg-surface-900 border border-gray-800 rounded-xl overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-800 flex items-center justify-between">
+          <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-wider">Operations</h2>
+          <span class="text-xs text-gray-500" x-text="sessions.length + ' total'"></span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-xs text-gray-500 uppercase tracking-wider border-b border-gray-800">
+                <th class="px-4 py-2.5">Status</th>
+                <th class="px-4 py-2.5">Name</th>
+                <th class="px-4 py-2.5">Target</th>
+                <th class="px-4 py-2.5">Mode</th>
+                <th class="px-4 py-2.5">Findings</th>
+                <th class="px-4 py-2.5">Updated</th>
+                <th class="px-4 py-2.5">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="s in sessions" :key="s.id">
+                <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 cursor-pointer transition-colors" @click="openSession(s)">
+                  <td class="px-4 py-3">
+                    <div class="flex items-center gap-2">
+                      <div :class="{
+                        'bg-emerald-500 glow-pulse': s.status === 'running',
+                        'bg-yellow-500': s.status === 'paused',
+                        'bg-gray-500': s.status === 'created',
+                        'bg-blue-500': s.status === 'complete'
+                      }" class="w-2 h-2 rounded-full"></div>
+                      <span class="text-xs capitalize" :class="{
+                        'text-emerald-400': s.status === 'running',
+                        'text-yellow-400': s.status === 'paused',
+                        'text-gray-400': s.status === 'created',
+                        'text-blue-400': s.status === 'complete'
+                      }" x-text="s.status"></span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 font-medium text-white" x-text="s.name"></td>
+                  <td class="px-4 py-3 font-mono text-xs text-cyan-400" x-text="s.target || '-'"></td>
+                  <td class="px-4 py-3">
+                    <span class="text-xs px-2 py-0.5 rounded-full" :class="{
+                      'bg-red-500/20 text-red-400': s.mode === 'autopilot',
+                      'bg-yellow-500/20 text-yellow-400': s.mode === 'copilot',
+                      'bg-blue-500/20 text-blue-400': s.mode === 'manual'
+                    }" x-text="s.mode"></span>
+                  </td>
+                  <td class="px-4 py-3 text-gray-400" x-text="s.findings_count || 0"></td>
+                  <td class="px-4 py-3 text-xs text-gray-500" x-text="formatTime(s.updated_at)"></td>
+                  <td class="px-4 py-3" @click.stop>
+                    <div class="flex items-center gap-1">
+                      <button @click="openSession(s)" class="p-1 text-gray-500 hover:text-cyan-400 transition-colors" title="Open">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                      </button>
+                      <button @click="deleteSession(s.name)" class="p-1 text-gray-500 hover:text-red-400 transition-colors" title="Delete">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+              <tr x-show="sessions.length === 0">
+                <td colspan="7" class="px-4 py-8 text-center text-gray-600">No operations yet. Click <span class="text-cyan-400">+ New Op</span> to begin.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recent Findings -->
+      <div class="bg-surface-900 border border-gray-800 rounded-xl overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-800">
+          <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-wider">Recent Findings</h2>
+        </div>
+        <div class="divide-y divide-gray-800/50">
+          <template x-for="f in findings.slice(0, 10)" :key="f.id">
+            <div class="px-4 py-3 hover:bg-gray-800/30 transition-colors flex items-center gap-3">
+              <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded" :class="severityClass(f.severity)" x-text="f.severity || 'info'"></span>
+              <span class="text-sm text-white flex-1 truncate" x-text="f.title"></span>
+              <span class="text-xs font-mono text-gray-500 truncate max-w-[200px]" x-text="(f.affected && f.affected[0]) || ''"></span>
+              <span class="text-xs text-gray-600" x-text="f.session_id ? f.session_id.slice(0, 8) : ''"></span>
+            </div>
+          </template>
+          <div x-show="findings.length === 0" class="px-4 py-8 text-center text-gray-600">No findings discovered yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- SESSION VIEW                                                  -->
+    <!-- ============================================================ -->
+    <div x-show="currentView === 'session' && currentSession" x-cloak class="flex flex-col h-[calc(100vh-56px)] fade-in">
+      <!-- Session Top Bar -->
+      <div class="flex items-center gap-3 px-4 py-2 bg-surface-900 border-b border-gray-800">
+        <button @click="currentView = 'dashboard'; currentSession = null" class="text-gray-500 hover:text-gray-300 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <span class="text-sm font-semibold text-white" x-text="currentSession?.name"></span>
+        <span class="text-xs font-mono text-cyan-400" x-text="currentSession?.target || ''"></span>
+        <span class="text-xs px-2 py-0.5 rounded-full" :class="{
+          'bg-red-500/20 text-red-400': currentSession?.mode === 'autopilot',
+          'bg-yellow-500/20 text-yellow-400': currentSession?.mode === 'copilot',
+          'bg-blue-500/20 text-blue-400': currentSession?.mode === 'manual'
+        }" x-text="currentSession?.mode"></span>
+        <div class="flex items-center gap-1.5 ml-auto">
+          <div :class="{
+            'bg-emerald-500': currentSession?.status === 'running',
+            'bg-yellow-500': currentSession?.status === 'paused',
+            'bg-gray-500': currentSession?.status === 'created',
+            'bg-blue-500': currentSession?.status === 'complete'
+          }" class="w-2 h-2 rounded-full"></div>
+          <span class="text-xs text-gray-400 capitalize" x-text="currentSession?.status"></span>
+        </div>
+      </div>
+
+      <!-- Tab Bar -->
+      <div class="flex items-center gap-0 px-4 bg-surface-900 border-b border-gray-800 overflow-x-auto">
+        <template x-for="tab in sessionTabs" :key="tab">
+          <button
+            @click="activeTab = tab"
+            :class="activeTab === tab ? 'text-cyan-400 border-b-2 border-cyan-400 bg-gray-800/30' : 'text-gray-500 hover:text-gray-300 border-b-2 border-transparent'"
+            class="px-3 py-2 text-xs font-medium uppercase tracking-wider transition-colors whitespace-nowrap"
+            x-text="tab"
+          ></button>
+        </template>
+      </div>
+
+      <!-- Session Content -->
+      <div class="flex flex-1 overflow-hidden">
+        <!-- Left: Console / Output (70%) -->
+        <div class="flex-[7] flex flex-col border-r border-gray-800 min-w-0">
+          <div class="flex-1 overflow-y-auto p-4 space-y-1 font-mono text-xs" id="console-output">
+            <template x-for="(msg, idx) in messages" :key="idx">
+              <div class="console-line fade-in" :class="{
+                'text-gray-400': msg.type === 'system',
+                'text-cyan-400': msg.type === 'user',
+                'text-green-400': msg.type === 'tool_result',
+                'text-yellow-400': msg.type === 'thinking',
+                'text-white': msg.type === 'assistant',
+                'text-red-400': msg.type === 'error',
+                'text-gray-500': msg.type === 'info'
+              }">
+                <span class="text-gray-600 select-none" x-text="msg.timestamp ? '[' + msg.timestamp + '] ' : ''"></span>
+                <span class="text-gray-600 select-none" x-text="msg.type ? msg.type.toUpperCase() + ' > ' : ''"></span>
+                <span x-text="msg.content"></span>
+              </div>
+            </template>
+            <div x-show="messages.length === 0" class="text-gray-600 text-center py-8">
+              Session connected. Type a command or let Arcanum work autonomously.
+            </div>
+          </div>
+
+          <!-- Chat Input -->
+          <div class="border-t border-gray-800 p-3 bg-surface-900">
+            <div class="flex items-center gap-2">
+              <div class="flex-1 relative">
+                <input
+                  type="text"
+                  x-model="chatInput"
+                  @keydown.enter="sendMessage(chatInput); chatInput = ''"
+                  placeholder="Enter command or message..."
+                  class="w-full bg-gray-800 border border-gray-700 text-sm text-gray-200 rounded-lg px-4 py-2.5 pr-10 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 font-mono placeholder:text-gray-600"
+                />
+              </div>
+              <button @click="sendMessage(chatInput); chatInput = ''" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2.5 rounded-lg transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+              </button>
+              <!-- Copilot approve/cancel -->
+              <template x-if="currentSession?.mode === 'copilot' && pendingApproval">
+                <div class="flex gap-1">
+                  <button @click="approveAction()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-2 rounded-lg">Approve</button>
+                  <button @click="cancelAction()" class="bg-red-600 hover:bg-red-500 text-white text-xs px-3 py-2 rounded-lg">Cancel</button>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Findings & Stash Sidebar (30%) -->
+        <div class="flex-[3] flex flex-col overflow-hidden bg-surface-950">
+          <!-- Session Findings -->
+          <div class="flex-1 overflow-y-auto border-b border-gray-800">
+            <div class="px-3 py-2 border-b border-gray-800 bg-surface-900 sticky top-0">
+              <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Findings</h3>
+            </div>
+            <div class="divide-y divide-gray-800/50">
+              <template x-for="f in sessionFindings" :key="f.id">
+                <div class="px-3 py-2 hover:bg-gray-800/30 transition-colors cursor-pointer" @click="expandedFinding = expandedFinding === f.id ? null : f.id">
+                  <div class="flex items-center gap-2">
+                    <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded" :class="severityClass(f.severity)" x-text="f.severity || 'info'"></span>
+                    <span class="text-xs text-gray-300 truncate" x-text="f.title"></span>
+                  </div>
+                  <div x-show="expandedFinding === f.id" x-cloak class="mt-2 text-xs text-gray-500 space-y-1">
+                    <div x-show="f.cve_id"><span class="text-gray-600">CVE:</span> <span class="text-cyan-400" x-text="f.cve_id"></span></div>
+                    <div x-show="f.cvss_score"><span class="text-gray-600">CVSS:</span> <span x-text="f.cvss_score"></span></div>
+                    <div x-show="f.remediation" class="text-gray-400" x-text="f.remediation"></div>
+                  </div>
+                </div>
+              </template>
+              <div x-show="sessionFindings.length === 0" class="px-3 py-6 text-center text-xs text-gray-600">No findings yet</div>
+            </div>
+          </div>
+          <!-- Session Stash -->
+          <div class="flex-1 overflow-y-auto">
+            <div class="px-3 py-2 border-b border-gray-800 bg-surface-900 sticky top-0">
+              <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Stash</h3>
+            </div>
+            <div class="divide-y divide-gray-800/50">
+              <template x-for="item in sessionStash" :key="item.id">
+                <div class="px-3 py-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-gray-700 text-gray-300" x-text="item.type"></span>
+                    <span class="text-xs font-mono text-gray-400 truncate" x-text="maskValue(item)"></span>
+                  </div>
+                  <div x-show="item.note" class="text-[10px] text-gray-600 mt-0.5" x-text="item.note"></div>
+                </div>
+              </template>
+              <div x-show="sessionStash.length === 0" class="px-3 py-6 text-center text-xs text-gray-600">No stash items</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- FINDINGS VIEW                                                 -->
+    <!-- ============================================================ -->
+    <div x-show="currentView === 'findings'" x-cloak class="p-4 md:p-6 space-y-4 fade-in">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-white">All Findings</h2>
+        <div class="flex items-center gap-2">
+          <select x-model="findingFilter" class="bg-gray-800 border border-gray-700 text-xs text-gray-300 rounded-md px-2 py-1.5">
+            <option value="">All Severities</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+            <option value="info">Info</option>
+          </select>
+          <input type="text" x-model="findingSearch" placeholder="Search findings..." class="bg-gray-800 border border-gray-700 text-xs text-gray-300 rounded-md px-3 py-1.5 w-64 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500" />
+        </div>
+      </div>
+      <div class="bg-surface-900 border border-gray-800 rounded-xl overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs text-gray-500 uppercase tracking-wider border-b border-gray-800">
+              <th class="px-4 py-2.5">Severity</th>
+              <th class="px-4 py-2.5">Title</th>
+              <th class="px-4 py-2.5">Type</th>
+              <th class="px-4 py-2.5">CVE</th>
+              <th class="px-4 py-2.5">CVSS</th>
+              <th class="px-4 py-2.5">Affected</th>
+              <th class="px-4 py-2.5">Verified</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="f in filteredFindings" :key="f.id">
+              <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 cursor-pointer transition-colors" @click="expandedFinding = expandedFinding === f.id ? null : f.id">
+                <td class="px-4 py-3">
+                  <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded" :class="severityClass(f.severity)" x-text="f.severity || 'info'"></span>
+                </td>
+                <td class="px-4 py-3 text-white" x-text="f.title"></td>
+                <td class="px-4 py-3 text-xs text-gray-400" x-text="f.type || '-'"></td>
+                <td class="px-4 py-3 text-xs font-mono text-cyan-400" x-text="f.cve_id || '-'"></td>
+                <td class="px-4 py-3 text-xs" :class="f.cvss_score >= 9 ? 'text-red-400' : f.cvss_score >= 7 ? 'text-orange-400' : f.cvss_score >= 4 ? 'text-yellow-400' : 'text-gray-400'" x-text="f.cvss_score || '-'"></td>
+                <td class="px-4 py-3 text-xs font-mono text-gray-400 max-w-[200px] truncate" x-text="(f.affected && f.affected[0]) || '-'"></td>
+                <td class="px-4 py-3">
+                  <span x-show="f.verified" class="text-emerald-400 text-xs">Yes</span>
+                  <span x-show="!f.verified" class="text-gray-600 text-xs">No</span>
+                </td>
+              </tr>
+            </template>
+            <template x-for="f in filteredFindings" :key="'detail-'+f.id">
+              <tr x-show="expandedFinding === f.id" x-cloak class="bg-gray-800/20">
+                <td colspan="7" class="px-6 py-4">
+                  <div class="grid grid-cols-2 gap-4 text-xs">
+                    <div>
+                      <h4 class="font-semibold text-gray-400 mb-1">Evidence</h4>
+                      <pre class="font-mono text-gray-500 bg-surface-950 p-2 rounded max-h-32 overflow-auto" x-text="JSON.stringify(f.evidence, null, 2)"></pre>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-gray-400 mb-1">Remediation</h4>
+                      <p class="text-gray-400" x-text="f.remediation || 'No remediation provided'"></p>
+                      <h4 class="font-semibold text-gray-400 mb-1 mt-3">CWE IDs</h4>
+                      <p class="text-gray-400 font-mono" x-text="(f.cwe_ids && f.cwe_ids.join(', ')) || 'N/A'"></p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </template>
+            <tr x-show="filteredFindings.length === 0">
+              <td colspan="7" class="px-4 py-8 text-center text-gray-600">No findings match your filters.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- STASH VIEW                                                    -->
+    <!-- ============================================================ -->
+    <div x-show="currentView === 'stash'" x-cloak class="p-4 md:p-6 space-y-4 fade-in">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-white">Stash</h2>
+        <button @click="showAddStash = !showAddStash" class="flex items-center gap-1.5 bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium px-3 py-1.5 rounded-md transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Add Item
+        </button>
+      </div>
+
+      <!-- Add Stash Form -->
+      <div x-show="showAddStash" x-cloak class="bg-surface-900 border border-gray-800 rounded-xl p-4 fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <select x-model="newStash.type" class="bg-gray-800 border border-gray-700 text-sm text-gray-300 rounded-md px-3 py-2">
+            <option value="credential">Credential</option>
+            <option value="hash">Hash</option>
+            <option value="host">Host</option>
+            <option value="range">Range</option>
+            <option value="payload">Payload</option>
+            <option value="script">Script</option>
+            <option value="token">Token</option>
+          </select>
+          <input type="text" x-model="newStash.value" placeholder="Value" class="bg-gray-800 border border-gray-700 text-sm text-gray-300 rounded-md px-3 py-2 font-mono focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500" />
+          <input type="text" x-model="newStash.note" placeholder="Note (optional)" class="bg-gray-800 border border-gray-700 text-sm text-gray-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500" />
+          <button @click="addStash(newStash.type, newStash.value, newStash.note); newStash = {type:'credential',value:'',note:''}" class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded-md transition-colors">Save</button>
+        </div>
+      </div>
+
+      <!-- Stash Table -->
+      <div class="bg-surface-900 border border-gray-800 rounded-xl overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs text-gray-500 uppercase tracking-wider border-b border-gray-800">
+              <th class="px-4 py-2.5">Type</th>
+              <th class="px-4 py-2.5">Value</th>
+              <th class="px-4 py-2.5">Note</th>
+              <th class="px-4 py-2.5">Session</th>
+              <th class="px-4 py-2.5">Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="item in stashItems" :key="item.id">
+              <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
+                <td class="px-4 py-3">
+                  <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-gray-700 text-gray-300" x-text="item.type"></span>
+                </td>
+                <td class="px-4 py-3 font-mono text-xs text-gray-300" x-text="maskValue(item)"></td>
+                <td class="px-4 py-3 text-xs text-gray-400" x-text="item.note || '-'"></td>
+                <td class="px-4 py-3 text-xs text-gray-500" x-text="item.session_id ? item.session_id.slice(0, 8) : '-'"></td>
+                <td class="px-4 py-3 text-xs text-gray-500" x-text="formatTime(item.created_at)"></td>
+              </tr>
+            </template>
+            <tr x-show="stashItems.length === 0">
+              <td colspan="5" class="px-4 py-8 text-center text-gray-600">No stash items. Add credentials, hashes, hosts, and other artifacts.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- REPORTS VIEW                                                  -->
+    <!-- ============================================================ -->
+    <div x-show="currentView === 'reports'" x-cloak class="p-4 md:p-6 space-y-4 fade-in">
+      <h2 class="text-lg font-semibold text-white">Reports</h2>
+
+      <div class="bg-surface-900 border border-gray-800 rounded-xl p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Generate -->
+          <div>
+            <h3 class="text-sm font-semibold text-gray-300 mb-3">Generate Report</h3>
+            <div class="space-y-3">
+              <select x-model="reportSession" class="w-full bg-gray-800 border border-gray-700 text-sm text-gray-300 rounded-md px-3 py-2">
+                <option value="">Select operation...</option>
+                <template x-for="s in sessions" :key="s.id">
+                  <option :value="s.name" x-text="s.name + ' (' + s.target + ')'"></option>
+                </template>
+              </select>
+              <div class="flex flex-wrap gap-3">
+                <template x-for="fmt in ['pdf', 'html', 'md', 'json']" :key="fmt">
+                  <label class="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                    <input type="checkbox" :value="fmt" x-model="reportFormats" class="rounded bg-gray-800 border-gray-600 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-0" />
+                    <span class="uppercase text-xs font-mono" x-text="fmt"></span>
+                  </label>
+                </template>
+              </div>
+              <button
+                @click="generateReport(reportSession, reportFormats)"
+                :disabled="!reportSession || reportFormats.length === 0"
+                class="bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-sm font-medium px-4 py-2 rounded-md transition-colors"
+              >Generate Report</button>
+            </div>
+          </div>
+          <!-- Downloads -->
+          <div>
+            <h3 class="text-sm font-semibold text-gray-300 mb-3">Generated Reports</h3>
+            <div class="space-y-2">
+              <template x-for="r in reports" :key="r.path">
+                <a :href="r.path" download class="flex items-center gap-3 p-3 bg-gray-800/50 hover:bg-gray-800 rounded-lg transition-colors group">
+                  <svg class="w-5 h-5 text-gray-500 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  <div class="flex-1">
+                    <div class="text-sm text-gray-300" x-text="r.name || r.path.split('/').pop()"></div>
+                    <div class="text-[10px] text-gray-600" x-text="r.format?.toUpperCase() + ' report'"></div>
+                  </div>
+                </a>
+              </template>
+              <div x-show="reports.length === 0" class="text-center text-gray-600 text-sm py-4">No reports generated yet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- CVE SEARCH VIEW                                               -->
+    <!-- ============================================================ -->
+    <div x-show="currentView === 'cve'" x-cloak class="p-4 md:p-6 space-y-4 fade-in">
+      <h2 class="text-lg font-semibold text-white">CVE Search</h2>
+
+      <div class="flex items-center gap-3">
+        <input
+          type="text"
+          x-model="cveQuery"
+          @keydown.enter="searchCVE(cveQuery)"
+          placeholder="Search by CVE ID, keyword, or product (e.g., CVE-2024-1234, Apache, Log4j)..."
+          class="flex-1 bg-gray-800 border border-gray-700 text-sm text-gray-300 rounded-md px-4 py-2.5 font-mono focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 placeholder:text-gray-600"
+        />
+        <button @click="searchCVE(cveQuery)" class="bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium px-4 py-2.5 rounded-md transition-colors">Search</button>
+      </div>
+
+      <div class="bg-surface-900 border border-gray-800 rounded-xl overflow-hidden">
+        <div x-show="cveLoading" class="p-8 text-center text-gray-500">
+          <svg class="animate-spin h-6 w-6 mx-auto text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          <div class="mt-2 text-sm">Searching CVE database...</div>
+        </div>
+        <table x-show="!cveLoading && cveResults.length > 0" class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs text-gray-500 uppercase tracking-wider border-b border-gray-800">
+              <th class="px-4 py-2.5">CVE ID</th>
+              <th class="px-4 py-2.5">CVSS</th>
+              <th class="px-4 py-2.5">Description</th>
+              <th class="px-4 py-2.5">Exploit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="cve in cveResults" :key="cve.cve_id">
+              <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
+                <td class="px-4 py-3 font-mono text-xs text-cyan-400" x-text="cve.cve_id"></td>
+                <td class="px-4 py-3">
+                  <span class="text-xs font-bold" :class="{
+                    'text-red-400': cve.cvss_score >= 9,
+                    'text-orange-400': cve.cvss_score >= 7 && cve.cvss_score < 9,
+                    'text-yellow-400': cve.cvss_score >= 4 && cve.cvss_score < 7,
+                    'text-green-400': cve.cvss_score < 4
+                  }" x-text="cve.cvss_score || 'N/A'"></span>
+                </td>
+                <td class="px-4 py-3 text-xs text-gray-400 max-w-lg" x-text="cve.description ? cve.description.slice(0, 200) + (cve.description.length > 200 ? '...' : '') : '-'"></td>
+                <td class="px-4 py-3">
+                  <span x-show="cve.has_exploit" class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-red-500/20 text-red-400">Available</span>
+                  <span x-show="!cve.has_exploit" class="text-[10px] text-gray-600">None</span>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        <div x-show="!cveLoading && cveResults.length === 0 && cveSearched" class="px-4 py-8 text-center text-gray-600">No results found.</div>
+        <div x-show="!cveLoading && !cveSearched" class="px-4 py-8 text-center text-gray-600">Enter a search query above.</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- NEW OP MODAL                                                   -->
+  <!-- ============================================================ -->
+  <div x-show="showNewOp" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="showNewOp = false" @keydown.escape.window="showNewOp = false">
+    <div class="bg-surface-900 border border-gray-800 rounded-2xl w-full max-w-md mx-4 shadow-2xl fade-in">
+      <div class="p-6">
+        <h2 class="text-lg font-semibold text-white mb-4">New Operation</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">Operation Name</label>
+            <input type="text" x-model="newOp.name" placeholder="e.g., corp-pentest-q1" class="w-full bg-gray-800 border border-gray-700 text-sm text-gray-200 rounded-md px-3 py-2 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 font-mono" />
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">Target</label>
+            <input type="text" x-model="newOp.target" placeholder="e.g., 10.0.0.0/24 or example.com" class="w-full bg-gray-800 border border-gray-700 text-sm text-gray-200 rounded-md px-3 py-2 focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 font-mono" />
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">Mode</label>
+            <div class="grid grid-cols-3 gap-2">
+              <template x-for="m in ['autopilot', 'copilot', 'manual']" :key="m">
+                <button
+                  @click="newOp.mode = m"
+                  :class="newOp.mode === m ? 'border-cyan-500 bg-cyan-500/10 text-cyan-400' : 'border-gray-700 text-gray-400 hover:border-gray-600'"
+                  class="border rounded-md py-2 text-sm capitalize transition-colors"
+                  x-text="m"
+                ></button>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-gray-800">
+        <button @click="showNewOp = false" class="text-sm text-gray-400 hover:text-gray-200 px-4 py-2 rounded-md transition-colors">Cancel</button>
+        <button @click="createSession(newOp.name, newOp.target, newOp.mode); showNewOp = false; newOp = {name:'',target:'',mode:'manual'}" :disabled="!newOp.name" class="bg-cyan-600 hover:bg-cyan-500 disabled:bg-gray-700 disabled:text-gray-500 text-white text-sm font-medium px-4 py-2 rounded-md transition-colors">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SETTINGS MODAL                                                 -->
+  <!-- ============================================================ -->
+  <div x-show="showSettings" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="showSettings = false" @keydown.escape.window="showSettings = false">
+    <div class="bg-surface-900 border border-gray-800 rounded-2xl w-full max-w-sm mx-4 shadow-2xl fade-in">
+      <div class="p-6">
+        <h2 class="text-lg font-semibold text-white mb-4">Settings</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">API Base URL</label>
+            <input type="text" x-model="apiBase" class="w-full bg-gray-800 border border-gray-700 text-sm text-gray-200 rounded-md px-3 py-2 font-mono focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500" />
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">WebSocket URL</label>
+            <input type="text" x-model="wsBase" class="w-full bg-gray-800 border border-gray-700 text-sm text-gray-200 rounded-md px-3 py-2 font-mono focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500" />
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-gray-800">
+        <button @click="showSettings = false" class="text-sm text-gray-400 hover:text-gray-200 px-4 py-2 rounded-md transition-colors">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- NOTIFICATION TOAST                                              -->
+  <!-- ============================================================ -->
+  <div x-show="toast.show" x-cloak
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 translate-y-2"
+    x-transition:enter-end="opacity-100 translate-y-0"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 translate-y-0"
+    x-transition:leave-end="opacity-0 translate-y-2"
+    class="fixed bottom-4 right-4 z-50 max-w-sm"
+  >
+    <div :class="{
+      'border-cyan-500/30 bg-cyan-500/10': toast.type === 'info',
+      'border-emerald-500/30 bg-emerald-500/10': toast.type === 'success',
+      'border-red-500/30 bg-red-500/10': toast.type === 'error',
+      'border-yellow-500/30 bg-yellow-500/10': toast.type === 'warning'
+    }" class="border rounded-lg px-4 py-3 shadow-xl backdrop-blur">
+      <p class="text-sm text-gray-200" x-text="toast.message"></p>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ALPINE.JS APPLICATION                                          -->
+  <!-- ============================================================ -->
+  <script>
+    function arcanum() {
+      return {
+        // ---- State ----
+        currentView: 'dashboard',
+        sessions: [],
+        currentSession: null,
+        findings: [],
+        stashItems: [],
+        messages: [],
+        ws: null,
+        wsConnected: false,
+        stats: { ops: 0, targets: 0, findings: {}, stash: 0 },
+        globalMode: 'manual',
+        chatInput: '',
+        activeTab: 'recon',
+        sessionTabs: ['recon', 'web', 'network', 'creds', 'exploit', 'post', 'osint', 'findings'],
+        expandedFinding: null,
+        pendingApproval: false,
+
+        // Findings view
+        findingFilter: '',
+        findingSearch: '',
+
+        // Stash view
+        showAddStash: false,
+        newStash: { type: 'credential', value: '', note: '' },
+
+        // Reports view
+        reportSession: '',
+        reportFormats: [],
+        reports: [],
+
+        // CVE view
+        cveQuery: '',
+        cveResults: [],
+        cveLoading: false,
+        cveSearched: false,
+
+        // Modals
+        showNewOp: false,
+        showSettings: false,
+        newOp: { name: '', target: '', mode: 'manual' },
+
+        // Settings
+        apiBase: window.location.origin + '/api',
+        wsBase: (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host,
+
+        // Toast
+        toast: { show: false, message: '', type: 'info' },
+
+        // ---- Computed ----
+        get filteredFindings() {
+          let list = this.findings;
+          if (this.findingFilter) {
+            list = list.filter(f => f.severity === this.findingFilter);
+          }
+          if (this.findingSearch) {
+            const q = this.findingSearch.toLowerCase();
+            list = list.filter(f =>
+              (f.title && f.title.toLowerCase().includes(q)) ||
+              (f.cve_id && f.cve_id.toLowerCase().includes(q)) ||
+              (f.type && f.type.toLowerCase().includes(q))
+            );
+          }
+          return list;
+        },
+
+        get sessionFindings() {
+          if (!this.currentSession) return [];
+          return this.findings.filter(f => f.session_id === this.currentSession.id);
+        },
+
+        get sessionStash() {
+          if (!this.currentSession) return [];
+          return this.stashItems.filter(i => i.session_id === this.currentSession.id);
+        },
+
+        // ---- Lifecycle ----
+        async init() {
+          await this.fetchSessions();
+          await this.fetchFindings();
+          await this.fetchStash();
+          this.updateStats();
+        },
+
+        // ---- API Methods ----
+        async apiFetch(path, opts = {}) {
+          try {
+            const res = await fetch(this.apiBase + path, {
+              headers: { 'Content-Type': 'application/json', ...opts.headers },
+              ...opts,
+            });
+            if (!res.ok) {
+              const err = await res.text();
+              throw new Error(err || res.statusText);
+            }
+            return await res.json();
+          } catch (e) {
+            console.error('API Error:', e);
+            this.showToast(e.message, 'error');
+            return null;
+          }
+        },
+
+        async fetchSessions() {
+          const data = await this.apiFetch('/sessions');
+          if (data) this.sessions = Array.isArray(data) ? data : (data.sessions || []);
+          this.updateStats();
+        },
+
+        async fetchFindings() {
+          const data = await this.apiFetch('/findings');
+          if (data) this.findings = Array.isArray(data) ? data : (data.findings || []);
+          this.updateStats();
+        },
+
+        async fetchStash() {
+          const data = await this.apiFetch('/stash');
+          if (data) this.stashItems = Array.isArray(data) ? data : (data.items || []);
+          this.updateStats();
+        },
+
+        async createSession(name, target, mode) {
+          if (!name) return;
+          const data = await this.apiFetch('/sessions', {
+            method: 'POST',
+            body: JSON.stringify({ name, target, mode: mode || this.globalMode }),
+          });
+          if (data) {
+            await this.fetchSessions();
+            this.showToast('Operation "' + name + '" created', 'success');
+            const session = data.session || data;
+            this.openSession(session);
+          }
+        },
+
+        async deleteSession(name) {
+          if (!confirm('Delete operation "' + name + '"?')) return;
+          await this.apiFetch('/sessions/' + encodeURIComponent(name), { method: 'DELETE' });
+          await this.fetchSessions();
+          if (this.currentSession && this.currentSession.name === name) {
+            this.currentSession = null;
+            this.currentView = 'dashboard';
+          }
+          this.showToast('Operation deleted', 'info');
+        },
+
+        openSession(session) {
+          this.currentSession = session;
+          this.currentView = 'session';
+          this.messages = [];
+          this.activeTab = 'recon';
+          this.connectWebSocket(session.id);
+          this.messages.push({
+            type: 'system',
+            content: 'Connected to session: ' + session.name + ' | Target: ' + (session.target || 'N/A') + ' | Mode: ' + session.mode,
+            timestamp: this.now(),
+          });
+        },
+
+        // ---- WebSocket ----
+        connectWebSocket(sessionId) {
+          if (this.ws) {
+            this.ws.close();
+          }
+          const url = this.wsBase + '/ws/' + sessionId;
+          this.ws = new WebSocket(url);
+
+          this.ws.onopen = () => {
+            this.wsConnected = true;
+            this.messages.push({ type: 'info', content: 'WebSocket connected', timestamp: this.now() });
+          };
+
+          this.ws.onmessage = (event) => {
+            try {
+              const msg = JSON.parse(event.data);
+              this.handleWSMessage(msg);
+            } catch {
+              this.messages.push({ type: 'system', content: event.data, timestamp: this.now() });
+            }
+            this.scrollConsole();
+          };
+
+          this.ws.onclose = () => {
+            this.wsConnected = false;
+            this.messages.push({ type: 'info', content: 'WebSocket disconnected', timestamp: this.now() });
+          };
+
+          this.ws.onerror = () => {
+            this.wsConnected = false;
+          };
+        },
+
+        handleWSMessage(msg) {
+          const ts = this.now();
+
+          switch (msg.type) {
+            case 'thinking':
+              this.messages.push({ type: 'thinking', content: msg.content || 'Analyzing...', timestamp: ts });
+              break;
+            case 'tool_call':
+              this.messages.push({ type: 'system', content: '[TOOL] ' + (msg.tool || '') + ': ' + (msg.content || JSON.stringify(msg.args || '')), timestamp: ts });
+              break;
+            case 'tool_result':
+              this.messages.push({ type: 'tool_result', content: msg.content || msg.output || '', timestamp: ts });
+              break;
+            case 'assistant':
+              this.messages.push({ type: 'assistant', content: msg.content || '', timestamp: ts });
+              break;
+            case 'error':
+              this.messages.push({ type: 'error', content: msg.message || msg.content || 'Unknown error', timestamp: ts });
+              break;
+            case 'finding':
+              this.messages.push({ type: 'system', content: '[FINDING] ' + (msg.severity || '').toUpperCase() + ': ' + (msg.title || ''), timestamp: ts });
+              this.fetchFindings();
+              break;
+            case 'approval_request':
+              this.pendingApproval = true;
+              this.messages.push({ type: 'system', content: '[APPROVAL REQUIRED] ' + (msg.content || msg.action || ''), timestamp: ts });
+              break;
+            case 'approved':
+            case 'cancelled':
+              this.pendingApproval = false;
+              this.messages.push({ type: 'info', content: msg.type.charAt(0).toUpperCase() + msg.type.slice(1), timestamp: ts });
+              break;
+            case 'progress':
+              if (this.currentSession) {
+                this.currentSession.progress = msg.progress || this.currentSession.progress;
+              }
+              break;
+            default:
+              this.messages.push({ type: 'system', content: msg.content || JSON.stringify(msg), timestamp: ts });
+          }
+        },
+
+        sendMessage(text) {
+          if (!text || !text.trim()) return;
+          if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+            this.showToast('Not connected to session', 'error');
+            return;
+          }
+          this.messages.push({ type: 'user', content: text, timestamp: this.now() });
+          this.ws.send(JSON.stringify({ type: 'chat', content: text }));
+          this.scrollConsole();
+        },
+
+        approveAction() {
+          if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify({ type: 'approve' }));
+            this.pendingApproval = false;
+          }
+        },
+
+        cancelAction() {
+          if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify({ type: 'cancel' }));
+            this.pendingApproval = false;
+          }
+        },
+
+        // ---- Reports ----
+        async generateReport(sessionName, formats) {
+          if (!sessionName || formats.length === 0) return;
+          this.showToast('Generating report...', 'info');
+          const data = await this.apiFetch('/reports/generate', {
+            method: 'POST',
+            body: JSON.stringify({ session_name: sessionName, formats }),
+          });
+          if (data && data.reports) {
+            for (const [fmt, path] of Object.entries(data.reports)) {
+              this.reports.push({ path, name: sessionName + '.' + fmt, format: fmt });
+            }
+            this.showToast('Reports generated', 'success');
+          }
+        },
+
+        // ---- CVE ----
+        async searchCVE(query) {
+          if (!query || !query.trim()) return;
+          this.cveLoading = true;
+          this.cveSearched = true;
+          const data = await this.apiFetch('/cve/search?q=' + encodeURIComponent(query));
+          this.cveResults = data ? (Array.isArray(data) ? data : (data.results || [])) : [];
+          this.cveLoading = false;
+        },
+
+        // ---- Stash ----
+        async addStash(type, value, note) {
+          if (!value) return;
+          await this.apiFetch('/stash', {
+            method: 'POST',
+            body: JSON.stringify({ type, value, note }),
+          });
+          await this.fetchStash();
+          this.showToast('Stash item added', 'success');
+          this.showAddStash = false;
+        },
+
+        // ---- Helpers ----
+        updateStats() {
+          const targets = new Set(this.sessions.map(s => s.target).filter(Boolean));
+          const sevCounts = {};
+          for (const f of this.findings) {
+            const sev = f.severity || 'info';
+            sevCounts[sev] = (sevCounts[sev] || 0) + 1;
+          }
+          this.stats = {
+            ops: this.sessions.length,
+            targets: targets.size,
+            findings: sevCounts,
+            stash: this.stashItems.length,
+          };
+        },
+
+        severityClass(sev) {
+          const map = {
+            critical: 'bg-red-500/20 text-red-400',
+            high: 'bg-orange-500/20 text-orange-400',
+            medium: 'bg-yellow-500/20 text-yellow-400',
+            low: 'bg-blue-500/20 text-blue-400',
+            info: 'bg-gray-500/20 text-gray-400',
+          };
+          return map[sev] || map.info;
+        },
+
+        maskValue(item) {
+          if (['credential', 'token', 'hash'].includes(item.type) && item.value) {
+            if (item.value.length <= 6) return '******';
+            return item.value.slice(0, 3) + '***' + item.value.slice(-3);
+          }
+          return item.value || '';
+        },
+
+        formatTime(dt) {
+          if (!dt) return '-';
+          try {
+            const d = new Date(dt);
+            const now = new Date();
+            const diff = Math.floor((now - d) / 1000);
+            if (diff < 60) return diff + 's ago';
+            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+            return d.toLocaleDateString();
+          } catch {
+            return dt;
+          }
+        },
+
+        now() {
+          return new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        },
+
+        scrollConsole() {
+          this.$nextTick(() => {
+            const el = document.getElementById('console-output');
+            if (el) el.scrollTop = el.scrollHeight;
+          });
+        },
+
+        showToast(message, type = 'info') {
+          this.toast = { show: true, message, type };
+          setTimeout(() => { this.toast.show = false; }, 3000);
+        },
+      };
+    }
+  </script>
+</body>
+</html>

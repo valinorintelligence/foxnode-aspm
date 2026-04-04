@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  arcanum:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.app
+    ports:
+      - "8000:8000"
+    volumes:
+      - arcanum-data:/root/.arcanum
+      - ./workspace:/workspace
+    environment:
+      - ARCANUM_OLLAMA_URL=http://ollama:11434
+      - ARCANUM_WEB_HOST=0.0.0.0
+      - ARCANUM_WEB_PORT=8000
+    depends_on:
+      - ollama
+      - sandbox
+    networks:
+      - arcanum-net
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - arcanum-net
+
+  sandbox:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./workspace:/workspace
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 4g
+    networks:
+      - arcanum-net
+
+volumes:
+  arcanum-data:
+  ollama-models:
+
+networks:
+  arcanum-net:
+    driver: bridge

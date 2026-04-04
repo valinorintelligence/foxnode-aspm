@@ -1,0 +1,34 @@
+FROM kalilinux/kali-rolling:latest
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install base tools
+RUN apt-get update && apt-get install -y \
+    # Recon
+    subfinder dnsx nmap masscan httpx-toolkit katana theharvester \
+    # Web
+    nuclei sqlmap feroxbuster ffuf arjun wpscan testssl.sh \
+    # Network
+    crackmapexec snmp tshark bettercap chisel \
+    # Creds
+    hashcat hydra \
+    # Exploit
+    metasploit-framework \
+    # Post
+    impacket-scripts \
+    # OSINT
+    exiftool \
+    # Utils
+    python3 python3-pip curl wget git jq \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Python tools
+RUN pip3 install --break-system-packages \
+    dalfox graphqlmap jwt-tool sherlock-project holehe trufflehog gowitness \
+    pwncat-cs pwntools haiti bloodhound linpeas
+
+# Install SecLists
+RUN git clone --depth 1 https://github.com/danielmiessler/SecLists.git /opt/seclists
+
+WORKDIR /workspace
+USER nobody

@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "arcanum-core"
+version = "3.0.0"
+description = "Autonomous AI-Powered Security Reconnaissance Platform"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "websockets",
+    "textual",
+    "ollama",
+    "docker",
+    "playwright",
+    "aiosqlite",
+    "weasyprint",
+    "jinja2",
+    "click",
+    "rich",
+    "httpx",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "python-multipart",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "ruff",
+    "mypy",
+]
+
+[project.scripts]
+arcanum = "arcanum.__main__:main"
+
+[tool.ruff]
+line-length = 100
