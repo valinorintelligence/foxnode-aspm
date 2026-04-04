@@ -1,0 +1,12 @@
+services:
+  arcanum-demo:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.demo
+    ports:
+      - "8000:8000"
+    environment:
+      - ARCANUM_WEB_HOST=0.0.0.0
+      - ARCANUM_WEB_PORT=8000
+      - ARCANUM_OLLAMA_URL=http://localhost:11434
+    restart: unless-stopped

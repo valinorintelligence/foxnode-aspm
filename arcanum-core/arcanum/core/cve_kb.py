@@ -1,4 +1,6 @@
 """CVE Knowledge Base with full-text search."""
+from __future__ import annotations
+
 import json
 import aiosqlite
 from pathlib import Path

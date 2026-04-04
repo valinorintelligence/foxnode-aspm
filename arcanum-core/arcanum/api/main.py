@@ -150,19 +150,20 @@ def create_app() -> FastAPI:
         result = await seed_all_demo_data(app.state.db, app.state.cve_kb)
         return {"seeded": result}
 
-    # Serve frontend
-    frontend_dir = Path(__file__).parent.parent.parent / "frontend"
-    if frontend_dir.exists():
+    # Serve frontend — check multiple locations (dev vs Docker)
+    frontend_candidates = [
+        Path(__file__).parent.parent.parent / "frontend",  # dev: repo root
+        Path("/app/frontend"),                              # Docker workdir
+    ]
+    frontend_dir = next((d for d in frontend_candidates if (d / "index.html").exists()), None)
+    if frontend_dir:
         assets_dir = frontend_dir / "assets"
         if assets_dir.exists():
             app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
         @app.get("/")
         async def serve_frontend():
-            index = frontend_dir / "index.html"
-            if index.exists():
-                return FileResponse(index)
-            return {"message": "Frontend not found"}
+            return FileResponse(frontend_dir / "index.html")
 
     return app
 

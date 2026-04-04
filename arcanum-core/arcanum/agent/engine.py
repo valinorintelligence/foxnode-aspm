@@ -78,9 +78,11 @@ class AgentEngine:
                 if phase_event:
                     yield phase_event
 
-            if self.iteration % SELF_EVAL_INTERVAL == 0:
+            if self.iteration % SELF_EVAL_INTERVAL == 0 and self.iteration > 0:
+                eval_result = await self._self_evaluate()
                 yield {"type": "checkpoint", "subtype": "self_eval", "iteration": self.iteration,
-                       "phase": self.current_phase, "findings": self.findings_count}
+                       "phase": self.current_phase, "findings": self.findings_count,
+                       "evaluation": eval_result}
 
             if self.iteration % CONTEXT_COMPRESS_INTERVAL == 0:
                 compressed = self._compress_context()
@@ -170,6 +172,34 @@ class AgentEngine:
             clean = re.sub(r'<think>.*?</think>', '', content, flags=re.DOTALL).strip()
             return thinking, clean
         return None, content
+
+    # -- Self-Evaluation -------------------------------------------------------
+
+    async def _self_evaluate(self) -> dict:
+        """Ask the LLM to evaluate its own progress and adjust strategy."""
+        target = self.session.get("target", "unknown") if isinstance(self.session, dict) else "unknown"
+        eval_prompt = (
+            f"You are at iteration {self.iteration} of a security assessment against '{target}'. "
+            f"Current phase: {self.current_phase}. Findings so far: {self.findings_count}.\n\n"
+            "Briefly evaluate:\n"
+            "1. Progress: Are you making adequate progress? (yes/no + reason)\n"
+            "2. Coverage: What areas haven't been tested yet?\n"
+            "3. Next steps: What are the 2-3 most important next actions?\n"
+            "4. Should you move to the next phase? (yes/no)\n\n"
+            "Reply in 3-5 sentences."
+        )
+        try:
+            response = await self.llm.chat(
+                messages=[
+                    {"role": "system", "content": "You are a security assessment progress evaluator."},
+                    {"role": "user", "content": eval_prompt},
+                ],
+            )
+            content = response.get("content", "")
+            _, clean = self._extract_thinking(content)
+            return {"status": "ok", "evaluation": clean or content}
+        except Exception as e:
+            return {"status": "error", "evaluation": f"Self-eval failed: {e}"}
 
     # -- Phase Management ----------------------------------------------------
 

@@ -148,11 +148,114 @@ def cve_search_cmd(query: str):
 
 
 @cve.command("update")
-def cve_update_cmd():
-    """Update the local CVE database from NVD."""
-    click.echo("Updating CVE database from NVD feeds...")
-    click.echo("This may take several minutes for the initial download.")
-    # TODO: Implement NVD feed download + import
+@click.option("--year", "-y", default=None, type=int, help="Specific year to fetch (default: current + previous)")
+def cve_update_cmd(year: int):
+    """Update the local CVE database from NVD API 2.0."""
+    import asyncio
+
+    from .core.config import get_config
+    from .core.cve_kb import CVEKnowledgeBase, CVEEntry
+
+    async def _run():
+        import json
+        from datetime import datetime
+
+        config = get_config()
+        kb = CVEKnowledgeBase(config.cve_db)
+        await kb.connect()
+
+        try:
+            years = [year] if year else [datetime.now().year, datetime.now().year - 1]
+            total = 0
+
+            for y in years:
+                click.echo(f"  Fetching CVEs for {y}...")
+                start_idx = 0
+                year_count = 0
+
+                while True:
+                    url = (
+                        f"https://services.nvd.nist.gov/rest/json/cves/2.0"
+                        f"?pubStartDate={y}-01-01T00:00:00.000"
+                        f"&pubEndDate={y}-12-31T23:59:59.999"
+                        f"&startIndex={start_idx}&resultsPerPage=200"
+                    )
+                    try:
+                        import httpx
+                        async with httpx.AsyncClient(timeout=60) as client:
+                            resp = await client.get(url)
+                            if resp.status_code == 403:
+                                click.echo(f"  Rate limited. Waiting 10s...")
+                                import time
+                                time.sleep(10)
+                                continue
+                            resp.raise_for_status()
+                            data = resp.json()
+                    except Exception as e:
+                        click.echo(f"  Error fetching: {e}")
+                        break
+
+                    vulns = data.get("vulnerabilities", [])
+                    if not vulns:
+                        break
+
+                    entries = []
+                    for item in vulns:
+                        cve_data = item.get("cve", {})
+                        cve_id = cve_data.get("id", "")
+                        if not cve_id:
+                            continue
+
+                        desc = ""
+                        for d in cve_data.get("descriptions", []):
+                            if d.get("lang") == "en":
+                                desc = d.get("value", "")
+                                break
+
+                        cvss_score = None
+                        cvss_vector = None
+                        metrics = cve_data.get("metrics", {})
+                        for key in ("cvssMetricV31", "cvssMetricV30", "cvssMetricV2"):
+                            if key in metrics and metrics[key]:
+                                cd = metrics[key][0].get("cvssData", {})
+                                cvss_score = cd.get("baseScore")
+                                cvss_vector = cd.get("vectorString")
+                                break
+
+                        cwe_ids = []
+                        for wp in cve_data.get("weaknesses", []):
+                            for d in wp.get("description", []):
+                                v = d.get("value", "")
+                                if v.startswith("CWE-"):
+                                    cwe_ids.append(v)
+
+                        published = cve_data.get("published", "")[:10] or None
+                        entries.append(CVEEntry(
+                            id=cve_id, description=desc, cvss_score=cvss_score,
+                            cvss_vector=cvss_vector, cwe_ids=cwe_ids or None,
+                            exploit_available=False, published_at=published,
+                        ))
+
+                    if entries:
+                        await kb.bulk_import(entries)
+                        year_count += len(entries)
+
+                    total_results = data.get("totalResults", 0)
+                    start_idx += len(vulns)
+                    if start_idx >= total_results:
+                        break
+
+                click.echo(f"  {y}: {year_count} CVEs imported")
+                total += year_count
+
+            final_count = await kb.count()
+            click.echo(f"[OK] CVE database updated. Total: {final_count} CVEs ({total} new)")
+        finally:
+            await kb.close()
+
+    click.echo("Updating CVE database from NVD API 2.0...")
+    click.echo("(Rate-limited to ~50 requests/30s — large imports may take minutes)")
+    asyncio.run(_run())
 
 
 # --- demo ---

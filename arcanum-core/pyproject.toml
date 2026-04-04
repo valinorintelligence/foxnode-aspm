@@ -5,19 +5,37 @@ build-backend = "hatchling.build"
 [project]
 name = "arcanum-core"
 version = "3.0.0"
-description = "Autonomous AI-Powered Security Reconnaissance Platform"
+description = "Autonomous AI-Powered Security Reconnaissance Platform — self-hosted, LLM-driven pentest engine with 40+ tools, 57 skills, and zero cloud dependencies"
 license = "MIT"
 requires-python = ">=3.11"
+authors = [
+    { name = "Foxnode Intelligence", email = "security@foxnode.io" },
+]
+keywords = [
+    "security", "pentesting", "reconnaissance", "ai", "llm", "ollama",
+    "vulnerability-scanner", "offensive-security", "bug-bounty", "red-team",
+    "automation", "agent", "cybersecurity",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries",
+    "Operating System :: OS Independent",
+    "Framework :: FastAPI",
+]
 dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "websockets",
     "textual",
-    "ollama",
-    "docker",
-    "playwright",
     "aiosqlite",
-    "weasyprint",
     "jinja2",
     "click",
     "rich",
@@ -28,7 +46,19 @@ dependencies = [
     "pyyaml",
 ]
 
+[project.urls]
+Homepage = "https://github.com/valinorintelligence/foxnode-aspm"
+Repository = "https://github.com/valinorintelligence/foxnode-aspm"
+Issues = "https://github.com/valinorintelligence/foxnode-aspm/issues"
+Documentation = "https://github.com/valinorintelligence/foxnode-aspm#readme"
+
 [project.optional-dependencies]
+full = [
+    "ollama",
+    "docker",
+    "playwright",
+    "weasyprint",
+]
 dev = [
     "pytest",
     "pytest-asyncio",
@@ -39,6 +69,9 @@ dev = [
 
 [project.scripts]
 arcanum = "arcanum.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["arcanum"]
 
 [tool.ruff]
 line-length = 100

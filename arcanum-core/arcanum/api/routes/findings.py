@@ -1,4 +1,6 @@
 """Findings endpoints."""
+from __future__ import annotations
+
 from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
 

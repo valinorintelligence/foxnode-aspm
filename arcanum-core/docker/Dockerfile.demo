@@ -1,0 +1,24 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Only install what we need for the web UI
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY pyproject.toml .
+COPY arcanum/ arcanum/
+COPY frontend/ frontend/
+
+RUN pip install --no-cache-dir .
+
+# Seed demo data at build time so the container starts instantly
+RUN arcanum demo
+
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')" || exit 1
+
+CMD ["arcanum", "serve", "--port", "8000", "--host", "0.0.0.0"]
